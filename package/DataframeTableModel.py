@@ -52,7 +52,8 @@ class DataframeTableModel(QAbstractTableModel):
         if orientation == Qt.Horizontal:
             try:
                 return self._df.columns.tolist()[section]
-            except(IndexError, ):
+            except(IndexError, 
+            ):
                 return None
         elif orientation == Qt.Vertical:
             try:

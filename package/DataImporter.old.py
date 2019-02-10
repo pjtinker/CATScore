@@ -9,7 +9,7 @@ import pandas as pd
 import glob
 from chardet.universaldetector import UniversalDetector
 
-from package.DataframeTableModel import DataframeTableModel
+from DataframeTableModel import DataframeTableModel
 
 class DataImporter(QWidget):
     def __init__(self, parent=None):
