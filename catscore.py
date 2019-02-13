@@ -14,7 +14,7 @@ from PySide2.QtWidgets import (QAction, QApplication, QHBoxLayout, QVBoxLayout, 
                                QMainWindow, QSizePolicy, QTableView, QWidget, QPushButton, QTabWidget)
 from PySide2.QtCharts import QtCharts
 
-from package.cattrain import CatTrain
+from package.train.cattrain import CatTrain
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     import sys
     # Qt Application
     app = QApplication(sys.argv)
-
+    app.setStyle('Fusion')
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())

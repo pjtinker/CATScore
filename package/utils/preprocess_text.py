@@ -164,13 +164,13 @@ def get_num_words_per_sample(sample_texts):
     #     num_words.append(len(text.split()))
     return [len(s.split()) for s in sample_texts]
 
-def processText(text, thorough=True, expand=False, swords=False, lemmatize=False):
-    """Removes unwanted/unnecessary characters from textual input
-    
+def processText(text, case=True, punct=True, expand=False, swords=False, lemmatize=False):
+    """Removes unwanted/unnecessary characters from textual input.
+    Removes all single and double quotes, removes all non-ascii characters,
+    pad punctuation on each side if it remains.
     # Arguments
         text: list, text data.
-        thorough: boolean; if true, remove all single and double quotes,
-                    remove all non-ascii characters, convert all words to lower
+        case: boolean; if true,  convert all words to lower
                     case, strip leading and trailing whitespace, pad punctuation on both 
 					sides.
         swords: boolean; remove stopwords if true
@@ -178,18 +178,22 @@ def processText(text, thorough=True, expand=False, swords=False, lemmatize=False
     # Returns
         List of processed text
     """
+    # Attempt to strip out any non-ascii characters from the text.  
+    text = re.sub(r"[^\x00-\x7F]+", ' ', text)
+
     text = text.replace('\n', ' ')
     text = text.replace('\t', ' ')
     
-    if thorough:
-        text = text.strip().lower()
-        text = text.replace('"', '')
-        text = text.replace("'", '')
-        text = re.sub(r"[^\x00-\x7F]+", ' ', text)
-        text = re.sub(r"^[^A-Za-z0-9]", ' ', text)  
+    text = text.replace('"', '')
+    text = text.replace("'", '')
+    # Replace any opening character that is not a number or letter with a space.
+    text = re.sub(r"^[^A-Za-z0-9]", ' ', text)  
         #text = re.sub(r"([.!?,'/()])", r" \1 ", text)
         # Pad punctuation with spaces on both sides
-        text = re.sub(r"([\.\",\(\)!\?;:])", " \\1 ", text)
+    text = re.sub(r"([\.\",\(\)!\?;:/])", " \\1 ", text)
+        
+    if case:
+        text = text.strip().lower()
         
     if expand:
         text = [expandContractions(x) for x in text]
@@ -201,5 +205,4 @@ def processText(text, thorough=True, expand=False, swords=False, lemmatize=False
     if lemmatize:
         lemmatizer = WordNetLemmatizer()
         text = ' '.join([lemmatizer.lemmatize(word) for word in text.split() ])
-
     return text

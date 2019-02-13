@@ -16,7 +16,7 @@ from PySide2.QtWidgets import (QAction, QApplication, QHBoxLayout, QHeaderView,
                                QMainWindow, QSizePolicy, QTableView, QWidget, QTabWidget)
 from PySide2.QtCharts import QtCharts
 
-from package.DataImporter import DataImporter
+from package.train.PreprocessingTab import PreprocessingTab
 
 class CatTrain(QMainWindow):
     def __init__(self, parent=None):
@@ -34,8 +34,8 @@ class CatTrain(QMainWindow):
         # self.setGeometry(0, 0, 600, 400)
 
         self.tabs = QTabWidget()
-        self.import_answers_tab = DataImporter()
-        self.select_models_tab = QWidget()
+        self.import_answers_tab = PreprocessingTab(self)
+        self.select_models_tab = QWidget(self)
         # self.setCentralWidget(self.widget)
         self.tabs.resize(500, 400)
 
