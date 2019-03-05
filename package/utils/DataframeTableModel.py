@@ -1,7 +1,7 @@
 from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
                             Qt, QTimeZone, Slot)
 from PySide2.QtGui import QColor, QPainter
-from PySide2.QtWidgets import (QAction, QApplication, QHBoxLayout, QHeaderView,
+from PySide2.QtWidgets import (QAction, QCheckBox, QApplication, QHBoxLayout, QHeaderView,
                                QMainWindow, QSizePolicy, QTableView, QWidget, QTabWidget)
 from PySide2.QtCharts import QtCharts
 
@@ -30,8 +30,6 @@ class DataframeTableModel(QAbstractTableModel):
 
     def loadData(self, data):
         """Load data into dataframe.
-        Currently data is passed into the function
-        Perhaps adding it internally would make better sense?
         """
         if data is None:
             return
@@ -39,6 +37,18 @@ class DataframeTableModel(QAbstractTableModel):
         self.header = self._df.columns
         ## layoutChanged refreshes the QTableView with new data.  
         self.layoutChanged.emit()
+
+    @property 
+    def getColumns(self):
+        return self.header 
+        
+    @property
+    def getData(self):
+        return self._df
+
+    @property
+    def getShape(self):
+        return self._df.shape 
 
     def rowCount(self, parent=QModelIndex()):
         return self._df.shape[0]
@@ -62,13 +72,16 @@ class DataframeTableModel(QAbstractTableModel):
                 return None
 
     def data(self, index, role=Qt.DisplayRole):
-        column = index.column()
-        row = index.row()
-        if role != Qt.DisplayRole:
-            return None
         if not index.isValid():
             return None
-        return str(self._df.ix[row, column])
+        column = index.column()
+        row = index.row()
+        if role == Qt.DisplayRole:
+            return str(self._df.ix[row, column])
+        # elif role == Qt.CheckStateRole and column == 1:
+        #     return Qt.Checked
+        # if column == 0:
+        #     return QCheckBox()
 
     '''FIXME: Not sure I'll allow the data to be editable.  
         This is here just in case we do.  

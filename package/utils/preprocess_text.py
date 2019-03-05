@@ -152,12 +152,22 @@ def expandContractions(text, c_re=c_re):
         return cList[match.group(0)]
     return c_re.sub(replace, text)
 
+def get_avg_words_per_sample(sample_texts):
+    """Returns the median number of words per sample in given a corpus.
+    # Arguments
+    """
+    total_words = 0
+    for text in sample_texts:
+        total_words += len(text)
+
+    return float(total_words / len(sample_texts))
+
 def get_num_words_per_sample(sample_texts):
     """Gets the median number of words per sample given corpus.
     # Arguments
         sample_texts: list, sample texts.
     # Returns
-        int, median number of words per sample.
+        float, median number of words per sample.
     """
     # num_words = []
     # for text in sample_texts:
@@ -178,18 +188,15 @@ def processText(text, case=True, punct=True, expand=False, swords=False, lemmati
     # Returns
         List of processed text
     """
-    # Attempt to strip out any non-ascii characters from the text.  
+    #~ Attempt to strip out any non-ascii characters from the text.  
     text = re.sub(r"[^\x00-\x7F]+", ' ', text)
-
+    #~ Attempt to remove any newline or tab characters
     text = text.replace('\n', ' ')
     text = text.replace('\t', ' ')
-    
-    text = text.replace('"', '')
-    text = text.replace("'", '')
-    # Replace any opening character that is not a number or letter with a space.
+
+    #~ Replace any opening character that is not a number or letter with a space.
     text = re.sub(r"^[^A-Za-z0-9]", ' ', text)  
-        #text = re.sub(r"([.!?,'/()])", r" \1 ", text)
-        # Pad punctuation with spaces on both sides
+    #~ Pad punctuation with spaces on both sides
     text = re.sub(r"([\.\",\(\)!\?;:/])", " \\1 ", text)
         
     if case:
@@ -205,4 +212,7 @@ def processText(text, case=True, punct=True, expand=False, swords=False, lemmati
     if lemmatize:
         lemmatizer = WordNetLemmatizer()
         text = ' '.join([lemmatizer.lemmatize(word) for word in text.split() ])
+    #~ If any quotes remain, remove them.
+    text = text.replace('"', '')
+    text = text.replace("'", '')
     return text

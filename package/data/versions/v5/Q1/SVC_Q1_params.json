@@ -1,0 +1,14 @@
+{
+    "clf__C": 10,
+    "clf__class_weight": null,
+    "clf__kernel": "linear",
+    "tfidf__max_df": 1.0,
+    "tfidf__min_df": 4,
+    "tfidf__ngram_range": [
+      1,
+      1
+    ],
+    "tfidf__stop_words": null,
+    "tfidf__strip_accents": "ascii",
+    "tfidf__use_idf": false
+  }

@@ -1,8 +1,8 @@
-'''CAT Score is a machine-learning based scoring system developed for the 
+"""CAT Score is a machine-learning based scoring system developed for the 
 Critical-thinking Assessment Test
 
 @author pjtinker
-'''
+"""
 
 import argparse
 import pandas as pd
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     import sys
     # Qt Application
     app = QApplication(sys.argv)
-    app.setStyle('Fusion')
+    # app.setStyle('Fusion')
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())

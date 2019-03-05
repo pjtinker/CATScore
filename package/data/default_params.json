@@ -1,0 +1,46 @@
+{
+    "sklearn": {                    
+        "SVC" : {
+            "model_name": "SVC",
+            "model_params": {
+
+                "clf__verbose": false,
+                "clf__shrinking": true,
+                "clf__coef0": 0.0,
+                "clf__degree": 3,
+                "clf__random_state": null,
+                "clf__class_weight": null,
+                "clf__tol": 0.001,
+                "clf__kernel": "linear",
+                "clf__gamma": "auto",
+                "clf__cache_size": 200,
+                "clf__max_iter": -1,
+                "clf__probability": false,
+                "clf__C": 1.0
+            },
+            "tfidf_params": {
+                "tfidf__strip_accents": null,
+                "tfidf__ngram_range": [1, 1],
+                "tfidf__max_df": 1.0,
+                "tfidf__max_features": null,
+                "tfidf__input": "content",
+                "tfidf__min_df": 1,
+                "tfidf__vocabulary": null,
+                "tfidf__token_pattern": "(?u)\\b\\w\\w+\\b",
+                "tfidf__encoding": "utf-8",
+                "tfidf__preprocessor": null,
+                "tfidf__lowercase": true,
+                "tfidf__analyzer": "word",
+                "tfidf__smooth_idf": true,
+                "tfidf__decode_error": "strict",
+                "tfidf__stop_words": null,
+                "tfidf__sublinear_tf": false,
+                "tfidf__use_idf": true,
+                "tfidf__tokenizer": null,
+                "tfidf__norm": "l2",
+                "tfidf__binary": false
+            }
+        }
+    }
+}
+
