@@ -1,0 +1,5 @@
+{
+    "model_base" : "sklearn",
+    "model_module" : "sklearn.feature_extraction.text",
+    "model_class" : "TfidfVectorizer"
+}

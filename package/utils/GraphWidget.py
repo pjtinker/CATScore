@@ -33,11 +33,19 @@ class GraphWidget(FigureCanvas):
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
-    def compute_initial_figure(self):
-        self.axes.plot([0, 1, 2, 3], [1, 2, 0, 4], 'r')
 
     def chartSingleClassFrequency(self, data):
+        """Display a bar chart of frequencies per label
+            # Arguments
+                data: list, List of integer values corresponding to the actual
+                question score.
+        """
         def getNumClasses(labels):
+            """Helper function to return the number of available labels
+                # Throws
+                    ValueError: if less than 2 classes or there are no samples with 
+                    a given class.
+            """
             num_classes = max(labels) + 1
             missing_classes = [i for i in range(num_classes) if i not in labels]
             if len(missing_classes):
@@ -62,7 +70,6 @@ class GraphWidget(FigureCanvas):
         self.axes.set_xlabel('Class')
         self.axes.set_ylabel('Number of Samples')
         self.axes.set_xticks(idx)
-        # self.axes.plot(data, 'r')
         self.draw()
 
 

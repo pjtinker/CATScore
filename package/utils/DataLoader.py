@@ -74,7 +74,15 @@ class DataLoader(QWidget):
 
         self.load_data_btn = QPushButton('Load Data', self)
         self.load_data_btn.clicked.connect(lambda: self.getSelectedData())
+        self.select_all_btn = QPushButton('Select All', self)
+        self.select_all_btn.clicked.connect(lambda: self.available_column_model.setCheckboxes(True))
+        self.deselect_all_btn = QPushButton('Remove All', self)
+        self.deselect_all_btn.clicked.connect(lambda: self.available_column_model.setCheckboxes(False))
 
+        self.selection_button_layout = QHBoxLayout()
+        self.selection_button_layout.addWidget(self.select_all_btn)
+        self.selection_button_layout.addWidget(self.deselect_all_btn)
+        self.left_column.addLayout(self.selection_button_layout)
         self.left_column.addWidget(self.load_data_btn)
         self.left_column.addStretch()
         self.right_column.addLayout(self.full_text_hbox)

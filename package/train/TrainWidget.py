@@ -14,23 +14,23 @@ import pandas as pd
 from addict import Dict
 
 from package.utils.DataLoader import DataLoader
-from package.train.models.ModelDialog import ModelDialog
+from package.train.ModelWidget import ModelWidget
 
 class TrainWidget(QTabWidget):
     def __init__(self, parent=None):
         super(TrainWidget, self).__init__(parent)
         self.parent = parent
         self.data_loader = DataLoader(self)
-        self.model_selector = QHBoxLayout()
+        self.model_widget = ModelWidget(self)
         self.addTab(self.data_loader, 'Load Data')      
-        self.addTab(QWidget(), 'Model Selection')
+        self.addTab(self.model_widget, 'Model Selection')
         self.setTabEnabled(1, False)
         self.data_loader.data_load.connect(self.loadData)
 
     @Slot(pd.DataFrame)
     def loadData(self, data):
         #FIXME: Copy data or keep reference?
-        self.full_training_set = data.copy()
+        self.full_training_set = data
         self.setTabEnabled(1, True)
         self.parent.statusBar().showMessage('Training data loaded.')
 

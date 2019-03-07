@@ -1,0 +1,8 @@
+{                  
+    "model_base": "sklearn",
+    "model_module": "sklearn.svm",
+    "model_class" : "SVC",
+    "static_params" : {
+        "kernel" : "linear"
+    }
+}

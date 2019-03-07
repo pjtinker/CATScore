@@ -50,9 +50,16 @@ class AttributeTableModel(DataframeTableModel):
         it = iter(data)
         data_tuples = list(zip(it, it))
         self._df = pd.DataFrame(data_tuples, columns=['Question', 'Label'])
-        self.checklist = [False for _ in range(self.rowCount() * 2)]
+        self.checklist = [False for _ in range(self.rowCount())]
         print(self._df.head())
         self.layoutChanged.emit()
+
+    def setCheckboxes(self, truth=True):
+        """Select/deselect all questions
+        """
+        self.checklist = [truth for _ in range(self.rowCount())]
+        self.layoutChanged.emit()
+
 
     def setData(self, index, value, role):
         if not index.isValid():
