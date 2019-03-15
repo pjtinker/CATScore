@@ -12,14 +12,14 @@ import pkg_resources
 import pandas as pd
 from addict import Dict
 
-from package.train.models.ModelDialog import ModelDialog
+from package.train.models.SkModelDialog import SkModelDialog
 from package.utils.catutils import exceptionWarning
 
 BASEMODEL_DIR = "./package/data/basemodels"
 BASETFIDF_DIR = "./package/data/featureextractors/tfidf.json"
-class ModelWidget(QTabWidget):
+class SelectModelWidget(QTabWidget):
     def __init__(self, parent=None):
-        super(ModelWidget, self).__init__(parent)
+        super(SelectModelWidget, self).__init__(parent)
         self.parent = parent
         self.model_dialogs = []
         self.model_dialog_btns = []
@@ -37,15 +37,18 @@ class ModelWidget(QTabWidget):
         except IOError as ioe:
             exceptionWarning('Error occurred while opening base TFIDF vectorizer.', repr(ioe))
         try:
+            row = 0
             for filename in os.listdir(BASEMODEL_DIR):
                 with open(os.path.join(BASEMODEL_DIR, filename), 'r') as f:
+                    print("basemodel file being loaded", filename)
                     model_data = json.load(f)
-                    model_dialog = ModelDialog(self, model_data, tfidf_data)
+                    model_dialog = SkModelDialog(self, model_data, tfidf_data)
                     btn = QPushButton(model_data['model_class'])
                     btn.clicked.connect(lambda: self.openDialog(model_dialog))
-                    self.model_select_grid.addWidget(btn, 0, 0)
+                    self.model_select_grid.addWidget(btn, row, 0)
                     self.model_dialogs.append(model_dialog)
                     self.model_dialog_btns.append(btn)
+                    row += 1
         except OSError as ose:
             exceptionWarning('Error opening base model config files!', ose)
         except Exception as e:

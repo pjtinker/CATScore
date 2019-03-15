@@ -43,7 +43,7 @@ if __name__ == "__main__":
     import sys
     # Qt Application
     app = QApplication(sys.argv)
-    # app.setStyle('Fusion')
+    app.setStyle('Fusion')
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())

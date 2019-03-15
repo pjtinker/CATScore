@@ -1,0 +1,5 @@
+{                  
+    "model_base": "xgboost",
+    "model_module": "xgboost.sklearn",
+    "model_class" : "XGBClassifier"
+}

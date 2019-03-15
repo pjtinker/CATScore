@@ -14,14 +14,14 @@ import pandas as pd
 from addict import Dict
 
 from package.utils.DataLoader import DataLoader
-from package.train.ModelWidget import ModelWidget
+from package.train.SelectModelWidget import SelectModelWidget
 
 class TrainWidget(QTabWidget):
     def __init__(self, parent=None):
         super(TrainWidget, self).__init__(parent)
         self.parent = parent
         self.data_loader = DataLoader(self)
-        self.model_widget = ModelWidget(self)
+        self.model_widget = SelectModelWidget(self)
         self.addTab(self.data_loader, 'Load Data')      
         self.addTab(self.model_widget, 'Model Selection')
         self.setTabEnabled(1, False)

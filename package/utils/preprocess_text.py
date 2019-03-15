@@ -7,12 +7,16 @@ Created on Mon Oct  1 17:15:01 2018
 import os
 import random
 import re
+import string 
 
 import numpy as np 
 
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+
+from textblob import TextBlob
+
 
 cList = {
   "ain't": "am not",
@@ -39,6 +43,7 @@ cList = {
   "how'd'y": "how do you",
   "how'll": "how will",
   "how's": "how is",
+  "how've": "how have",
   "I'd": "I would",
   "I'd've": "I would have",
   "I'll": "I will",
@@ -136,10 +141,12 @@ cList = {
 }
 
 c_re = re.compile('(%s)' % '|'.join(cList.keys()))
+stop_words = set(stopwords.words('english'))
+lemmatizer = WordNetLemmatizer()
 
 # stop_words = set(stopwords.words('english'))
 
-def expandContractions(text, c_re=c_re):
+def expand_cont(text, c_re=c_re):
     """Expands common contractions into individual words.
 
     # Arguments
@@ -158,61 +165,77 @@ def get_avg_words_per_sample(sample_texts):
     """
     total_words = 0
     for text in sample_texts:
-        total_words += len(text)
+        total_words += len(text.split())
 
     return float(total_words / len(sample_texts))
 
 def get_num_words_per_sample(sample_texts):
-    """Gets the median number of words per sample given corpus.
+    """Gets the total number of words per sample given corpus.
     # Arguments
         sample_texts: list, sample texts.
     # Returns
-        float, median number of words per sample.
+        list, total number of words per sample.
     """
     # num_words = []
     # for text in sample_texts:
     #     num_words.append(len(text.split()))
     return [len(s.split()) for s in sample_texts]
 
-def processText(text, case=True, punct=True, expand=False, swords=False, lemmatize=False):
+def remove_swords(text):
+    return ' '.join([word for word in text.split() if word not in stop_words])
+
+def lemma(text):
+    return ' '.join([lemmatizer.lemmatize(word) for word in text.split() ])
+
+def clean_text(x):
+    # pattern = r'[^a-zA-z0-9\s]'
+    text = re.sub(r'[^\w\s]', ' ', x)
+    return text
+
+def processText(text, lower_case=True, remove_punctuation=True, expand_contractions=True, remove_stopwords=False, lemmatize=False):
     """Removes unwanted/unnecessary characters from textual input.
     Removes all single and double quotes, removes all non-ascii characters,
     pad punctuation on each side if it remains.
     # Arguments
-        text: list, text data.
-        case: boolean; if true,  convert all words to lower
+        text: string, text data.
+        lower_case: boolean; if true, convert all words to lower
                     case, strip leading and trailing whitespace, pad punctuation on both 
 					sides.
-        swords: boolean; remove stopwords if true
+        remove_stopwords: boolean; remove stopwords if true
 		lemmatize: boolean; if true, lemmatize samples using nltk's WordNetLemmatizer
     # Returns
-        List of processed text
+        String, processed text
     """
+
+    # text = text.translate(string.printable)
     #~ Attempt to strip out any non-ascii characters from the text.  
     text = re.sub(r"[^\x00-\x7F]+", ' ', text)
     #~ Attempt to remove any newline or tab characters
     text = text.replace('\n', ' ')
     text = text.replace('\t', ' ')
-
+    #~ Remove more than one space between words.
+    text = re.sub(' +', ' ', text)
     #~ Replace any opening character that is not a number or letter with a space.
     text = re.sub(r"^[^A-Za-z0-9]", ' ', text)  
-    #~ Pad punctuation with spaces on both sides
-    text = re.sub(r"([\.\",\(\)!\?;:/])", " \\1 ", text)
-        
-    if case:
+    
+    if lower_case:
         text = text.strip().lower()
-        
-    if expand:
-        text = [expandContractions(x) for x in text]
-        
-    if swords:
-        stop_words = set(stopwords.words('english'))
-        text =  ' '.join([word for word in text.split() if word not in stop_words])
+
+    if expand_contractions:
+        text = expand_cont(text)
+
+    if remove_stopwords:
+        text =  remove_swords(text)
 
     if lemmatize:
-        lemmatizer = WordNetLemmatizer()
-        text = ' '.join([lemmatizer.lemmatize(word) for word in text.split() ])
+        text = lemma(text)
+
+    if remove_punctuation:
+        text = clean_text(text)
+    else:
+        text = re.sub(r"([\.\",\(\)!\?;:/])", " \\1 ", text)
     #~ If any quotes remain, remove them.
-    text = text.replace('"', '')
-    text = text.replace("'", '')
+    # text = text.replace('"', '')
+    # text = text.replace("'", '')
     return text
+

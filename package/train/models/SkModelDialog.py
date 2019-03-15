@@ -11,13 +11,13 @@ import importlib
 import traceback
 import inspect
 
-class ModelDialog(QDialog):
-    """ModelDialog is the basic structure behind model dialogs in CATScore.
+class SkModelDialog(QDialog):
+    """SkModelDialog is the basic structure behind model dialogs in CATScore.
     # Arguments
         model_params: String, path to default parameters .json file.
     """
     def __init__(self, parent=None, model_params={}, tfidf_params={}):
-        super(ModelDialog, self).__init__(parent)
+        super(SkModelDialog, self).__init__(parent)
         self.params = model_params
         if tfidf_params:
             self.tfidf_params = tfidf_params
@@ -255,6 +255,6 @@ if __name__ == "__main__":
     }
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
-    window = ModelDialog(model_params=SVC, tfidf_params=tfidf)
+    window = SkModelDialog(model_params=SVC, tfidf_params=tfidf)
     window.show()
     sys.exit(app.exec_())
