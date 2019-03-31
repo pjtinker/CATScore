@@ -6,20 +6,21 @@ Critical-thinking Assessment Test
 
 import argparse
 import pandas as pd
+import logging
+import logging.handlers
 
-from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            Qt, QTimeZone, Slot)
-from PySide2.QtGui import QColor, QPainter
-from PySide2.QtWidgets import (QAction, QApplication, QHBoxLayout, QVBoxLayout, QHeaderView,
-                               QMainWindow, QSizePolicy, QTableView, QWidget, QPushButton, QTabWidget)
-from PySide2.QtCharts import QtCharts
+# logging.basicConfig(filename='cat.log', format=logFormatter, level=logging.DEBUG)
+from PySide2.QtWidgets import (QApplication, QHBoxLayout, QVBoxLayout, 
+                                QMainWindow, QSizePolicy, QWidget, 
+                                QPushButton, QTabWidget)
 
 from package.train.cattrain import CatTrain
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
         self.current_file = ''
         self.title = 'CAT Score'
         self.left = 0
@@ -41,6 +42,14 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     import sys
+    import logging
+    import logging.handlers 
+    """Setup logger for logging"""
+    handler = logging.handlers.TimedRotatingFileHandler('cat.log', when='d', interval=1)
+    logFormatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    handler.setFormatter(logFormatter)
+    logging.basicConfig( handlers=[handler], format=logFormatter, level=logging.DEBUG)
+
     # Qt Application
     app = QApplication(sys.argv)
     app.setStyle('Fusion')

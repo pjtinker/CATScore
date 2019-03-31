@@ -10,6 +10,7 @@ import json
 import importlib 
 import traceback
 import inspect
+import logging
 
 class SkModelDialog(QDialog):
     """SkModelDialog is the basic structure behind model dialogs in CATScore.
@@ -18,18 +19,19 @@ class SkModelDialog(QDialog):
     """
     def __init__(self, parent=None, model_params={}, tfidf_params={}):
         super(SkModelDialog, self).__init__(parent)
-        self.params = model_params
+        self.logger = logging.getLogger(__name__)
+        self.model_params = model_params
         if tfidf_params:
             self.tfidf_params = tfidf_params
             self.tfidf = self.getClass(self.tfidf_params)
-        self.model = self.getClass(self.params)
+        self.model = self.getClass(self.model_params)
 
         self.updated_model_params = {}
         self.updated_tfidf_params = {}
-        # input_widgets is a list of all dynamically created input widgets for the parameters.
+        # input_widgets is a list of all dynamically created input widgets for the various model params.
         self.input_widgets = {}
 
-        self.setWindowTitle(self.params['model_class'])
+        self.setWindowTitle(self.model_params['model_class'])
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         self.buttonBox.setObjectName("model_buttonbox")
         self.buttonBox.accepted.connect(self.accept)
@@ -55,10 +57,21 @@ class SkModelDialog(QDialog):
 
         self.main_layout.addWidget(self.buttonBox)
         self.setLayout(self.main_layout)
+        self.move(20, 10)
         
+    def getModelName(self):
+        return self.model_params['model_class']
+
     def getClass(self, params):
         """Return instantiated class using importlib
+            Loads any static parameters defined by the system.
+            # Arguments
+                params: dict, dictionary of parameters necessary to instantiate
+                        the class.
+            # Returns
+                model: instantiated class
         """
+        model = None
         module = importlib.import_module(params['model_module'])
         module_class = getattr(module, params['model_class'])
         if "static_params" in params:
@@ -73,20 +86,30 @@ class SkModelDialog(QDialog):
         """
         if (self.exec_() == QDialog.Accepted):
             print("Updated Params as they hit saveParams:")
-            print(json.dumps(self.updated_params, indent=2))
+            print(json.dumps(self.updated_model_params, indent=2))
+            if self.updated_tfidf_params:
+                print("Updated TFIDF params:")
+                print(json.dumps(self.updated_tfidf_params, indent=2))
 
         else:
             print("Denied!")
 
     def setupUI(self):
+        """Setup UI for the available hyperparams for each model.  
+        """
         model_params = self.model.get_params()
+        if "restricted_params" in self.model_params:
+            print("inside restricted params...")
+            for k in self.model_params['restricted_params']:
+                print("Key from model_params: {}".format(k))
+                model_params.pop(k, None)
         for k, v in model_params.items():
-            print(k, v)
+
             try:
                 # label_string = k
                 label_string = k 
                 label = QLabel(label_string)
-                if (v is True or v is False):
+                if isinstance(v, bool):
                     input_field = QComboBox(objectName=k)
                     input_field.addItem('True', True)
                     input_field.addItem('False', False)
@@ -140,14 +163,19 @@ class SkModelDialog(QDialog):
                 self.model_param_form.addRow(label, input_field)
                 self.input_widgets[k] = input_field
             except Exception as e:
+                self.logger.error("Error generating Sk Dialog", exc_info=True)
                 print("Exception {} occured with key {} and value {}".format(e, k, v))
                 tb = traceback.format_exc()
                 print(tb)
-        for k, v in self.tfidf.get_params().items():
+        tfidf_params = self.tfidf.get_params()
+        if "restricted_params" in self.tfidf_params:
+            for k in self.tfidf_params['restricted_params']:
+                tfidf_params.pop(k, None)
+        for k, v in tfidf_params.items():
             try:
                 label_string = k
                 label = QLabel(label_string)
-                if (v is True or v is False):
+                if isinstance(v, bool):
                     input_field = QComboBox(objectName=k)
                     input_field.addItem('True', True)
                     input_field.addItem('False', False)
@@ -224,7 +252,10 @@ class SkModelDialog(QDialog):
                 self.tfidf_param_form.addRow(label, input_field)
                 self.input_widgets[k] = input_field
             except Exception as e:
+                self.logger.error("Error generating TFIDF Dialog", exc_info=True)
                 print("Exception {} occured with key {} and value {}".format(e, k, v))
+                tb = traceback.format_exc()
+                print(tb)
 
     def _splitKey(self, key):
         return key.split('__')[1]

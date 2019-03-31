@@ -34,18 +34,5 @@ class TrainWidget(QTabWidget):
         self.setTabEnabled(1, True)
         self.parent.statusBar().showMessage('Training data loaded.')
 
-    def setupImportTab(self):
-        self.main_layout = QHBoxLayout()
-        self.left_column = QVBoxLayout()
-        self.right_column = QVBoxLayout()
-
-        self.left_column.addWidget()
-        self.left_column.addStretch()
-        self.main_layout.addLayout(self.left_column)
-        self.main_layout.addStretch()
-        
-        self.main_layout.addLayout(self.right_column)
-        self.setLayout(self.main_layout)
-
     def setupTabs(self):
         pass

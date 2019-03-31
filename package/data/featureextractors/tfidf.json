@@ -1,5 +1,10 @@
 {
     "model_base" : "sklearn",
     "model_module" : "sklearn.feature_extraction.text",
-    "model_class" : "TfidfVectorizer"
+    "model_class" : "TfidfVectorizer",
+    "restricted_params" : [
+        "preprocessor", "binary", "dtype", 
+        "analyzer", "tokenizer", "stop_words",
+        "lowercase", "input", "vocabulary"
+    ]
 }

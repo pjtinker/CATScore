@@ -24,7 +24,6 @@ class SpellCheck():
         self.misspelt_dict = {}
         self.load_embedding_vocab()
         self.generate_misspell_dict()
-        # self.misspell_re = re.compile('(%s)' % '|'.join(mispell_dict.keys()))
 
     def words(text): return re.findall(r'\w+', text.lower())
 
@@ -79,9 +78,9 @@ class SpellCheck():
         return (e2 for e1 in self.edits1(word) for e2 in self.edits1(e1))
 
     def build_vocab(self, texts):
-        # sentences = texts.apply(lambda x: x.split()).values
+        sentences = texts.apply(lambda x: str(x).split()).values
         print("Building vocabulary from data...")
-        for sentence in tqdm(texts):
+        for sentence in tqdm(sentences):
             for word in sentence:
                 try:
                     self.vocab[word] += 1
@@ -96,7 +95,7 @@ class SpellCheck():
         print("Generating detected misspellings/OOV...")
         for word, corrected_word in tqdm(zip(top_k_words, corrected_words)):
             if word!=corrected_word:
-                print(word,":",corrected_word)
+                # print(word,":",corrected_word)
                 self.misspelt_dict[word] = corrected_word
         print("Found potential corrections for {} words".format(len(self.misspelt_dict)))
         try:
@@ -110,7 +109,7 @@ class SpellCheck():
         # self.misspell_re = re.compile('(%s)' % '|'.join(self.misspelt_dict.keys()))
 
 
-    def correct_spelling(text):
+    def correct_spelling(self, text):
         """Attempts to correct misspellings via comparison to GLoVe embeddings and 
         Norvig's spell checker.
         # Arguments
@@ -119,7 +118,7 @@ class SpellCheck():
         def replace(match):
             return self.misspelt_dict[match.group(0)]
 
-        return this.misspell_re.sub(replace, text)
+        return self.misspell_re.sub(replace, str(text))
         
     def get_vocab(self):
         return self.vocab

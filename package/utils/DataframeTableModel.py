@@ -5,6 +5,7 @@ from PySide2.QtWidgets import (QAction, QCheckBox, QApplication, QHBoxLayout, QH
                                QMainWindow, QSizePolicy, QTableView, QWidget, QTabWidget)
 from PySide2.QtCharts import QtCharts
 
+import logging
 
 import pandas as pd
 import numpy as np
@@ -24,6 +25,7 @@ class DataframeTableModel(QAbstractTableModel):
     
     def __init__(self, parent=None):
         QAbstractTableModel.__init__(self)    
+        self.logger = logging.getLogger(__name__)
         self.color = None
         self._df = pd.DataFrame()
         self.header = []
@@ -62,13 +64,14 @@ class DataframeTableModel(QAbstractTableModel):
         if orientation == Qt.Horizontal:
             try:
                 return self._df.columns.tolist()[section]
-            except(IndexError, 
-            ):
+            except(IndexError, ):
+                self.logger.error("Index error in DataframeTableModel", exc_info=True)
                 return None
         elif orientation == Qt.Vertical:
             try:
                 return self._df.index.tolist()[section]
             except(IndexError, ):
+                self.logger.error("Index error in DataframeTableModel", exc_info=True)
                 return None
 
     def data(self, index, role=Qt.DisplayRole):

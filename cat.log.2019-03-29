@@ -1,0 +1,66 @@
+2019-03-29 09:41:36,524 - DEBUG - update_title_pos
+2019-03-29 09:41:36,545 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\virtualenvs\\flair\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-03-29 09:41:39,692 - DEBUG - update_title_pos
+2019-03-29 09:41:39,740 - DEBUG - update_title_pos
+2019-03-29 09:41:40,986 - DEBUG - update_title_pos
+2019-03-29 09:41:41,887 - DEBUG - update_title_pos
+2019-03-29 09:41:42,292 - DEBUG - update_title_pos
+2019-03-29 09:41:44,055 - DEBUG - update_title_pos
+2019-03-29 09:41:45,573 - DEBUG - update_title_pos
+2019-03-29 09:41:50,208 - DEBUG - update_title_pos
+2019-03-29 09:41:50,247 - DEBUG - update_title_pos
+2019-03-29 09:41:50,284 - DEBUG - update_title_pos
+2019-03-29 09:41:50,322 - DEBUG - update_title_pos
+2019-03-29 09:41:50,362 - DEBUG - update_title_pos
+2019-03-29 09:41:50,398 - DEBUG - update_title_pos
+2019-03-29 09:41:50,438 - DEBUG - update_title_pos
+2019-03-29 09:41:50,475 - DEBUG - update_title_pos
+2019-03-29 09:41:50,514 - DEBUG - update_title_pos
+2019-03-29 09:41:50,560 - DEBUG - update_title_pos
+2019-03-29 09:41:52,017 - DEBUG - update_title_pos
+2019-03-29 09:41:53,056 - DEBUG - update_title_pos
+2019-03-29 09:41:53,636 - DEBUG - update_title_pos
+2019-03-29 09:41:55,498 - DEBUG - update_title_pos
+2019-03-29 09:42:01,730 - DEBUG - update_title_pos
+2019-03-29 09:42:03,877 - DEBUG - update_title_pos
+2019-03-29 09:42:05,939 - DEBUG - update_title_pos
+2019-03-29 09:42:07,674 - DEBUG - update_title_pos
+2019-03-29 09:42:08,999 - DEBUG - update_title_pos
+2019-03-29 09:42:10,132 - DEBUG - update_title_pos
+2019-03-29 09:42:10,715 - DEBUG - update_title_pos
+2019-03-29 09:42:11,939 - DEBUG - update_title_pos
+2019-03-29 09:42:13,492 - DEBUG - update_title_pos
+2019-03-29 09:42:15,605 - DEBUG - update_title_pos
+2019-03-29 09:42:17,935 - DEBUG - update_title_pos
+2019-03-29 09:51:38,676 - DEBUG - update_title_pos
+2019-03-29 09:51:38,684 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\virtualenvs\\flair\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-03-29 09:51:41,188 - DEBUG - update_title_pos
+2019-03-29 09:51:41,237 - DEBUG - update_title_pos
+2019-03-29 09:53:55,636 - DEBUG - update_title_pos
+2019-03-29 09:53:55,645 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\virtualenvs\\flair\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-03-29 09:53:58,705 - DEBUG - update_title_pos
+2019-03-29 09:53:58,753 - DEBUG - update_title_pos
+2019-03-29 09:54:33,929 - DEBUG - update_title_pos
+2019-03-29 09:54:33,939 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\virtualenvs\\flair\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-03-29 09:54:36,308 - DEBUG - update_title_pos
+2019-03-29 09:54:36,354 - DEBUG - update_title_pos
+2019-03-29 09:55:02,572 - DEBUG - update_title_pos
+2019-03-29 09:55:02,580 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\virtualenvs\\flair\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-03-29 09:55:06,642 - DEBUG - update_title_pos
+2019-03-29 09:55:06,688 - DEBUG - update_title_pos
+2019-03-29 09:56:36,883 - DEBUG - update_title_pos
+2019-03-29 09:56:36,891 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\virtualenvs\\flair\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-03-29 09:56:39,396 - DEBUG - update_title_pos
+2019-03-29 09:56:39,447 - DEBUG - update_title_pos
+2019-03-29 09:57:23,756 - DEBUG - update_title_pos
+2019-03-29 09:57:23,765 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\virtualenvs\\flair\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-03-29 09:57:44,958 - DEBUG - update_title_pos
+2019-03-29 09:57:45,007 - DEBUG - update_title_pos
+2019-03-29 09:59:23,383 - DEBUG - update_title_pos
+2019-03-29 09:59:23,392 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\virtualenvs\\flair\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-03-29 09:59:25,914 - DEBUG - update_title_pos
+2019-03-29 09:59:25,961 - DEBUG - update_title_pos
+2019-03-29 10:01:22,976 - DEBUG - update_title_pos
+2019-03-29 10:01:22,984 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\virtualenvs\\flair\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-03-29 10:01:25,557 - DEBUG - update_title_pos
+2019-03-29 10:01:25,604 - DEBUG - update_title_pos

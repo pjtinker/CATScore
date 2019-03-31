@@ -4,5 +4,8 @@
     "model_class" : "SVC",
     "static_params" : {
         "kernel" : "linear"
-    }
+    },
+    "restricted_params" : [
+        "decision_function_shape", "kernel", "degree"
+    ]
 }

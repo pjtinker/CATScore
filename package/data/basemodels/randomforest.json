@@ -1,0 +1,5 @@
+{                  
+    "model_base": "sklearn",
+    "model_module": "sklearn.ensemble",
+    "model_class" : "RandomForestClassifier"
+}

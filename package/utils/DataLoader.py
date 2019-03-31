@@ -4,6 +4,7 @@ from PySide2.QtGui import QMovie
 from PySide2.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, QApplication, QLabel, QFileDialog, QHBoxLayout, QVBoxLayout,
                                QGridLayout, QHeaderView, QScrollArea, QSizePolicy, QTableView, QWidget, QPushButton)
 import os
+import logging
 import pandas as pd
 from chardet.universaldetector import UniversalDetector
 
@@ -23,6 +24,8 @@ class DataLoader(QWidget):
     data_load = Signal(pd.DataFrame)
     def __init__(self, parent=None):
         super(DataLoader, self).__init__(parent)
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
         self.parent = parent
         self.column_checkboxes = []
         self.selected_column_targets = []
@@ -129,6 +132,7 @@ class DataLoader(QWidget):
             self.full_data = pd.read_csv(f_path, encoding='utf-8', index_col=0)
 
         except UnicodeDecodeError as ude:
+            self.logger.warning("UnicodeDecode error opening file", exc_info=True)
             print("UnicodeDecodeError caught.  File is not UTF-8 encoded. \
                    Attempting to determine file encoding...")
             detector = UniversalDetector()
@@ -143,11 +147,14 @@ class DataLoader(QWidget):
                 self.full_data = pd.read_csv(
                     f_path, encoding=detector.result['encoding'], index_col=0)
             except Exception as e:
+                self.logger.error("Error detecing encoding", exc_info=True)
                 exceptionWarning("Exception has occured.", exception=e)
         except IOError as ioe:
+            self.logger.error("IOError detecting encoding", exc_info=True)
             exceptionWarning(
                 "IO Exception occured while opening file.", exception=ioe)
         except Exception as e:
+            self.logger.error("Error detecting encoding", exc_info=True)
             exceptionWarning("Error occured opening file.", exception=e)
 
         try:
@@ -165,6 +172,7 @@ class DataLoader(QWidget):
             exceptionWarning(
                 exceptionTitle='Empty Data Error.\n', exception=ede)
         except Exception as e:
+            self.logger.error("Error loading dataframe", exc_info=True)
             exceptionWarning("Unexpected error occured!", exception=e)
 
     def displaySelectedRow(self, selection=None):
@@ -175,6 +183,7 @@ class DataLoader(QWidget):
         if selection:
             idx = selection.indexes()[0]
         else:
+            # If no question selected, select the first in the list
             self.available_column_view.selectRow(0)
             self.available_column_view.setFocus()
             idx = QModelIndex(self.available_column_model.index(0, 0))

@@ -1,0 +1,5 @@
+{                  
+    "model_base": "sklearn",
+    "model_module": "sklearn.naive_bayes",
+    "model_class" : "MultinomialNB"
+}

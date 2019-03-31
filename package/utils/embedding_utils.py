@@ -7,6 +7,8 @@ from collections import Counter
 from tqdm import tqdm
 tqdm.pandas()
 
+# from preprocess_text import processText
+# from spellcheck import SpellCheck
 
 EMBEDDING_PATH = 'D:/Research/TextClassification/glove6b/glove.6B.200d.txt'
 FT_PATH = 'D:/Research/TextClassification/fasttextv2/crawl-300d-2M.vec'
@@ -76,7 +78,8 @@ def check_coverage(vocab,embeddings_index):
 
 if __name__ == '__main__':
     data = pd.read_csv('D:/Utilities/testbed/flair/q6/train.csv', sep='\t', quoting=1, header=None)
-    sentences = data[1].progress_apply(lambda x: str(x).split()).values
+    sentences = data[1].progress_apply(lambda x: processText(str(x)))
+    sentences = sentences.progress_apply(lambda x: str(x).split()).values
     vocab = build_vocab(sentences)
     print({k: vocab[k] for k in list(vocab)[:5]})
 
@@ -87,3 +90,16 @@ if __name__ == '__main__':
     print("Top 20 OOV: {}".format(oov[:20]))
 
     add_lower(vocab, embedding_index)
+
+    oov = check_coverage(vocab, embedding_index)
+    print("After adding lower case...")
+    print("Length of oov: {}".format(len(oov)))
+    print("Top 20 OOV: {}".format(oov[:20]))
+
+    sc = SpellCheck(sentences, 90000)
+    sentences = [sc.correct_spelling(x) for x in sentences]
+    vocab = build_vocab(sentences)
+    oov = check_coverage(vocab, embedding_index)
+    print("After correcting spelling...")
+    print("Length of oov: {}".format(len(oov)))
+    print("Top 20 OOV: {}".format(oov[:20]))

@@ -15,8 +15,6 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-from textblob import TextBlob
-
 
 cList = {
   "ain't": "am not",
