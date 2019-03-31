@@ -1,5 +1,5 @@
 from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            Qt, QTimeZone, QByteArray, Slot, SIGNAL)
+                            Qt, QTimeZone, QByteArray, Slot, Signal, SIGNAL, QObject)
 from PySide2.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, 
                                 QTabWidget, QComboBox,
                                 QApplication, QLabel, QFileDialog, QHBoxLayout, 
@@ -23,12 +23,18 @@ from package.utils.catutils import exceptionWarning
 BASE_SK_MODEL_DIR = "./package/data/basemodels"
 BASE_TF_MODEL_DIR = "./package/data/tensorflowmodels"
 BASE_TFIDF_DIR = "./package/data/featureextractors/tfidf.json"
+
+class Communicate(QObject):
+    version_change = Signal(str)
+
 class SelectModelWidget(QTabWidget):
+
     def __init__(self, parent=None):
         super(SelectModelWidget, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
         self.parent = parent
         self.selected_version = 'default'
+        self.comms = Communicate()
 
         self.sklearn_model_dialogs = []
         self.sklearn_model_dialog_btns = []
@@ -70,7 +76,7 @@ class SelectModelWidget(QTabWidget):
         for version in available_versions:
             self.version_selection.addItem(version, os.path.join('.\\package\\data\\versions', version))
         self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection: 
-                                                            print(y.currentData())
+                                                            self._signal_update(y.currentData())
                                                             )
         self.version_hbox.addWidget(self.version_selection)
         try:
@@ -86,6 +92,7 @@ class SelectModelWidget(QTabWidget):
                     print("Loading model:", filename)
                     model_data = json.load(f)
                     model_dialog = SkModelDialog(self, model_data, tfidf_data)
+                    self.comms.version_change.connect(model_dialog.update_version)
                     btn = QPushButton(model_data['model_class'])
                     #~ Partial allows the connection of dynamically generated
                     #~ QObjects
@@ -113,6 +120,7 @@ class SelectModelWidget(QTabWidget):
                     print("Loading model:", filename)
                     model_data = json.load(f)
                     model_dialog = TfModelDialog(self, model_data)
+                    self.comms.version_change.connect(model_dialog.update_version)
                     btn = QPushButton(model_data['model_class'])
                     btn.clicked.connect(partial(self.openDialog, model_dialog))
                     chkbox = QCheckBox()
@@ -133,5 +141,13 @@ class SelectModelWidget(QTabWidget):
 
     def openDialog(self, dialog):
         dialog.saveParams()
+
+    def _signal_update(self, directory):
+        print("Emitting {} from {}".format(directory, self.__class__.__name__))
+        # self.version_changed.emit(directory)
+        self.comms.version_change.emit(directory)
+
+
+
 
     

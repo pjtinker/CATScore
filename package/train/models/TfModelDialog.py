@@ -1,7 +1,7 @@
 
 """QDialog for model parameters for sklearn's Support Vector Classifier
 """
-from PySide2 import QtCore
+from PySide2.QtCore import Slot
 from PySide2.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
                                QGroupBox, QWidget, QLineEdit, QGridLayout,
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
@@ -22,7 +22,7 @@ class TfModelDialog(QDialog):
         self.logger = logging.getLogger(__name__)
         self.model_params = params['model_params']
         self.optimizer_params = params['optimizer_params']
-
+        self.model_class = params['model_class']
         self.updated_model_params = {}
         # input_widgets is a list of all dynamically created input widgets for the various model params.
         self.input_widgets = {}
@@ -166,6 +166,11 @@ class TfModelDialog(QDialog):
         class_key = '__' + key + '__'
         if param_type == 'model':
             self.updated_model_params[class_key] = value
+
+    @Slot(str)
+    def update_version(self, directory):
+        print("update_version in {} called with {}".format(self.model_class, directory))
+
 
 if __name__ == "__main__":
     import sys

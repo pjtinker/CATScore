@@ -1,7 +1,7 @@
 
 """QDialog for model parameters for sklearn's Support Vector Classifier
 """
-from PySide2 import QtCore
+from PySide2.QtCore import Signal, Slot
 from PySide2.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
                                QGroupBox, QWidget, QLineEdit, QGridLayout,
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
@@ -11,6 +11,7 @@ import importlib
 import traceback
 import inspect
 import logging
+import os
 
 class SkModelDialog(QDialog):
     """SkModelDialog is the basic structure behind model dialogs in CATScore.
@@ -48,11 +49,19 @@ class SkModelDialog(QDialog):
         self.tfidf_param_form = QFormLayout()
         self.setupUI()
 
+        self.question_combobox = QComboBox()
+        self.question_combobox.currentIndexChanged.connect(
+            lambda state, y=self.question_combobox: self._update_params(
+                y.currentData())
+        )
+        self.form_grid.addWidget(self.question_combobox, 0, 0)
+        self.question_combobox.hide()
         self.model_groupbox.setLayout(self.model_param_form)
         self.tfidf_groupbox.setLayout(self.tfidf_param_form)
 
-        self.form_grid.addWidget(self.model_groupbox, 0, 0)
-        self.form_grid.addWidget(self.tfidf_groupbox, 0, 1)
+        # self.form_grid.addWidget(QComboBox())
+        self.form_grid.addWidget(self.model_groupbox, 1, 0)
+        self.form_grid.addWidget(self.tfidf_groupbox, 1, 1)
         self.main_layout.addLayout(self.form_grid)
 
         self.main_layout.addWidget(self.buttonBox)
@@ -118,7 +127,7 @@ class SkModelDialog(QDialog):
                     else:
                         input_field.setCurrentIndex(1)
                     input_field.currentIndexChanged.connect(
-                        lambda state, x=k, y=input_field: self._updateParam(
+                        lambda state, x=k, y=input_field: self._modify_params(
                             'model',
                             x, 
                             y.currentData())
@@ -129,7 +138,7 @@ class SkModelDialog(QDialog):
                     input_field.setDecimals(len(str(v)) - 2)
                     input_field.setValue(v)
                     input_field.valueChanged.connect(
-                        lambda state, x=k, y=input_field: self._updateParam(
+                        lambda state, x=k, y=input_field: self._modify_params(
                             'model',
                             x, 
                             y.value())
@@ -140,7 +149,7 @@ class SkModelDialog(QDialog):
                     input_field.setRange(0, 10000)
                     input_field.setValue(v)
                     input_field.valueChanged.connect(
-                        lambda state, x=k, y=input_field: self._updateParam(
+                        lambda state, x=k, y=input_field: self._modify_params(
                             'model',
                             x, 
                             y.value())
@@ -153,7 +162,7 @@ class SkModelDialog(QDialog):
                     # string if no response given by user.
                     input_field.textChanged.connect(
                         lambda state, x=k, y=input_field:
-                            self._updateParam(
+                            self._modify_params(
                                 'model',
                                 x, 
                                 (None if y.text() == '' else y.text())
@@ -184,7 +193,7 @@ class SkModelDialog(QDialog):
                     else:
                         input_field.setCurrentIndex(1)
                     input_field.currentIndexChanged.connect(
-                        lambda state, x=k, y=input_field: self._updateParam(
+                        lambda state, x=k, y=input_field: self._modify_params(
                             'tfidf',
                             x, 
                             y.currentData())
@@ -198,7 +207,7 @@ class SkModelDialog(QDialog):
                     input_field.setDecimals(len(str(v)) - 2)
                     input_field.setValue(v)
                     input_field.valueChanged.connect(
-                        lambda state, x=k, y=input_field: self._updateParam(
+                        lambda state, x=k, y=input_field: self._modify_params(
                             'tfidf',
                             x, 
                             y.value())
@@ -211,7 +220,7 @@ class SkModelDialog(QDialog):
                     input_field.setRange(0, 10000)
                     input_field.setValue(v)
                     input_field.valueChanged.connect(
-                        lambda state, x=k, y=input_field: self._updateParam(
+                        lambda state, x=k, y=input_field: self._modify_params(
                             'tfidf',
                             x, 
                             y.value())
@@ -226,7 +235,7 @@ class SkModelDialog(QDialog):
                     input_field.setMaxLength(3)
                     input_field.textChanged.connect(
                         lambda state, x=k, y=input_field:
-                            self._updateParam(
+                            self._modify_params(
                                 'tfidf',
                                 x, 
                                 [] if y.text() == '' else list(map(int, y.text().split(',')))
@@ -243,7 +252,7 @@ class SkModelDialog(QDialog):
                     # string if no response given by user.
                     input_field.textChanged.connect(
                         lambda state, x=k, y=input_field:
-                            self._updateParam(
+                            self._modify_params(
                                 'tfidf',
                                 x, 
                                 (None if y.text() == '' else y.text())
@@ -257,16 +266,57 @@ class SkModelDialog(QDialog):
                 tb = traceback.format_exc()
                 print(tb)
 
-    def _splitKey(self, key):
+    def _split_key(self, key):
         return key.split('__')[1]
 
-    def _updateParam(self, param_type, key, value):
+    def _modify_params(self, param_type, key, value):
         print("updateParams key, value: {}, {}, {}".format(param_type, key, value))
         class_key = '__' + key + '__'
         if param_type == 'model':
             self.updated_model_params[class_key] = value
         else:
             self.updated_tfidf_params[class_key] = value
+
+    @Slot(str)
+    def update_version(self, directory):
+        if directory:
+            question_directories = [os.path.join(directory, o) for o in os.listdir(directory) if os.path.isdir(os.path.join(directory, o))]
+            for d in question_directories:
+                self.question_combobox.addItem(d.split('\\')[-1], d)
+            self.form_grid.addWidget(self.question_combobox, 0, 0)
+            self.question_combobox.show()
+        else:
+            self.question_combobox.clear()
+            self.question_combobox.hide()
+
+    def _update_params(self, path):
+        print("_update_params in {} fired".format(self.getModelName()))
+        filename = self.getModelName() + '.json'
+        try:
+            with open(os.path.join(path, filename), 'r') as f:
+                model_data = json.load(f)
+                model_class = model_data['model_class']
+                for k,v in model_data['model_params'].items():
+                    if k in self.input_widgets:
+                        cla = self.input_widgets[k]
+                        if isinstance(cla, QComboBox):
+                            idx = cla.findData(v)
+                            if idx != -1:
+                                cla.setCurrentIndex(idx)
+                        elif isinstance(cla, QLineEdit):
+                            cla.setText(v)
+                        else:
+                            cla.setValue(v)
+                        
+
+        except FileNotFoundError as fnfe:
+            pass
+        except Exception as e:
+            self.logger.error("Error updating parameters", exc_info=True)
+            print("Exception {}".format(e))
+            tb = traceback.format_exc()
+            print(tb)
+
 
 if __name__ == "__main__":
     import sys

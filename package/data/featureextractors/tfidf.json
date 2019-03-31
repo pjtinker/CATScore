@@ -5,6 +5,6 @@
     "restricted_params" : [
         "preprocessor", "binary", "dtype", 
         "analyzer", "tokenizer", "stop_words",
-        "lowercase", "input", "vocabulary"
+        "lowercase", "input", "vocabulary", "token_pattern"
     ]
 }
