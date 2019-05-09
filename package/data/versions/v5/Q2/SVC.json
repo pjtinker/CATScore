@@ -1,0 +1,21 @@
+{
+  "model_class" : "SVC",
+  "question_number" : "Q2",
+  "version" : "v5",
+  "model_params" : {
+      "C": 1,
+      "class_weight": null,
+      "kernel": "linear"
+    },
+  "tfidf_params" : {
+    "max_df" : 0.5,
+    "min_df" : 2,
+    "ngram_range" : [
+      1,
+      2
+    ],
+    "stop_words": null,
+    "strip_accents": null,
+    "use_idf": true
+  }
+}

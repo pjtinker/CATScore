@@ -3,7 +3,7 @@ from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
 from PySide2.QtGui import QColor, QPainter
 from PySide2.QtWidgets import (QAction, QCheckBox, QApplication, QHBoxLayout, QHeaderView,
                                QMainWindow, QSizePolicy, QTableView, QWidget, QTabWidget)
-from PySide2.QtCharts import QtCharts
+# from PySide2.QtCharts import QtCharts
 
 import logging
 

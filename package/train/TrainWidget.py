@@ -11,7 +11,7 @@ import json
 from collections import OrderedDict
 import pkg_resources
 import pandas as pd
-from addict import Dict
+# from addict import Dict
 
 from package.utils.DataLoader import DataLoader
 from package.train.SelectModelWidget import SelectModelWidget
@@ -30,9 +30,14 @@ class TrainWidget(QTabWidget):
     @Slot(pd.DataFrame)
     def loadData(self, data):
         #FIXME: Copy data or keep reference?
-        self.full_training_set = data
-        self.setTabEnabled(1, True)
-        self.parent.statusBar().showMessage('Training data loaded.')
+        if data.empty:
+            self.setTabEnabled(1, False)
+            self.parent.statusBar().showMessage('Ready for data import.')
+        else:
+            self.full_training_set = data
+            self.setTabEnabled(1, True)
+            self.parent.statusBar().showMessage('Training data loaded.')
+
 
     def setupTabs(self):
         pass

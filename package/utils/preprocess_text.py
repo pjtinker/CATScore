@@ -190,7 +190,7 @@ def clean_text(x):
     text = re.sub(r'[^\w\s]', ' ', x)
     return text
 
-def processText(text, lower_case=True, remove_punctuation=True, expand_contractions=True, remove_stopwords=False, lemmatize=False):
+def processText(text, lower_case=True, remove_punctuation=True, expand_contractions=True, remove_stopwords=False, lemmatize=False, **kwargs):
     """Removes unwanted/unnecessary characters from textual input.
     Removes all single and double quotes, removes all non-ascii characters,
     pad punctuation on each side if it remains.
@@ -211,10 +211,9 @@ def processText(text, lower_case=True, remove_punctuation=True, expand_contracti
     #~ Attempt to remove any newline or tab characters
     text = text.replace('\n', ' ')
     text = text.replace('\t', ' ')
-    #~ Remove more than one space between words.
-    text = re.sub(' +', ' ', text)
-    #~ Replace any opening character that is not a number or letter with a space.
-    text = re.sub(r"^[^A-Za-z0-9]", ' ', text)  
+
+    #~ Remove any opening character that is not a number or letter.
+    text = re.sub(r"^[^A-Za-z0-9]", '', text)  
     
     if lower_case:
         text = text.strip().lower()
@@ -232,8 +231,8 @@ def processText(text, lower_case=True, remove_punctuation=True, expand_contracti
         text = clean_text(text)
     else:
         text = re.sub(r"([\.\",\(\)!\?;:/])", " \\1 ", text)
-    #~ If any quotes remain, remove them.
-    # text = text.replace('"', '')
-    # text = text.replace("'", '')
+    
+    #~ Remove more than one space between words.
+    text = re.sub(' +', ' ', text)
     return text
 

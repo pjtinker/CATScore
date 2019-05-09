@@ -1,5 +1,5 @@
 from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            Qt, Slot)
+                            Qt, Slot, Signal)
 from PySide2.QtWidgets import (QCheckBox, QSizePolicy, QWidget)
 
 from package.utils.DataframeTableModel import DataframeTableModel

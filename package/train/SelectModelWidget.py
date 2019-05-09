@@ -14,7 +14,7 @@ from functools import partial
 import logging 
 
 import pandas as pd
-from addict import Dict
+# from addict import Dict
 
 from package.train.models.SkModelDialog import SkModelDialog
 from package.train.models.TfModelDialog import TfModelDialog
@@ -84,7 +84,7 @@ class SelectModelWidget(QTabWidget):
                 tfidf_data = json.load(f)
         except IOError as ioe:
             self.logger.error("Error loading base TFIDF params", exc_info=True)
-            exceptionWarning('Error occurred while opening base TFIDF vectorizer.', repr(ioe))
+            exceptionWarning('Error occurred while loading base TFIDF parameters.', repr(ioe))
         try:
             row = 0
             for filename in os.listdir(BASE_SK_MODEL_DIR):

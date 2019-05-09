@@ -51,7 +51,7 @@ class SkModelDialog(QDialog):
 
         self.question_combobox = QComboBox()
         self.question_combobox.currentIndexChanged.connect(
-            lambda state, y=self.question_combobox: self._update_params(
+            lambda state, y=self.question_combobox: self.load_version_params(
                 y.currentData())
         )
         self.form_grid.addWidget(self.question_combobox, 0, 0)
@@ -113,9 +113,7 @@ class SkModelDialog(QDialog):
                 print("Key from model_params: {}".format(k))
                 model_params.pop(k, None)
         for k, v in model_params.items():
-
             try:
-                # label_string = k
                 label_string = k 
                 label = QLabel(label_string)
                 if isinstance(v, bool):
@@ -127,7 +125,7 @@ class SkModelDialog(QDialog):
                     else:
                         input_field.setCurrentIndex(1)
                     input_field.currentIndexChanged.connect(
-                        lambda state, x=k, y=input_field: self._modify_params(
+                        lambda state, x=k, y=input_field: self._update_param(
                             'model',
                             x, 
                             y.currentData())
@@ -138,7 +136,7 @@ class SkModelDialog(QDialog):
                     input_field.setDecimals(len(str(v)) - 2)
                     input_field.setValue(v)
                     input_field.valueChanged.connect(
-                        lambda state, x=k, y=input_field: self._modify_params(
+                        lambda state, x=k, y=input_field: self._update_param(
                             'model',
                             x, 
                             y.value())
@@ -149,7 +147,7 @@ class SkModelDialog(QDialog):
                     input_field.setRange(0, 10000)
                     input_field.setValue(v)
                     input_field.valueChanged.connect(
-                        lambda state, x=k, y=input_field: self._modify_params(
+                        lambda state, x=k, y=input_field: self._update_param(
                             'model',
                             x, 
                             y.value())
@@ -162,7 +160,7 @@ class SkModelDialog(QDialog):
                     # string if no response given by user.
                     input_field.textChanged.connect(
                         lambda state, x=k, y=input_field:
-                            self._modify_params(
+                            self._update_param(
                                 'model',
                                 x, 
                                 (None if y.text() == '' else y.text())
@@ -193,7 +191,7 @@ class SkModelDialog(QDialog):
                     else:
                         input_field.setCurrentIndex(1)
                     input_field.currentIndexChanged.connect(
-                        lambda state, x=k, y=input_field: self._modify_params(
+                        lambda state, x=k, y=input_field: self._update_param(
                             'tfidf',
                             x, 
                             y.currentData())
@@ -203,11 +201,10 @@ class SkModelDialog(QDialog):
                     label_string = k
                     label = QLabel(label_string)
                     input_field = QDoubleSpinBox(objectName=k)
-                    
                     input_field.setDecimals(len(str(v)) - 2)
                     input_field.setValue(v)
                     input_field.valueChanged.connect(
-                        lambda state, x=k, y=input_field: self._modify_params(
+                        lambda state, x=k, y=input_field: self._update_param(
                             'tfidf',
                             x, 
                             y.value())
@@ -220,7 +217,7 @@ class SkModelDialog(QDialog):
                     input_field.setRange(0, 10000)
                     input_field.setValue(v)
                     input_field.valueChanged.connect(
-                        lambda state, x=k, y=input_field: self._modify_params(
+                        lambda state, x=k, y=input_field: self._update_param(
                             'tfidf',
                             x, 
                             y.value())
@@ -235,7 +232,7 @@ class SkModelDialog(QDialog):
                     input_field.setMaxLength(3)
                     input_field.textChanged.connect(
                         lambda state, x=k, y=input_field:
-                            self._modify_params(
+                            self._update_param(
                                 'tfidf',
                                 x, 
                                 [] if y.text() == '' else list(map(int, y.text().split(',')))
@@ -252,7 +249,7 @@ class SkModelDialog(QDialog):
                     # string if no response given by user.
                     input_field.textChanged.connect(
                         lambda state, x=k, y=input_field:
-                            self._modify_params(
+                            self._update_param(
                                 'tfidf',
                                 x, 
                                 (None if y.text() == '' else y.text())
@@ -269,13 +266,13 @@ class SkModelDialog(QDialog):
     def _split_key(self, key):
         return key.split('__')[1]
 
-    def _modify_params(self, param_type, key, value):
+    def _update_param(self, param_type, key, value):
         print("updateParams key, value: {}, {}, {}".format(param_type, key, value))
-        class_key = '__' + key + '__'
+        #class_key = '__' + key + '__'
         if param_type == 'model':
-            self.updated_model_params[class_key] = value
+            self.updated_model_params[key] = value
         else:
-            self.updated_tfidf_params[class_key] = value
+            self.updated_tfidf_params[key] = value
 
     @Slot(str)
     def update_version(self, directory):
@@ -289,26 +286,43 @@ class SkModelDialog(QDialog):
             self.question_combobox.clear()
             self.question_combobox.hide()
 
-    def _update_params(self, path):
-        print("_update_params in {} fired".format(self.getModelName()))
+    def load_version_params(self, path):
+        print("load_version_params in {} fired".format(self.getModelName()))
+        if path == None: return
         filename = self.getModelName() + '.json'
         try:
             with open(os.path.join(path, filename), 'r') as f:
                 model_data = json.load(f)
+                print(model_data)
                 model_class = model_data['model_class']
-                for k,v in model_data['model_params'].items():
-                    if k in self.input_widgets:
-                        cla = self.input_widgets[k]
-                        if isinstance(cla, QComboBox):
-                            idx = cla.findData(v)
-                            if idx != -1:
-                                cla.setCurrentIndex(idx)
-                        elif isinstance(cla, QLineEdit):
-                            cla.setText(v)
-                        else:
-                            cla.setValue(v)
-                        
+                if 'model_params' in model_data:
+                    for k,v in model_data['model_params'].items():
+                        if k in self.input_widgets:
+                            cla = self.input_widgets[k]
+                            if isinstance(cla, QComboBox):
+                                idx = cla.findData(v)
+                                if idx != -1:
+                                    cla.setCurrentIndex(idx)
+                            elif isinstance(cla, QLineEdit):
+                                cla.setText(repr(v))
+                            else:
+                                cla.setValue(v)
 
+                if "tfidf_params" in model_data:
+                    for k,v in model_data['tfidf_params'].items():
+                        if k in self.input_widgets:
+                            cla = self.input_widgets[k]
+                            if isinstance(cla, QComboBox):
+                                idx = cla.findData(v)
+                                if idx != -1:
+                                    cla.setCurrentIndex(idx)
+                            elif isinstance(cla, QLineEdit):
+                                if isinstance(v, tuple) or isinstance(v, list):
+                                    cla.setText(",".join(str(x) for x in v))
+                                else:
+                                    cla.setText(repr(v))
+                            else:
+                                cla.setValue(v)
         except FileNotFoundError as fnfe:
             pass
         except Exception as e:
