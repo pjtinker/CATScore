@@ -194,15 +194,16 @@ def processText(text, lower_case=True, remove_punctuation=True, expand_contracti
     """Removes unwanted/unnecessary characters from textual input.
     Removes all single and double quotes, removes all non-ascii characters,
     pad punctuation on each side if it remains.
-    # Arguments
-        text: string, text data.
-        lower_case: boolean; if true, convert all words to lower
-                    case, strip leading and trailing whitespace, pad punctuation on both 
-					sides.
-        remove_stopwords: boolean; remove stopwords if true
-		lemmatize: boolean; if true, lemmatize samples using nltk's WordNetLemmatizer
-    # Returns
-        String, processed text
+        # Attributes
+            text: string, text data.
+            lower_case: boolean; if true, convert all words to lower
+                        case, strip leading and trailing whitespace, pad punctuation on both 
+                        sides.
+            remove_stopwords: boolean; remove stopwords if true
+            lemmatize: boolean; if true, lemmatize samples using nltk's WordNetLemmatizer
+        
+        # Returns
+            String, processed text
     """
 
     # text = text.translate(string.printable)

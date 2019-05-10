@@ -3,7 +3,6 @@ from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
 from PySide2.QtGui import QColor, QPainter
 from PySide2.QtWidgets import (QAction, QCheckBox, QApplication, QHBoxLayout, QHeaderView,
                                QMainWindow, QSizePolicy, QTableView, QWidget, QTabWidget)
-# from PySide2.QtCharts import QtCharts
 
 import logging
 
@@ -14,7 +13,8 @@ import numpy as np
 @author: pjtinker
 """
 
-"""QTableView based on pandas DataFrame.
+"""
+QTableView based on pandas DataFrame.
 Provides functionality to create a QTableView using a pandas DataFrame as the 
 underlying data structure.
 Currently, this class provides display only.  Potentially table editing and sorting
@@ -80,7 +80,7 @@ class DataframeTableModel(QAbstractTableModel):
         column = index.column()
         row = index.row()
         if role == Qt.DisplayRole:
-            return str(self._df.ix[row, column])
+            return str(self._df.values[row][column])
         # elif role == Qt.CheckStateRole and column == 1:
         #     return Qt.Checked
         # if column == 0:

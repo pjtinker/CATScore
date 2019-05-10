@@ -78,7 +78,7 @@ class SpellCheck():
         return (e2 for e1 in self.edits1(word) for e2 in self.edits1(e1))
 
     def build_vocab(self, texts):
-        sentences = texts.apply(lambda x: str(x).split()).values
+        sentences = [str(x).split() for x in texts]
         print("Building vocabulary from data...")
         for sentence in tqdm(sentences):
             for word in sentence:

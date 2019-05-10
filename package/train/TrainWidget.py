@@ -25,19 +25,18 @@ class TrainWidget(QTabWidget):
         self.addTab(self.data_loader, 'Load Data')      
         self.addTab(self.model_widget, 'Model Selection')
         self.setTabEnabled(1, False)
-        self.data_loader.data_load.connect(self.loadData)
+        self.data_loader.data_load.connect(self.setTab)
+        self.data_loader.update_statusbar.connect(self.updateStatusBar)
 
-    @Slot(pd.DataFrame)
-    def loadData(self, data):
-        #FIXME: Copy data or keep reference?
-        if data.empty:
-            self.setTabEnabled(1, False)
-            self.parent.statusBar().showMessage('Ready for data import.')
-        else:
-            self.full_training_set = data
-            self.setTabEnabled(1, True)
-            self.parent.statusBar().showMessage('Training data loaded.')
+    @Slot(int, bool)
+    def setTab(self, tab, state):
+        self.setTabEnabled(tab, state)
 
+
+    @Slot(str)
+    def updateStatusBar(self, msg):
+        self.parent.statusBar().showMessage(msg)
+        self.parent.repaint()
 
     def setupTabs(self):
         pass
