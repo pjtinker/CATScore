@@ -17,7 +17,7 @@ class TfModelDialog(QDialog):
     # Arguments
         model_params: String, path to default parameters .json file.
     """
-    def __init__(self, parent=None, params={}):
+    def __init__(self, parent=None, params={}, fs_params={}):
         super(TfModelDialog, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
         self.model_params = params['model_params']

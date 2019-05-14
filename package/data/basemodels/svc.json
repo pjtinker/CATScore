@@ -6,6 +6,6 @@
         "kernel" : "linear"
     },
     "restricted_params" : [
-        "decision_function_shape", "kernel", "degree"
+        "decision_function_shape", "kernel", "degree", "gamma", "coef0"
     ]
 }

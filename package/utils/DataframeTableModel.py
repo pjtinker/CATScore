@@ -34,9 +34,11 @@ class DataframeTableModel(QAbstractTableModel):
         """Load data into dataframe.
         """
         if data is None:
-            return
-        self._df = data
-        self.header = self._df.columns
+            self._df = pd.DataFrame()
+            self.header = []
+        else:
+            self._df = data
+            self.header = self._df.columns
         ## layoutChanged refreshes the QTableView with new data.  
         self.layoutChanged.emit()
 

@@ -22,13 +22,17 @@ from package.utils.catutils import exceptionWarning
 
 BASE_SK_MODEL_DIR = "./package/data/basemodels"
 BASE_TF_MODEL_DIR = "./package/data/tensorflowmodels"
-BASE_TFIDF_DIR = "./package/data/featureextractors/tfidf.json"
+BASE_TFIDF_DIR = "./package/data/featureextractors/TfidfVectorizer.json"
+BASE_FS_DIR = "./package/data/featureselection/FeatureSelection.json"
 
 class Communicate(QObject):
     version_change = Signal(str)
 
 class SelectModelWidget(QTabWidget):
-
+    """
+    """
+    update_statusbar = Signal(str)
+    update_progressbar = Signal(int, bool)
     def __init__(self, parent=None):
         super(SelectModelWidget, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
@@ -60,13 +64,13 @@ class SelectModelWidget(QTabWidget):
         self.left_column.addLayout(self.version_hbox)
         # self.version_hbox.addStretch()
         self.left_column.addWidget(self.skmodel_groupbox)
+        self.left_column.addWidget(self.tf_model_groupbox)
         self.left_column.addStretch()
-        self.right_column.addWidget(self.tf_model_groupbox)
-        self.right_column.addStretch()
+        # self.right_column.addStretch()
         self.main_layout.addLayout(self.left_column)
-        # self.main_layout.addStretch()
-        self.main_layout.addLayout(self.right_column)
         self.main_layout.addStretch()
+        self.main_layout.addLayout(self.right_column)
+        # self.main_layout.addStretch()
         self.setLayout(self.main_layout)
 
     def setupUi(self):
@@ -79,6 +83,7 @@ class SelectModelWidget(QTabWidget):
                                                             self._signal_update(y.currentData())
                                                             )
         self.version_hbox.addWidget(self.version_selection)
+        # Load base TF-IDF and feature selection data
         try:
             with open(BASE_TFIDF_DIR, 'r') as f:
                 tfidf_data = json.load(f)
@@ -86,16 +91,22 @@ class SelectModelWidget(QTabWidget):
             self.logger.error("Error loading base TFIDF params", exc_info=True)
             exceptionWarning('Error occurred while loading base TFIDF parameters.', repr(ioe))
         try:
+            with open(BASE_FS_DIR, 'r') as f:
+                fs_data = json.load(f)
+        except IOError as ioe:
+            self.logger.error("Error loading base feature selector params", exc_info=True)
+            exceptionWarning('Error occurred while loading base feature selector parameters.', repr(ioe))
+        
+        try:
             row = 0
             for filename in os.listdir(BASE_SK_MODEL_DIR):
                 with open(os.path.join(BASE_SK_MODEL_DIR, filename), 'r') as f:
                     print("Loading model:", filename)
                     model_data = json.load(f)
-                    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+                    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
                     self.comms.version_change.connect(model_dialog.update_version)
                     btn = QPushButton(model_data['model_class'])
-                    #~ Partial allows the connection of dynamically generated
-                    #~ QObjects
+                    # Partial allows the connection of dynamically generated QObjects
                     btn.clicked.connect(partial(self.openDialog, model_dialog))
                     chkbox = QCheckBox()
                     self.sklearn_model_grid.addWidget(chkbox, row, 0)
@@ -119,7 +130,7 @@ class SelectModelWidget(QTabWidget):
                 with open(os.path.join(BASE_TF_MODEL_DIR, filename), 'r') as f:
                     print("Loading model:", filename)
                     model_data = json.load(f)
-                    model_dialog = TfModelDialog(self, model_data)
+                    model_dialog = TfModelDialog(self, model_data, fs_data)
                     self.comms.version_change.connect(model_dialog.update_version)
                     btn = QPushButton(model_data['model_class'])
                     btn.clicked.connect(partial(self.openDialog, model_dialog))
@@ -138,6 +149,7 @@ class SelectModelWidget(QTabWidget):
             exceptionWarning('Error occured.', e)
             tb = traceback.format_exc()
             print(tb)
+            
 
     def openDialog(self, dialog):
         dialog.saveParams()

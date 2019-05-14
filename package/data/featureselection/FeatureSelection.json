@@ -1,0 +1,23 @@
+{
+    "types" : {
+        "SelectKBest" : {
+            "params" : {
+                "k" : 20000
+            },
+            "score_options" : [
+                "f_classif",
+                "chi2",
+                "SelectFwe"
+            ]
+        },
+        "SelectFwe" : {
+            "params" : {
+                "alpha" : 0.05
+            },
+            "score_options" : [
+                "f_classif",
+                "chi2"
+            ]
+        }
+    }
+}

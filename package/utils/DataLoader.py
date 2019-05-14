@@ -22,14 +22,16 @@ and nth+1 as ground truth.
 CSV files must be formatted accordingly.
 """
 
+
 class DataLoader(QWidget):
     """TODO: Refactor this monstrosity into functions to setup UI
     """
     data_load = Signal(int, bool)
     update_statusbar = Signal(str)
     update_progressbar = Signal(int, bool)
+
     def __init__(self, parent=None):
-        super(DataLoader, self).__init__(parent)        
+        super(DataLoader, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.parent = parent
@@ -69,7 +71,7 @@ class DataLoader(QWidget):
         self.full_text_count.setText("None")
         self.text_stats_groupbox.setLayout(self.text_stats_grid)
 
-        #~ Available question column view
+        # ~ Available question column view
         self.available_column_view = QTableView()
         self.available_column_view.setMinimumHeight(330)
         self.available_column_view.setMaximumWidth(220)
@@ -78,7 +80,8 @@ class DataLoader(QWidget):
         self.available_column_model = AttributeTableModel()
         self.available_column_view.setModel(self.available_column_model)
         selection = self.available_column_view.selectionModel()
-        selection.selectionChanged.connect(lambda x: self.displaySelectedRow(x))
+        selection.selectionChanged.connect(
+            lambda x: self.displaySelectedRow(x))
 
         self.left_column.addWidget(self.open_file_button)
         self.left_column.addWidget(self.available_column_view)
@@ -86,10 +89,12 @@ class DataLoader(QWidget):
         self.load_data_btn = QPushButton('Load Data', self)
         self.load_data_btn.clicked.connect(lambda: self.getSelectedData())
         self.select_all_btn = QPushButton('Select All', self)
-        self.select_all_btn.clicked.connect(lambda: self.available_column_model.setCheckboxes(True))
+        self.select_all_btn.clicked.connect(
+            lambda: self.available_column_model.setCheckboxes(True))
         self.select_all_btn.setEnabled(False)
         self.deselect_all_btn = QPushButton('Remove All', self)
-        self.deselect_all_btn.clicked.connect(lambda: self.available_column_model.setCheckboxes(False))
+        self.deselect_all_btn.clicked.connect(
+            lambda: self.available_column_model.setCheckboxes(False))
         self.deselect_all_btn.setEnabled(False)
 
         self.selection_button_layout = QHBoxLayout()
@@ -107,7 +112,8 @@ class DataLoader(QWidget):
         self.text_proc_groupbox.setLayout(self.text_proc_grid)
         self.data_load.connect(self.setProcState)
         self.preprocess_text_btn = QPushButton('Preprocess Text', self)
-        self.preprocess_text_btn.clicked.connect(lambda: self.applyPreprocessing())
+        self.preprocess_text_btn.clicked.connect(
+            lambda: self.applyPreprocessing())
         self.preprocess_text_btn.setEnabled(False)
 
         self.left_column.addWidget(self.text_proc_groupbox)
@@ -131,8 +137,6 @@ class DataLoader(QWidget):
 
         # Text DataframeTableModel view for text preview
         self.text_table_view = QTableView()
-        # self.text_table_view.setMinimumHeight(330)
-        # self.text_table_view.setMaximumWidth(220)
         self.text_table_view.setSelectionMode(QTableView.SingleSelection)
         self.text_table_view.setSelectionBehavior(QTableView.SelectRows)
         self.text_table_model = DataframeTableModel()
@@ -164,7 +168,7 @@ class DataLoader(QWidget):
             self.selected_data = self.full_data[self.selected_columns]
             self.text_table_model.loadData(self.selected_data.head())
             self.data_load.emit(1, True)
-        
+
     def openFile(self):
         """Open file chooser for user to select the CSV file containing their data
         Only CSV files are allowed at this time.
@@ -184,14 +188,16 @@ class DataLoader(QWidget):
             # Attributes
                 f_path: String, The filename selected via openFile
         """
-        #FIXME: Reset status bar when new data is loaded.
+        # FIXME: Reset status bar when new data is loaded.
         try:
             self.full_data = pd.read_csv(f_path, encoding='utf-8', index_col=0)
         except UnicodeDecodeError as ude:
-            self.logger.warning("UnicodeDecode error opening file", exc_info=True)
+            self.logger.warning(
+                "UnicodeDecode error opening file", exc_info=True)
             print("UnicodeDecodeError caught.  File is not UTF-8 encoded. \
                    Attempting to determine file encoding...")
-            self.update_statusbar.emit("UnicodeDecodeError caught.  File is not UTF-8 encoded. Attempting to determine file encoding...")
+            self.update_statusbar.emit(
+                "UnicodeDecodeError caught.  File is not UTF-8 encoded. Attempting to determine file encoding...")
             detector = UniversalDetector()
             try:
                 for line in open(f_path, 'rb'):
@@ -227,7 +233,7 @@ class DataLoader(QWidget):
             self.displaySelectedRow(None)
             self.select_all_btn.setEnabled(True)
             self.deselect_all_btn.setEnabled(True)
-            
+
             self.update_statusbar.emit("CSV loaded.")
         except pd.errors.EmptyDataError as ede:
             exceptionWarning(
@@ -237,7 +243,8 @@ class DataLoader(QWidget):
             exceptionWarning("Unexpected error occured!", exception=e)
 
     def displaySelectedRow(self, selection=None):
-        """Updates the stats and label distro plot when a question is selected.
+        """
+        Updates the stats and label distro plot when a question is selected.
             # Attributes
                 selection: QItemSelectionModel, item currently selected by user.
         """
@@ -267,7 +274,8 @@ class DataLoader(QWidget):
         file_name, filter = QFileDialog.getSaveFileName(
             self, 'Save to CSV', os.getenv('HOME'), 'CSV(*.csv)')
         if file_name:
-            self.selected_data.to_csv(file_name, index_label='testnum', quoting=1, encoding='utf-8')
+            self.selected_data.to_csv(
+                file_name, index_label='testnum', quoting=1, encoding='utf-8')
             self.update_statusbar.emit("Data saved successfully.")
 
     def setupTextPreprocessingOptions(self):
@@ -277,23 +285,24 @@ class DataLoader(QWidget):
         """
         self.preprocessing_options = {
             "lower_case": True,
-            "remove_punctuation" : True,
-            "expand_contractions" : True,
-            "remove_stopwords" : False,
-            "lemmatize" : False,
+            "remove_punctuation": True,
+            "expand_contractions": True,
+            "remove_stopwords": False,
+            "lemmatize": False,
             "spell_correction": False
         }
         proc_labels = [
-                        'Convert to lowercase', 'Remove punctuation', 
-                        'Expand contractions', 'Remove stopwords',
-                        'Lemmatize'
-                      ]
+            'Convert to lowercase', 'Remove punctuation',
+            'Expand contractions', 'Remove stopwords',
+            'Lemmatize'
+        ]
         row = 0
-        for k,v in self.preprocessing_options.items():
+        for k, v in self.preprocessing_options.items():
             chkbox = QCheckBox(k)
             chkbox.setChecked(v)
-            chkbox.stateChanged.connect(lambda state, o=k,:
-                                        self._updateTextPreprocessingOptions(o, state)
+            chkbox.stateChanged.connect(lambda state, o=k, :
+                                        self._updateTextPreprocessingOptions(
+                                            o, state)
                                         )
             self.text_proc_grid.addWidget(chkbox, row, 0)
             self.text_preprocessing_checkboxes.append(chkbox)
@@ -323,8 +332,6 @@ class DataLoader(QWidget):
                 state: bool, The state of the preprocess options.
         """
         if not state:
-            # for chkbox in self.text_preprocessing_checkboxes:
-            #     chkbox.setChecked(False)
             self.text_proc_groupbox.setEnabled(False)
             self.preprocess_text_btn.setEnabled(False)
             self.save_dataset_btn.setEnabled(False)
@@ -355,12 +362,13 @@ class DataLoader(QWidget):
         self.preprocess_text_btn.setEnabled(False)
         self.save_dataset_btn.setEnabled(False)
         self.update_progressbar.emit(0, True)
-        preproc_thread = PreprocessingThread(self,
-                                            self.full_data[self.selected_columns], 
-                                            self.preprocessing_options)
-        preproc_thread.preprocessing_complete.connect(self.updateData)
-        self.update_statusbar.emit('Preprocessing text.  This may take several minutes.')
-        preproc_thread.start()
+        self.preproc_thread = PreprocessingThread(self.full_data[self.selected_columns],
+                                                  self.preprocessing_options)
+        self.preproc_thread.preprocessing_complete.connect(self.updateData)
+        self.update_statusbar.emit(
+            'Preprocessing text.  This may take several minutes.')
+        self.preproc_thread.start()
+
 
 class PreprocessingThread(QThread):
     """
@@ -368,7 +376,8 @@ class PreprocessingThread(QThread):
     This can be an expensive operation, especially if spell_correction is requested.
     """
     preprocessing_complete = Signal(pd.DataFrame)
-    def __init__(self, parent, data, kwargs):
+
+    def __init__(self, data, kwargs):
         """
         Make a new thread instance to apply text preprocessing to 
         the selected data.
@@ -376,22 +385,39 @@ class PreprocessingThread(QThread):
                 data: pandas.DataFrame, user selected columns for preprocessing
                 kwargs: dict, Text preprocessing options
         """
-        super(self.__class__, self).__init__(parent)
+        super(self.__class__, self).__init__()
         self.data = data
         self.kwargs = kwargs
 
-    def _apply_preprocessing(self):
+    def _apply_preprocessing(self, unique_count=5000):
         """
         Apply preprocessing steps to provided data and emit signal when complete.  
+        FIXME: Using _Text to denote our text data.  Should this be customizable?
         """
-        apply_cols = [col for col in self.data.columns if col.endswith('_Text')]
-        self.data[apply_cols] = self.data[apply_cols].applymap(lambda x: processText(str(x), **self.kwargs))
+        apply_cols = [
+            col for col in self.data.columns if col.endswith('_Text')]
+        self.data[apply_cols] = self.data[apply_cols].applymap(
+            lambda x: processText(str(x), **self.kwargs))
         if self.kwargs['spell_correction']:
-            sentences = self.data[apply_cols].applymap(lambda x: str(x).split()).values
+            sentences = self.data[apply_cols].applymap(
+                lambda x: str(x).split()).values
             sc = SpellCheck(sentences, 5000)
-            self.data[apply_cols] = self.data[apply_cols].applymap(lambda x: sc.correct_spelling(x))
+            self.data[apply_cols] = self.data[apply_cols].applymap(
+                lambda x: sc.correct_spelling(x))
 
         self.preprocessing_complete.emit(self.data)
 
-    def run(self): 
-        self._apply_preprocessing()
+    def run(self):
+        apply_cols = [
+            col for col in self.data.columns if col.endswith('_Text')]
+        self.data[apply_cols] = self.data[apply_cols].applymap(
+            lambda x: processText(str(x), **self.kwargs))
+        if self.kwargs['spell_correction']:
+            print()
+            sentences = self.data[apply_cols].applymap(
+                lambda x: str(x).split()).values
+            sc = SpellCheck(sentences, unique_count)
+            self.data[apply_cols] = self.data[apply_cols].applymap(
+                lambda x: sc.correct_spelling(x))
+
+        self.preprocessing_complete.emit(self.data)
