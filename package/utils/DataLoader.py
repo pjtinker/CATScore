@@ -298,7 +298,7 @@ class DataLoader(QWidget):
         ]
         row = 0
         for k, v in self.preprocessing_options.items():
-            chkbox = QCheckBox(k)
+            chkbox = QCheckBox(' '.join(k.split('_')))
             chkbox.setChecked(v)
             chkbox.stateChanged.connect(lambda state, o=k, :
                                         self._updateTextPreprocessingOptions(

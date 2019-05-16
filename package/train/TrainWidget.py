@@ -20,6 +20,8 @@ class TrainWidget(QTabWidget):
     def __init__(self, parent=None):
         super(TrainWidget, self).__init__(parent)
         self.parent = parent
+        # FIXME: reset statusbar when tabs are changed
+        # self.currentChanged.connect(self.updateStatusBar(' '))
         self.data_loader = DataLoader(self)
         self.model_widget = SelectModelWidget(self)
         self.addTab(self.data_loader, 'Load Data')      

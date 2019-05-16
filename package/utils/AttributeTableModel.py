@@ -83,7 +83,6 @@ class AttributeTableModel(DataframeTableModel):
         for idx, truth in enumerate(self.checklist):
             if truth:
                 selected_cols.extend(self._df.iloc[idx].values)
-        print("Selected columns", selected_cols)
         return selected_cols
 
         

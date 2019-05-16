@@ -1,0 +1,21 @@
+{
+    "SelectKBest" : {
+        "params" : {
+            "k" : {
+                "type" : "int",
+                "default_value" : 20000,
+                "min" : 0,
+                "max" : 100000
+            },
+            "score_options" : { 
+                "type" : "dropdown",
+                "default_value" : 0,
+                "options" : [
+                    "f_classif",
+                    "chi2",
+                    "SelectFwe"
+                ]
+            }
+        }
+    }
+}
