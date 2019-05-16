@@ -1,5 +1,47 @@
 {                  
     "model_base": "sklearn",
     "model_module": "sklearn.ensemble",
-    "model_class" : "RandomForestClassifier"
+    "model_class" : "RandomForestClassifier",
+    "RandomForestClassifier" : {
+        "Hyperparameters" : {
+            "n_estimators" : {
+                "type" : "int",
+                "default" : 100,
+                "min" : 10,
+                "max" : 10000,
+                "step_size" : 10
+            },
+            "max_features" : {
+                "type" : "dropdown",
+                "default" : 0,
+                "options" : {
+                    "auto" : "auto",
+                    "sqrt" : "sqrt",
+                    "None" : null
+                }
+            },
+            "max_depth" : {
+                "type" : "int",
+                "default" : 0,
+                "min" : 0,
+                "max" : 100,
+                "step_size" : 1
+            },
+            "min_samples_split" : {
+                "type" : "int",
+                "default" : 2,
+                "min" : 0,
+                "max" : 1000000,
+                "step_size" : 1
+            },
+            "bootstrap" : {
+                "type" : "dropdown",
+                "default" : 1,
+                "options" : {
+                    "False" : false,
+                    "True" : true
+                }
+            }
+        }
+    }
 }

@@ -2,10 +2,47 @@
     "model_base": "sklearn",
     "model_module": "sklearn.svm",
     "model_class" : "SVC",
-    "static_params" : {
-        "kernel" : "linear"
-    },
-    "restricted_params" : [
-        "decision_function_shape", "kernel", "degree", "gamma", "coef0"
-    ]
+    "SVC" : {
+        "Hyperparameters" : {
+            "C" : {
+                "type" : "double",
+                "default" : 1.0,
+                "min" : 0,
+                "max" : 1000,
+                "step_size" : 1,
+                "decimal_len" : 1
+            },
+            "shrinking" : {
+                "type" : "dropdown",
+                "default" : 1,
+                "options" : {
+                    "True" : true,
+                    "False" : false
+                }
+            },
+            "probability" : {
+                "type" : "dropdown",
+                "default" : 0,
+                "options" : {
+                    "True" : true,
+                    "False" : false
+                }
+            },
+            "tol" : {
+                "type" : "double",
+                "default" : 0.001,
+                "min" : 0,
+                "max" : 100,
+                "step_size" : 0.001,
+                "decimal_len":  4
+            },
+            "cache_size" : {
+                "type" : "int",
+                "default" : 200,
+                "min" : 100,
+                "max" : 100000,
+                "step_size" : 100
+            }
+        }
+    }
 }

@@ -1,20 +1,21 @@
 {
-    "SelectKBest" : {
-        "params" : {
-            "k" : {
-                "type" : "int",
-                "default_value" : 20000,
-                "min" : 0,
-                "max" : 100000
-            },
-            "score_options" : { 
-                "type" : "dropdown",
-                "default_value" : 0,
-                "options" : [
-                    "f_classif",
-                    "chi2",
-                    "SelectFwe"
-                ]
+    "model_base" : "sklearn",
+    "model_module" : "sklearn.feature_selection",
+    "model_class" : "SelectKBest",
+    "Hyperparameters" : {
+        "k" : {
+            "type" : "int",
+            "default" : 20000,
+            "min" : 0,
+            "max" : 100000
+        },
+        "score_options" : { 
+            "type" : "dropdown",
+            "default" : 0,
+            "options" : {
+                "f_classif" : "f_classif",
+                "chi2" : "chi2",
+                "SelectFwe" : "SelectFwe"
             }
         }
     }

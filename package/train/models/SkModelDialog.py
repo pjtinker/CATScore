@@ -23,26 +23,39 @@ class SkModelDialog(QDialog):
     """
     def __init__(self, 
                  parent=None, 
-                 model_params={}, 
-                 tfidf_params={},
-                *custom_params):
+                *params):
         super(SkModelDialog, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
-        self.model_params = model_params
-        self.model = self.getClass(self.model_params)
-
+        self.model_params = {}
         self.updated_params = {}
-        self.updated_params['model_params'] = {}
-        if tfidf_params:
-            self.tfidf_params = tfidf_params
-            self.tfidf = self.getClass(self.tfidf_params)
-            self.updated_params['tfidf_params'] = {}
+        self.ui_widgets = {}
+        for param in params:
+            name = param['model_class']
+            self.model_params[name] = param[name]
+            self.updated_params[name] = {}
+            groupbox = QGroupBox()
+            
+        # print("Params: ")
+        # print(json.dumps(self.model_params, indent=2))
+        # return
+        # self.model_data = model_data
+        # self.tfidf_data = tfidf_data
+        # self.model_params = self.model_data[self.model_data['model_class']]
+        # self.model = self.getClass(self.model_params)
+
+        # TODO: Add static params to model_params
+        # self.updated_params = {}
+        # self.updated_params[self.model_data['model_class']] = {}
+        # if self.tfidf_data:
+        #     self.tfidf_params = self.tfidf_data[self.tfidf_data['model_class']]
+        #     # self.tfidf = self.getClass(self.tfidf_params)
+        #     self.updated_params[self.tfidf_data['model_class']] = {}
 
         # input_widgets is a list of all dynamically created input widgets for the various model params.
         # Holds EVERY input widget, regardless of type.  Key = hyperparameter name
         self.input_widgets = {}
 
-        self.setWindowTitle(self.model_params['model_class'])
+        self.setWindowTitle(self.model_data['model_class'])
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         self.buttonBox.setObjectName("model_buttonbox")
         self.buttonBox.accepted.connect(self.accept)
@@ -70,8 +83,8 @@ class SkModelDialog(QDialog):
 
         self.form_grid.addWidget(self.model_groupbox, 1, 0)
         self.form_grid.addWidget(self.tfidf_groupbox, 1, 1)
-        self.setupUI('model_params', self.model.get_params(), self.model_params, self.model_param_form)
-        self.setupUI('tfidf_params', self.tfidf.get_params(), self.tfidf_params, self.tfidf_param_form)
+        self.setupUI(self.model_data['model_class'], self.model_params, self.model_param_form)
+        self.setupUI(self.tfidf_data['model_class'], self.tfidf_params, self.tfidf_param_form)
         
         self.main_layout.addLayout(self.form_grid)
         self.main_layout.addWidget(self.buttonBox)
@@ -123,7 +136,7 @@ class SkModelDialog(QDialog):
         self.updated_params[param_type][key] = value
 
 
-    def setupUI(self, param_type, param_dict, default_params, form):
+    def setupUI(self, param_type, param_dict, form):
         """Build UI elements using parameters dict of scikit models
 
             # Attributes:
@@ -131,32 +144,33 @@ class SkModelDialog(QDialog):
                 param_dict: dict, dictionary of parameter/default values from model.
                 default_params: dict, dictionary of default parameters defined by me.
         """
-        if "restricted_params" in default_params:
-            for k in default_params['restricted_params']:
-                param_dict.pop(k, None)
-        for k, v in param_dict.items():
-            try:
+        # if "restricted_params" in default_params:
+        #     for k in default_params['restricted_params']:
+        #         param_dict.pop(k, None)
+        try:
+            for k, v in param_dict['params'].items():
                 label_string = k 
                 label = QLabel(label_string)
-                if isinstance(v, bool):
+                type = v['type']
+                if type == 'dropdown':
                     input_field = QComboBox(objectName=k)
-                    input_field.addItem('True', True)
-                    input_field.addItem('False', False)
-                    if v:
-                        input_field.setCurrentIndex(0)
-                    else:
-                        input_field.setCurrentIndex(1)
+                    for name, value in v['options'].items():
+                        input_field.addItem(name, value)
+                    input_field.setCurrentIndex(v['default'])
                     input_field.currentIndexChanged.connect(
                         lambda state, x=k, y=input_field: self._update_param(
                             param_type,
                             x, 
                             y.currentData())
                     )
+                    form.addRow(label, input_field)
+                    self.input_widgets[k] = input_field
 
-                elif isinstance(v, float):
+                elif type == 'double':
                     input_field = QDoubleSpinBox(objectName=k)
-                    input_field.setDecimals(len(str(v)) - 2)
-                    input_field.setValue(v)
+                    input_field.setDecimals(v['decimal_len'])
+                    input_field.setValue(v['default'])
+                    input_field.setSingleStep(v['step_size'])
                     input_field.valueChanged.connect(
                         lambda state, x=k, y=input_field: self._update_param(
                             param_type,
@@ -164,53 +178,54 @@ class SkModelDialog(QDialog):
                             y.value())
                     )
 
-                elif isinstance(v, int):
+                elif type == 'int':
                     input_field = QSpinBox(objectName=k)
-                    input_field.setRange(0, 10000)
-                    input_field.setValue(v)
+                    input_field.setRange(v['min'], v['max'])
+                    input_field.setValue(v['default'])
+                    input_field.setSingleStep(v['step_size'])
                     input_field.valueChanged.connect(
                         lambda state, x=k, y=input_field: self._update_param(
                             param_type,
                             x, 
                             y.value())
                     )
-                elif isinstance(v, tuple):
+                # else:
+                #     input_field = QLineEdit(objectName=k)
+                #     input_field.setText(v)
+                #     # lambda for connecting signals.  Param three will pass None instead of an empty
+                #     # string if no response given by user.
+                #     input_field.textChanged.connect(
+                #         lambda state, x=k, y=input_field:
+                #             self._update_param(
+                #                 param_type,
+                #                 x, 
+                #                 (None if y.text() == '' else y.text())
+                #             )
+                #     )
+                elif type == 'range':
                     # FIXME: create validator to only allow certain input?
                     label_string = k
-                    label = QLabel(label_string)
-                    input_field = QLineEdit(objectName=k)
-                    input_field.setText(",".join(str(x) for x in v))
-                    input_field.setMaxLength(3)
-                    input_field.textChanged.connect(
-                        lambda state, x=k, y=input_field:
-                            self._update_param(
-                                'tfidf',
-                                x, 
-                                [] if y.text() == '' else list(map(int, y.text().split(',')))
-                            )
-                    )
-                elif inspect.isclass(v) or isinstance(v, type):
-                    continue
-                else:
-                    input_field = QLineEdit(objectName=k)
-                    input_field.setText(v)
-                    # lambda for connecting signals.  Param three will pass None instead of an empty
-                    # string if no response given by user.
-                    input_field.textChanged.connect(
+                    label = QLabel(label_string + ' : 1,')
+                    input_field = QSpinBox(objectName=k)
+                    input_field.setRange(v['min'], v['max'])
+                    input_field.setValue(v['default'])
+                    input_field.valueChanged.connect(
                         lambda state, x=k, y=input_field:
                             self._update_param(
                                 param_type,
                                 x, 
-                                (None if y.text() == '' else y.text())
+                                y.value())
                             )
-                    )
+                # elif inspect.isclass(v) or isinstance(v, type):
+                #     continue
+
                 form.addRow(label, input_field)
                 self.input_widgets[k] = input_field
-            except Exception as e:
-                self.logger.error("Error generating {} dialog.", exc_info=True)
-                print("Exception {} occured with key {} and value {}".format(e, k, v))
-                tb = traceback.format_exc()
-                print(tb)
+        except Exception as e:
+            self.logger.error("Error generating {} dialog.", exc_info=True)
+            print("Exception {} occured with key {} and value {}".format(e, k, v))
+            tb = traceback.format_exc()
+            print(tb)
 
     @Slot(str)
     def update_version(self, directory):
@@ -232,28 +247,28 @@ class SkModelDialog(QDialog):
         if path == None:
             return
         # Reset input parameters
-        self.set_input_params(self.model.get_params())
-        self.set_input_params(self.tfidf.get_params())
+        self.set_input_params(self.model_data[self.model_data['model_class']]['params'])
+        self.set_input_params(self.tfidf_data[self.tfidf_data['model_class']]['params'])
         # self.set_input_params(self.fs_params)
 
-        filename = self.getModelName() + '.json'
+        filename = self.model_data['model_class'] + '.json'
         model_data = {}
         try:
             try:
                 with open(os.path.join(path, filename), 'r') as f:
                     model_data = json.load(f)
+                model_class = model_data['model_class']
+                if 'model_params' in model_data:
+                    self.set_input_params(model_data['model_params'])
+
+                if "tfidf_params" in model_data:
+                    self.set_input_params(model_data['tfidf_params'])
             except FileNotFoundError as fnfe:
-                model_data['model_class'] = self.getModelName()
-                model_data['model_params'] = self.model.get_params()
-                model_data['tfidf_params'] = self.tfidf.get_params()
+                pass
+                # model_data['model_class'] = self.tfidf_data['model_class']
+                # model_data['model_params'] = self.model.get_params()
+                # model_data['tfidf_params'] = self.tfidf.get_params()
                 # model_data['fs_params'] = self.fs_params
-
-            model_class = model_data['model_class']
-            if 'model_params' in model_data:
-                self.set_input_params(model_data['model_params'])
-
-            if "tfidf_params" in model_data:
-                self.set_input_params(model_data['tfidf_params'])
 
         except Exception as e:
             self.logger.error("Error updating parameters", exc_info=True)
@@ -263,17 +278,14 @@ class SkModelDialog(QDialog):
 
     def set_input_params(self, param_dict):
         for k,v in param_dict.items():
+            # If v is dictionary, function was called using default values.
+            # Set v equal to the default value of that parameter.
+            if isinstance(v, dict):
+                v = v['default']
             if k in self.input_widgets:
                 cla = self.input_widgets[k]
                 if isinstance(cla, QComboBox):
-                    idx = cla.findData(v)
-                    if idx != -1:
-                        cla.setCurrentIndex(idx)
-                elif isinstance(cla, QLineEdit):
-                    if isinstance(v, tuple) or isinstance(v, list):
-                        cla.setText(",".join(str(x) for x in v))
-                    else:
-                        cla.setText(v)
+                    cla.setCurrentIndex(v)
                 else:
                     cla.setValue(v)
 
@@ -282,20 +294,89 @@ if __name__ == "__main__":
     import sys
     # Qt Application
     SVC = {                  
-        "model_base": "sklearn",
-        "model_module": "sklearn.svm",
-        "model_class" : "SVC",
+    "model_base": "sklearn",
+    "model_module": "sklearn.svm",
+    "model_class" : "SVC",
+    "SVC" : {
         "static_params" : {
             "kernel" : "linear"
+        },
+        "restricted_params" : [
+            "decision_function_shape", "kernel", "degree", "gamma", "coef0"
+        ],
+        "Hyperparameters" : {
+            "C" : {
+                "type" : "double",
+                "default" : 1.0,
+                "min" : 0,
+                "max" : 1000,
+                "step_size" : 1,
+                "decimal_len" : 1
+            },
+            "shrinking" : {
+                "type" : "dropdown",
+                "default" : 1,
+                "options" : {
+                    "True" : True,
+                    "False" : False
+                }
+            },
+            "probability" : {
+                "type" : "dropdown",
+                "default" : 0,
+                "options" : {
+                    "True" : True,
+                    "False" : False
+                }
+            },
+            "tol" : {
+                "type" : "double",
+                "default" : 0.001,
+                "min" : 0,
+                "max" : 100,
+                "step_size" : 0.001,
+                "decimal_len":  5
+            },
+            "cache_size" : {
+                "type" : "int",
+                "default" : 200,
+                "min" : 100,
+                "max" : 100000,
+                "step_size" : 100
+            }
         }
+    }
     }
     tfidf = {
         "model_base" : "sklearn",
         "model_module" : "sklearn.feature_extraction.text",
-        "model_class" : "TfidfVectorizer"
+        "model_class" : "TfidfVectorizer",
+        "TfidfVectorizer" : {
+            "restricted_params" : [
+                "preprocessor", "binary", "dtype", 
+                "analyzer", "tokenizer", "stop_words",
+                "lowercase", "input", "vocabulary", "token_pattern"
+            ],
+            "Hyperparameters" : {
+                "ngram_range" : {
+                    "type" : "range",
+                    "min" : 1,
+                    "max" : 9,
+                    "default" : 1
+                },
+                "encoding" : {
+                    "type" : "dropdown",
+                    "default" : 0,
+                    "options" : {
+                        "utf-8" : "utf-8",
+                        "latin-1" : "latin-1"
+                    }
+                }
+            }   
+        }
     }
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
-    window = SkModelDialog(model_params=SVC, tfidf_params=tfidf)
+    window = SkModelDialog(model_data=SVC, tfidf_data=tfidf)
     window.show()
     sys.exit(app.exec_())

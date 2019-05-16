@@ -2,9 +2,59 @@
     "model_base" : "sklearn",
     "model_module" : "sklearn.feature_extraction.text",
     "model_class" : "TfidfVectorizer",
-    "restricted_params" : [
-        "preprocessor", "binary", "dtype", 
-        "analyzer", "tokenizer", "stop_words",
-        "lowercase", "input", "vocabulary", "token_pattern"
-    ]
+    "TfidfVectorizer" : {
+        "restricted_params" : [
+            "preprocessor", "binary", "dtype", 
+            "analyzer", "tokenizer", "stop_words",
+            "lowercase", "input", "vocabulary", "token_pattern", "decode_error"
+        ],
+        "Hyperparameters" : {
+            "ngram_range" : {
+                "type" : "range",
+                "min" : 1,
+                "max" : 9,
+                "default" : 1
+            },
+            "encoding" : {
+                "type" : "dropdown",
+                "default" : 0,
+                "options" : {
+                    "utf-8" : "utf-8",
+                    "latin-1" : "latin-1"
+                }
+            },
+            "strip_accents" : {
+                "type" : "dropdown",
+                "default" : 0,
+                "options" : {
+                    "None" : null,
+                    "ascii" : "ascii",
+                    "unicode" : "unicode"
+                }
+            },
+            "max_df" : {
+                "type" : "double",
+                "default" :1.0,
+                "min" : 0,
+                "max" : 1,
+                "step_size" : 0.1,
+                "decimal_len" : 1
+            },
+            "min_df" : {
+                "type" : "int",
+                "default" : 1,
+                "min" : 0,
+                "max" : 1000,
+                "step_size" : 1
+            },
+            "use_idf" : {
+                "type" : "dropdown",
+                "default" : 1,
+                "options" : {
+                    "False" : false,
+                    "True" : true
+                }
+            }
+        }   
+    }
 }

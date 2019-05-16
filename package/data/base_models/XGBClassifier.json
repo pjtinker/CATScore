@@ -1,5 +1,65 @@
 {                  
     "model_base": "xgboost",
     "model_module": "xgboost.sklearn",
-    "model_class" : "XGBClassifier"
+    "model_class" : "XGBClassifier",
+    "XGBClassifier" : {
+        "Hyperparameters" : {
+            "n_estimators" : {
+                "type" : "int",
+                "default" : 100,
+                "min" : 10,
+                "max" : 10000,
+                "step_size" : 10
+            },
+            "max_features" : {
+                "type" : "dropdown",
+                "default" : 0,
+                "options" : {
+                    "auto" : "auto",
+                    "sqrt" : "sqrt",
+                    "None" : null
+                }
+            },
+            "gamma" : {
+                "type" : "double",
+                "default" : 0,
+                "min" : 0,
+                "max" : 100,
+                "step_size" : 0.01,
+                "decimal_len":  2
+            },
+            "subsample" : {
+                "type" : "double",
+                "default" : 1,
+                "min" : 0,
+                "max" : 1,
+                "step_size" : 0.01,
+                "decimal_len":  2
+            },
+            "colsample_bytree" : {
+                "type" : "double",
+                "default" : 1,
+                "min" : 0,
+                "max" : 1,
+                "step_size" : 0.01,
+                "decimal_len":  2
+            },
+            "reg_alpha" : {
+                "type" : "double",
+                "default" : 0,
+                "min" : 0,
+                "max" : 1,
+                "step_size" : 0.01,
+                "decimal_len":  2
+            },
+            "reg_lambda" : {
+                "type" : "double",
+                "default" : 1,
+                "min" : 0,
+                "max" : 1,
+                "step_size" : 0.1,
+                "decimal_len":  1
+            }
+        }
+    }
 }

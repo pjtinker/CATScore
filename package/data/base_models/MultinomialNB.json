@@ -1,5 +1,25 @@
 {                  
     "model_base": "sklearn",
     "model_module": "sklearn.naive_bayes",
-    "model_class" : "MultinomialNB"
+    "model_class" : "MultinomialNB",
+    "MultinomialNB" : {
+        "Hyperparameters" : {
+            "alpha" : {
+                "type" : "double",
+                "default" : 1.0,
+                "min" : 0,
+                "max" : 100,
+                "step_size" : 1,
+                "decimal_len" : 2
+            },
+            "fit_prior" : {
+                "type" : "dropdown",
+                "default" : 1,
+                "options" : {
+                    "False" : false,
+                    "True" : true
+                }
+            }
+        }
+    }
 }

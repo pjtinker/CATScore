@@ -1,7 +1,7 @@
 {
     "types" : {
         "SelectKBest" : {
-            "params" : {
+            "Hyperparameters" : {
                 "k" : 20000
             },
             "score_options" : [
@@ -11,7 +11,7 @@
             ]
         },
         "SelectFwe" : {
-            "params" : {
+            "Hyperparameters" : {
                 "alpha" : 0.05
             },
             "score_options" : [

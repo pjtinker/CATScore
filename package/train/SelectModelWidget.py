@@ -147,7 +147,7 @@ class SelectModelWidget(QTabWidget):
                 with open(os.path.join(BASE_TF_MODEL_DIR, filename), 'r') as f:
                     print("Loading model:", filename)
                     model_data = json.load(f)
-                    model_dialog = TfModelDialog(self, model_data)
+                    model_dialog = SkModelDialog(self, model_data)
                     self.comms.version_change.connect(model_dialog.update_version)
                     model = model_data['model_class']
                     # Intialize model as unselected
