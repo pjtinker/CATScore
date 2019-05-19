@@ -1,0 +1,11 @@
+{
+  "model_class": "SepCNN",
+  "question_number": "Q1",
+  "version": "experimental",
+  "params": {
+    "SepCNN": {},
+    "SelectKBest": {
+      "k": 20500
+    }
+  }
+}

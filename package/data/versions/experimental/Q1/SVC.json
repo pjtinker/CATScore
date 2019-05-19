@@ -1,10 +1,14 @@
 {
-  "model_class" : "SVC",
-  "question_number" : "Q1",
-  "version" : "v5",
-  "model_params" : {
-      "C": 10,
-      "class_weight": null,
-      "kernel": "linear"
+  "model_class": "SVC",
+  "question_number": "Q1",
+  "version": "experimental",
+  "params": {
+    "SVC": {},
+    "TfidfVectorizer": {
+      "max_df": 1.3
+    },
+    "SelectKBest": {
+      "k": 20300
     }
+  }
 }

@@ -1,0 +1,2722 @@
+2019-05-13 08:38:07,569 - DEBUG - update_title_pos
+2019-05-13 08:38:07,598 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 08:38:10,109 - DEBUG - update_title_pos
+2019-05-13 08:38:10,153 - DEBUG - update_title_pos
+2019-05-13 08:38:24,448 - DEBUG - update_title_pos
+2019-05-13 08:38:25,152 - DEBUG - update_title_pos
+2019-05-13 08:38:27,199 - DEBUG - update_title_pos
+2019-05-13 08:40:43,384 - DEBUG - update_title_pos
+2019-05-13 08:40:43,393 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 08:40:45,522 - DEBUG - update_title_pos
+2019-05-13 08:40:45,573 - DEBUG - update_title_pos
+2019-05-13 08:40:47,413 - DEBUG - update_title_pos
+2019-05-13 08:40:47,793 - DEBUG - update_title_pos
+2019-05-13 12:32:44,612 - DEBUG - update_title_pos
+2019-05-13 12:32:44,620 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 12:32:47,089 - DEBUG - update_title_pos
+2019-05-13 12:32:47,134 - DEBUG - update_title_pos
+2019-05-13 13:01:42,208 - DEBUG - update_title_pos
+2019-05-13 13:01:42,215 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 13:01:46,240 - DEBUG - update_title_pos
+2019-05-13 13:01:46,283 - DEBUG - update_title_pos
+2019-05-13 13:11:30,115 - DEBUG - update_title_pos
+2019-05-13 13:11:30,123 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 13:11:33,627 - DEBUG - update_title_pos
+2019-05-13 13:11:33,673 - DEBUG - update_title_pos
+2019-05-13 13:16:32,122 - DEBUG - update_title_pos
+2019-05-13 13:16:32,129 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 13:16:34,558 - DEBUG - update_title_pos
+2019-05-13 13:16:34,608 - DEBUG - update_title_pos
+2019-05-13 13:18:10,304 - DEBUG - update_title_pos
+2019-05-13 13:18:10,312 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 13:18:12,407 - DEBUG - update_title_pos
+2019-05-13 13:18:12,453 - DEBUG - update_title_pos
+2019-05-13 13:18:18,216 - DEBUG - update_title_pos
+2019-05-13 13:18:18,355 - DEBUG - update_title_pos
+2019-05-13 13:18:18,898 - DEBUG - update_title_pos
+2019-05-13 13:18:19,315 - DEBUG - update_title_pos
+2019-05-13 13:18:19,866 - DEBUG - update_title_pos
+2019-05-13 13:21:37,817 - DEBUG - update_title_pos
+2019-05-13 13:21:38,323 - DEBUG - update_title_pos
+2019-05-13 13:21:38,624 - DEBUG - update_title_pos
+2019-05-13 13:21:38,944 - DEBUG - update_title_pos
+2019-05-13 13:21:43,108 - DEBUG - update_title_pos
+2019-05-13 13:21:43,704 - DEBUG - update_title_pos
+2019-05-13 13:21:43,771 - DEBUG - update_title_pos
+2019-05-13 13:21:43,819 - DEBUG - update_title_pos
+2019-05-13 13:21:43,868 - DEBUG - update_title_pos
+2019-05-13 13:21:43,911 - DEBUG - update_title_pos
+2019-05-13 13:27:36,765 - DEBUG - update_title_pos
+2019-05-13 13:27:36,774 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 13:27:39,903 - DEBUG - update_title_pos
+2019-05-13 13:27:39,951 - DEBUG - update_title_pos
+2019-05-13 13:30:27,849 - DEBUG - update_title_pos
+2019-05-13 13:30:27,858 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 13:30:30,204 - DEBUG - update_title_pos
+2019-05-13 13:30:30,253 - DEBUG - update_title_pos
+2019-05-13 13:30:35,809 - DEBUG - update_title_pos
+2019-05-13 13:30:36,195 - DEBUG - update_title_pos
+2019-05-13 13:30:36,502 - DEBUG - update_title_pos
+2019-05-13 13:30:36,871 - DEBUG - update_title_pos
+2019-05-13 13:30:37,319 - DEBUG - update_title_pos
+2019-05-13 13:30:37,757 - DEBUG - update_title_pos
+2019-05-13 13:30:38,116 - DEBUG - update_title_pos
+2019-05-13 13:31:54,611 - DEBUG - update_title_pos
+2019-05-13 13:31:54,620 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 13:31:56,869 - DEBUG - update_title_pos
+2019-05-13 13:31:56,915 - DEBUG - update_title_pos
+2019-05-13 13:32:04,390 - DEBUG - update_title_pos
+2019-05-13 13:32:04,918 - DEBUG - update_title_pos
+2019-05-13 13:32:05,344 - DEBUG - update_title_pos
+2019-05-13 13:39:17,226 - DEBUG - update_title_pos
+2019-05-13 13:39:17,234 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 13:39:19,449 - DEBUG - update_title_pos
+2019-05-13 13:39:19,495 - DEBUG - update_title_pos
+2019-05-13 13:43:33,743 - DEBUG - update_title_pos
+2019-05-13 13:43:33,751 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 13:43:36,000 - DEBUG - update_title_pos
+2019-05-13 13:43:36,047 - DEBUG - update_title_pos
+2019-05-13 14:22:56,187 - DEBUG - update_title_pos
+2019-05-13 14:22:56,196 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 14:22:58,265 - DEBUG - update_title_pos
+2019-05-13 14:22:58,312 - DEBUG - update_title_pos
+2019-05-13 14:32:14,648 - DEBUG - update_title_pos
+2019-05-13 14:32:14,656 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 14:32:17,292 - DEBUG - update_title_pos
+2019-05-13 14:32:17,336 - DEBUG - update_title_pos
+2019-05-13 14:35:09,897 - DEBUG - update_title_pos
+2019-05-13 14:35:09,905 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 14:35:11,878 - DEBUG - update_title_pos
+2019-05-13 14:35:11,924 - DEBUG - update_title_pos
+2019-05-13 14:35:29,251 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 294, in load_version_params
+    model_data['model_class'] = self.getModelName()
+UnboundLocalError: local variable 'model_data' referenced before assignment
+2019-05-13 14:35:29,254 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 294, in load_version_params
+    model_data['model_class'] = self.getModelName()
+UnboundLocalError: local variable 'model_data' referenced before assignment
+2019-05-13 14:35:29,256 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 294, in load_version_params
+    model_data['model_class'] = self.getModelName()
+UnboundLocalError: local variable 'model_data' referenced before assignment
+2019-05-13 14:35:29,264 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 294, in load_version_params
+    model_data['model_class'] = self.getModelName()
+UnboundLocalError: local variable 'model_data' referenced before assignment
+2019-05-13 14:36:24,086 - DEBUG - update_title_pos
+2019-05-13 14:36:24,094 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 14:36:26,295 - DEBUG - update_title_pos
+2019-05-13 14:36:26,344 - DEBUG - update_title_pos
+2019-05-13 14:37:30,009 - DEBUG - update_title_pos
+2019-05-13 14:37:30,017 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 14:37:32,051 - DEBUG - update_title_pos
+2019-05-13 14:37:32,096 - DEBUG - update_title_pos
+2019-05-13 14:39:54,062 - DEBUG - update_title_pos
+2019-05-13 14:39:54,070 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 14:39:56,314 - DEBUG - update_title_pos
+2019-05-13 14:39:56,362 - DEBUG - update_title_pos
+2019-05-13 14:41:19,970 - DEBUG - update_title_pos
+2019-05-13 14:41:19,980 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 14:41:21,962 - DEBUG - update_title_pos
+2019-05-13 14:41:22,009 - DEBUG - update_title_pos
+2019-05-13 14:46:53,044 - DEBUG - update_title_pos
+2019-05-13 14:46:53,051 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 14:46:55,040 - DEBUG - update_title_pos
+2019-05-13 14:46:55,087 - DEBUG - update_title_pos
+2019-05-13 15:00:49,796 - DEBUG - update_title_pos
+2019-05-13 15:00:49,805 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 15:00:52,050 - DEBUG - update_title_pos
+2019-05-13 15:00:52,092 - DEBUG - update_title_pos
+2019-05-13 15:13:14,828 - ERROR - Error loading base TFIDF params
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 86, in setupUi
+    with open(BASE_TFIDF_DIR, 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: './package/data/featureextractors/tfidf.json'
+2019-05-13 15:13:21,563 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 97, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+UnboundLocalError: local variable 'tfidf_data' referenced before assignment
+2019-05-13 15:14:03,078 - ERROR - Error loading base TFIDF params
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 86, in setupUi
+    with open(BASE_TFIDF_DIR, 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: './package/data/featureextractors/TfidfVectorizer.json'
+2019-05-13 15:14:19,153 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 97, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+UnboundLocalError: local variable 'tfidf_data' referenced before assignment
+2019-05-13 15:14:23,534 - DEBUG - update_title_pos
+2019-05-13 15:14:23,542 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 15:14:26,036 - DEBUG - update_title_pos
+2019-05-13 15:14:26,082 - DEBUG - update_title_pos
+2019-05-13 15:15:06,236 - DEBUG - update_title_pos
+2019-05-13 15:15:06,244 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 15:15:08,556 - DEBUG - update_title_pos
+2019-05-13 15:15:08,599 - DEBUG - update_title_pos
+2019-05-13 15:24:38,326 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 334, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(type)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:24:38,332 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 334, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(int, int)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:24:38,369 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 334, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(type)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:24:38,373 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 334, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(int, int)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:24:38,384 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 334, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(type)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:24:38,389 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 334, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(int, int)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:24:38,413 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 334, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(type)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:24:38,417 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 334, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(int, int)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:24:47,901 - DEBUG - update_title_pos
+2019-05-13 15:24:47,909 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 15:24:52,653 - DEBUG - update_title_pos
+2019-05-13 15:24:52,697 - DEBUG - update_title_pos
+2019-05-13 15:25:49,307 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 348, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(type)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:25:49,354 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 348, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(type)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:25:49,370 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 348, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(type)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:25:49,397 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 348, in _build_ui
+    input_field.setText(v)
+TypeError: 'PySide2.QtWidgets.QLineEdit.setText' called with wrong argument types:
+  PySide2.QtWidgets.QLineEdit.setText(type)
+Supported signatures:
+  PySide2.QtWidgets.QLineEdit.setText(str)
+2019-05-13 15:26:35,745 - DEBUG - update_title_pos
+2019-05-13 15:26:35,753 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 15:26:37,744 - DEBUG - update_title_pos
+2019-05-13 15:26:37,789 - DEBUG - update_title_pos
+2019-05-13 15:36:05,296 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 97, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 50, in __init__
+    self.setupUI()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 109, in setupUI
+    self._build_ui('model', self.model.get_params(), self.model_params)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 291, in _build_ui
+    for k, v in param_dict.items():
+NameError: name 'param_dict' is not defined
+2019-05-13 15:36:32,136 - DEBUG - update_title_pos
+2019-05-13 15:36:32,147 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 15:36:34,976 - DEBUG - update_title_pos
+2019-05-13 15:36:35,026 - DEBUG - update_title_pos
+2019-05-13 15:38:03,800 - DEBUG - update_title_pos
+2019-05-13 15:38:03,808 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 15:38:06,011 - DEBUG - update_title_pos
+2019-05-13 15:38:06,058 - DEBUG - update_title_pos
+2019-05-13 15:55:30,051 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 97, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 30, in __init__
+    score_func = self.getClass(self.model_params['feature_selection']['score_func'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 93, in getClass
+    model = module_class(init_class)
+TypeError: f_classif() missing 1 required positional argument: 'y'
+2019-05-13 15:56:21,397 - DEBUG - update_title_pos
+2019-05-13 15:56:21,405 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 15:56:23,556 - DEBUG - update_title_pos
+2019-05-13 15:56:23,601 - DEBUG - update_title_pos
+2019-05-13 15:58:34,610 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 97, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 68, in __init__
+    if self.fs:
+AttributeError: 'SkModelDialog' object has no attribute 'fs'
+2019-05-13 15:59:11,641 - DEBUG - update_title_pos
+2019-05-13 15:59:11,649 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 15:59:14,287 - DEBUG - update_title_pos
+2019-05-13 15:59:14,335 - DEBUG - update_title_pos
+2019-05-13 16:00:05,486 - DEBUG - update_title_pos
+2019-05-13 16:00:05,494 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 16:00:08,551 - DEBUG - update_title_pos
+2019-05-13 16:00:08,601 - DEBUG - update_title_pos
+2019-05-13 16:01:46,104 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 97, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 57, in __init__
+    self.setupUI()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 124, in setupUI
+    self._build_ui('feature_selection', self.fs.get_params(), self.fs_params)
+AttributeError: 'SkModelDialog' object has no attribute 'fs'
+2019-05-13 16:02:34,886 - DEBUG - update_title_pos
+2019-05-13 16:02:34,895 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 16:02:37,093 - DEBUG - update_title_pos
+2019-05-13 16:02:37,143 - DEBUG - update_title_pos
+2019-05-13 16:04:46,451 - DEBUG - update_title_pos
+2019-05-13 16:04:46,459 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 16:04:48,694 - DEBUG - update_title_pos
+2019-05-13 16:04:48,738 - DEBUG - update_title_pos
+2019-05-13 16:06:29,447 - DEBUG - update_title_pos
+2019-05-13 16:06:29,455 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 16:06:31,829 - DEBUG - update_title_pos
+2019-05-13 16:06:31,875 - DEBUG - update_title_pos
+2019-05-13 16:08:13,228 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 97, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 32, in __init__
+    self.fs_params = fs_params
+NameError: name 'fs_params' is not defined
+2019-05-13 16:08:50,015 - DEBUG - update_title_pos
+2019-05-13 16:08:50,022 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 16:08:52,963 - DEBUG - update_title_pos
+2019-05-13 16:08:53,008 - DEBUG - update_title_pos
+2019-05-13 16:09:54,538 - DEBUG - update_title_pos
+2019-05-13 16:09:54,546 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 16:09:57,305 - DEBUG - update_title_pos
+2019-05-13 16:09:57,352 - DEBUG - update_title_pos
+2019-05-13 16:13:37,881 - DEBUG - update_title_pos
+2019-05-13 16:13:37,889 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 16:13:40,146 - DEBUG - update_title_pos
+2019-05-13 16:13:40,194 - DEBUG - update_title_pos
+2019-05-13 16:16:14,241 - DEBUG - update_title_pos
+2019-05-13 16:16:14,249 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 16:16:16,128 - DEBUG - update_title_pos
+2019-05-13 16:16:16,174 - DEBUG - update_title_pos
+2019-05-13 16:18:57,938 - DEBUG - update_title_pos
+2019-05-13 16:18:57,946 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-13 16:19:00,487 - DEBUG - update_title_pos
+2019-05-13 16:19:00,532 - DEBUG - update_title_pos
+2019-05-14 08:43:08,261 - DEBUG - update_title_pos
+2019-05-14 08:43:08,297 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 08:43:10,390 - DEBUG - update_title_pos
+2019-05-14 08:43:10,437 - DEBUG - update_title_pos
+2019-05-14 10:10:28,539 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 106, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 36, in __init__
+    if fs_params in self.model_params:
+TypeError: unhashable type: 'dict'
+2019-05-14 10:10:33,728 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 133, in setupUi
+    model_dialog = TfModelDialog(self, model_data, fs_data)
+TypeError: __init__() takes from 1 to 3 positional arguments but 4 were given
+2019-05-14 10:11:07,120 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 106, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 36, in __init__
+    if fs_params in self.model_params:
+TypeError: unhashable type: 'dict'
+2019-05-14 10:11:39,734 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 106, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 88, in __init__
+    self.setupUI()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 134, in setupUI
+    self._build_ui('feature_selection', self.fs.get_params(), self.fs_params)
+AttributeError: 'SkModelDialog' object has no attribute 'fs'
+2019-05-14 10:13:02,268 - DEBUG - update_title_pos
+2019-05-14 10:13:02,275 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 10:13:04,960 - DEBUG - update_title_pos
+2019-05-14 10:13:05,011 - DEBUG - update_title_pos
+2019-05-14 10:41:56,195 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 106, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 89, in __init__
+    self._build_fs_ui()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 161, in _build_fs_ui
+    for fs, options in self.fs_params['types']:
+KeyError: 'types'
+2019-05-14 10:42:07,732 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 106, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 89, in __init__
+    self._build_fs_ui()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 161, in _build_fs_ui
+    for fs, options in self.fs_params['types']:
+ValueError: too many values to unpack (expected 2)
+2019-05-14 10:43:24,614 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 106, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 89, in __init__
+    self._build_fs_ui()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in _build_fs_ui
+    for param, val in options['params']:
+ValueError: not enough values to unpack (expected 2, got 1)
+2019-05-14 10:43:49,765 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 106, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 89, in __init__
+    self._build_fs_ui()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 186, in _build_fs_ui
+    self.input_widgets[k] = param_field
+NameError: name 'k' is not defined
+2019-05-14 10:44:12,668 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 106, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 89, in __init__
+    self._build_fs_ui()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 175, in _build_fs_ui
+    elif isinstance(v, float):
+NameError: name 'v' is not defined
+2019-05-14 10:44:27,456 - DEBUG - update_title_pos
+2019-05-14 10:44:27,463 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 10:44:29,921 - DEBUG - update_title_pos
+2019-05-14 10:44:29,972 - DEBUG - update_title_pos
+2019-05-14 10:47:44,630 - DEBUG - update_title_pos
+2019-05-14 10:47:44,638 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 10:47:46,896 - DEBUG - update_title_pos
+2019-05-14 10:47:46,944 - DEBUG - update_title_pos
+2019-05-14 10:54:08,197 - DEBUG - update_title_pos
+2019-05-14 10:54:08,205 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 10:54:10,065 - DEBUG - update_title_pos
+2019-05-14 10:54:10,111 - DEBUG - update_title_pos
+2019-05-14 11:02:10,824 - DEBUG - update_title_pos
+2019-05-14 11:02:10,832 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:02:13,473 - DEBUG - update_title_pos
+2019-05-14 11:02:13,525 - DEBUG - update_title_pos
+2019-05-14 11:05:15,429 - DEBUG - update_title_pos
+2019-05-14 11:05:15,437 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:05:17,756 - DEBUG - update_title_pos
+2019-05-14 11:05:17,802 - DEBUG - update_title_pos
+2019-05-14 11:06:01,411 - DEBUG - update_title_pos
+2019-05-14 11:06:01,419 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:06:04,778 - DEBUG - update_title_pos
+2019-05-14 11:06:04,836 - DEBUG - update_title_pos
+2019-05-14 11:08:02,957 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 106, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, fs_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 89, in __init__
+    self._build_fs_ui()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 199, in _build_fs_ui
+    lambda state, x=fs_combo.currentValue(): self._update_fs_ui(x)
+AttributeError: 'PySide2.QtWidgets.QComboBox' object has no attribute 'currentValue'
+2019-05-14 11:08:21,946 - DEBUG - update_title_pos
+2019-05-14 11:08:21,954 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:08:24,186 - DEBUG - update_title_pos
+2019-05-14 11:08:24,230 - DEBUG - update_title_pos
+2019-05-14 11:09:41,704 - DEBUG - update_title_pos
+2019-05-14 11:09:41,712 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:09:43,964 - DEBUG - update_title_pos
+2019-05-14 11:09:44,012 - DEBUG - update_title_pos
+2019-05-14 11:10:27,479 - DEBUG - update_title_pos
+2019-05-14 11:10:27,487 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:10:29,911 - DEBUG - update_title_pos
+2019-05-14 11:10:29,956 - DEBUG - update_title_pos
+2019-05-14 11:17:17,832 - DEBUG - update_title_pos
+2019-05-14 11:17:17,840 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:17:22,154 - DEBUG - update_title_pos
+2019-05-14 11:17:22,203 - DEBUG - update_title_pos
+2019-05-14 11:18:21,158 - DEBUG - update_title_pos
+2019-05-14 11:18:21,166 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:18:23,405 - DEBUG - update_title_pos
+2019-05-14 11:18:23,453 - DEBUG - update_title_pos
+2019-05-14 11:18:59,982 - DEBUG - update_title_pos
+2019-05-14 11:18:59,990 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:19:03,497 - DEBUG - update_title_pos
+2019-05-14 11:19:03,544 - DEBUG - update_title_pos
+2019-05-14 11:19:30,118 - DEBUG - update_title_pos
+2019-05-14 11:19:30,126 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:19:32,084 - DEBUG - update_title_pos
+2019-05-14 11:19:32,130 - DEBUG - update_title_pos
+2019-05-14 11:26:02,152 - DEBUG - update_title_pos
+2019-05-14 11:26:02,161 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:26:04,018 - DEBUG - update_title_pos
+2019-05-14 11:26:04,063 - DEBUG - update_title_pos
+2019-05-14 11:26:48,966 - DEBUG - update_title_pos
+2019-05-14 11:26:48,975 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:26:51,102 - DEBUG - update_title_pos
+2019-05-14 11:26:51,151 - DEBUG - update_title_pos
+2019-05-14 11:27:46,303 - DEBUG - update_title_pos
+2019-05-14 11:27:46,311 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:27:48,214 - DEBUG - update_title_pos
+2019-05-14 11:27:48,266 - DEBUG - update_title_pos
+2019-05-14 11:30:47,328 - DEBUG - update_title_pos
+2019-05-14 11:30:47,336 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:30:49,261 - DEBUG - update_title_pos
+2019-05-14 11:30:49,319 - DEBUG - update_title_pos
+2019-05-14 11:32:05,543 - DEBUG - update_title_pos
+2019-05-14 11:32:05,551 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:32:07,822 - DEBUG - update_title_pos
+2019-05-14 11:32:07,871 - DEBUG - update_title_pos
+2019-05-14 11:35:24,530 - DEBUG - update_title_pos
+2019-05-14 11:35:24,537 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:35:27,041 - DEBUG - update_title_pos
+2019-05-14 11:35:27,088 - DEBUG - update_title_pos
+2019-05-14 11:36:26,917 - DEBUG - update_title_pos
+2019-05-14 11:36:26,926 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:36:30,351 - DEBUG - update_title_pos
+2019-05-14 11:36:30,399 - DEBUG - update_title_pos
+2019-05-14 11:37:01,725 - DEBUG - update_title_pos
+2019-05-14 11:37:01,732 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:37:03,830 - DEBUG - update_title_pos
+2019-05-14 11:37:03,876 - DEBUG - update_title_pos
+2019-05-14 11:38:25,291 - DEBUG - update_title_pos
+2019-05-14 11:38:25,298 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:38:27,413 - DEBUG - update_title_pos
+2019-05-14 11:38:27,459 - DEBUG - update_title_pos
+2019-05-14 11:41:38,007 - DEBUG - update_title_pos
+2019-05-14 11:41:38,016 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:41:40,158 - DEBUG - update_title_pos
+2019-05-14 11:41:40,204 - DEBUG - update_title_pos
+2019-05-14 11:43:02,529 - DEBUG - update_title_pos
+2019-05-14 11:43:02,536 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:43:07,267 - DEBUG - update_title_pos
+2019-05-14 11:43:07,313 - DEBUG - update_title_pos
+2019-05-14 11:43:39,685 - DEBUG - update_title_pos
+2019-05-14 11:43:39,693 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:43:41,989 - DEBUG - update_title_pos
+2019-05-14 11:43:42,034 - DEBUG - update_title_pos
+2019-05-14 11:47:59,775 - DEBUG - update_title_pos
+2019-05-14 11:47:59,784 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:48:03,551 - DEBUG - update_title_pos
+2019-05-14 11:48:03,601 - DEBUG - update_title_pos
+2019-05-14 11:48:51,073 - DEBUG - update_title_pos
+2019-05-14 11:48:51,082 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:48:53,119 - DEBUG - update_title_pos
+2019-05-14 11:48:53,166 - DEBUG - update_title_pos
+2019-05-14 11:51:38,714 - DEBUG - update_title_pos
+2019-05-14 11:51:38,723 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:51:40,973 - DEBUG - update_title_pos
+2019-05-14 11:51:41,021 - DEBUG - update_title_pos
+2019-05-14 11:53:51,489 - DEBUG - update_title_pos
+2019-05-14 11:53:51,497 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:53:53,539 - DEBUG - update_title_pos
+2019-05-14 11:53:53,585 - DEBUG - update_title_pos
+2019-05-14 11:55:16,953 - DEBUG - update_title_pos
+2019-05-14 11:55:16,964 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:55:19,081 - DEBUG - update_title_pos
+2019-05-14 11:55:19,132 - DEBUG - update_title_pos
+2019-05-14 11:57:52,523 - DEBUG - update_title_pos
+2019-05-14 11:57:52,531 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 11:57:54,678 - DEBUG - update_title_pos
+2019-05-14 11:57:54,722 - DEBUG - update_title_pos
+2019-05-14 12:00:24,661 - DEBUG - update_title_pos
+2019-05-14 12:00:24,669 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:00:26,904 - DEBUG - update_title_pos
+2019-05-14 12:00:26,952 - DEBUG - update_title_pos
+2019-05-14 12:05:58,143 - DEBUG - update_title_pos
+2019-05-14 12:05:58,151 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:06:01,615 - DEBUG - update_title_pos
+2019-05-14 12:06:01,667 - DEBUG - update_title_pos
+2019-05-14 12:07:24,015 - DEBUG - update_title_pos
+2019-05-14 12:07:24,023 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:07:26,067 - DEBUG - update_title_pos
+2019-05-14 12:07:26,115 - DEBUG - update_title_pos
+2019-05-14 12:08:39,376 - DEBUG - update_title_pos
+2019-05-14 12:08:39,384 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:08:42,747 - DEBUG - update_title_pos
+2019-05-14 12:08:42,800 - DEBUG - update_title_pos
+2019-05-14 12:12:07,574 - DEBUG - update_title_pos
+2019-05-14 12:12:07,581 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:12:09,728 - DEBUG - update_title_pos
+2019-05-14 12:12:09,776 - DEBUG - update_title_pos
+2019-05-14 12:15:16,245 - DEBUG - update_title_pos
+2019-05-14 12:15:16,253 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:15:18,594 - DEBUG - update_title_pos
+2019-05-14 12:15:18,642 - DEBUG - update_title_pos
+2019-05-14 12:24:35,829 - DEBUG - update_title_pos
+2019-05-14 12:24:35,838 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:24:37,999 - DEBUG - update_title_pos
+2019-05-14 12:24:38,043 - DEBUG - update_title_pos
+2019-05-14 12:26:44,731 - DEBUG - update_title_pos
+2019-05-14 12:26:44,740 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:26:46,746 - DEBUG - update_title_pos
+2019-05-14 12:26:46,792 - DEBUG - update_title_pos
+2019-05-14 12:27:25,911 - DEBUG - update_title_pos
+2019-05-14 12:27:25,919 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:27:27,716 - DEBUG - update_title_pos
+2019-05-14 12:27:27,760 - DEBUG - update_title_pos
+2019-05-14 12:30:36,915 - DEBUG - update_title_pos
+2019-05-14 12:30:36,923 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:30:39,095 - DEBUG - update_title_pos
+2019-05-14 12:30:39,147 - DEBUG - update_title_pos
+2019-05-14 12:32:18,707 - DEBUG - update_title_pos
+2019-05-14 12:32:18,715 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:32:21,362 - DEBUG - update_title_pos
+2019-05-14 12:32:21,410 - DEBUG - update_title_pos
+2019-05-14 12:33:58,789 - DEBUG - update_title_pos
+2019-05-14 12:33:58,798 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:34:01,266 - DEBUG - update_title_pos
+2019-05-14 12:34:01,315 - DEBUG - update_title_pos
+2019-05-14 12:37:39,798 - DEBUG - update_title_pos
+2019-05-14 12:37:39,806 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-14 12:37:42,178 - DEBUG - update_title_pos
+2019-05-14 12:37:42,224 - DEBUG - update_title_pos
+2019-05-15 10:39:10,296 - DEBUG - update_title_pos
+2019-05-15 10:39:10,322 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 10:39:12,598 - DEBUG - update_title_pos
+2019-05-15 10:39:12,646 - DEBUG - update_title_pos
+2019-05-15 10:41:04,754 - DEBUG - update_title_pos
+2019-05-15 10:41:04,762 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 10:41:06,639 - DEBUG - update_title_pos
+2019-05-15 10:41:06,684 - DEBUG - update_title_pos
+2019-05-15 11:22:45,418 - DEBUG - update_title_pos
+2019-05-15 11:22:45,427 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 11:22:47,236 - DEBUG - update_title_pos
+2019-05-15 11:22:47,284 - DEBUG - update_title_pos
+2019-05-15 11:24:54,511 - DEBUG - update_title_pos
+2019-05-15 11:24:54,518 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 11:24:56,621 - DEBUG - update_title_pos
+2019-05-15 11:24:56,669 - DEBUG - update_title_pos
+2019-05-15 11:26:48,847 - DEBUG - update_title_pos
+2019-05-15 11:26:48,855 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 11:26:51,757 - DEBUG - update_title_pos
+2019-05-15 11:26:51,803 - DEBUG - update_title_pos
+2019-05-15 11:56:57,092 - DEBUG - update_title_pos
+2019-05-15 11:56:57,100 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 11:56:59,103 - DEBUG - update_title_pos
+2019-05-15 11:56:59,145 - DEBUG - update_title_pos
+2019-05-15 12:13:01,572 - DEBUG - update_title_pos
+2019-05-15 12:13:01,580 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 12:13:03,637 - DEBUG - update_title_pos
+2019-05-15 12:13:03,685 - DEBUG - update_title_pos
+2019-05-15 12:15:35,981 - DEBUG - update_title_pos
+2019-05-15 12:15:35,989 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 12:15:38,312 - DEBUG - update_title_pos
+2019-05-15 12:15:38,357 - DEBUG - update_title_pos
+2019-05-15 12:18:23,803 - DEBUG - update_title_pos
+2019-05-15 12:18:23,811 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 12:18:28,158 - DEBUG - update_title_pos
+2019-05-15 12:18:28,205 - DEBUG - update_title_pos
+2019-05-15 12:18:48,629 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 369, in load_version_params
+    cla.setValue(v)
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-15 12:23:47,091 - DEBUG - update_title_pos
+2019-05-15 12:23:47,514 - DEBUG - update_title_pos
+2019-05-15 12:23:47,937 - DEBUG - update_title_pos
+2019-05-15 12:23:48,645 - DEBUG - update_title_pos
+2019-05-15 12:23:49,224 - DEBUG - update_title_pos
+2019-05-15 12:23:49,714 - DEBUG - update_title_pos
+2019-05-15 12:23:50,136 - DEBUG - update_title_pos
+2019-05-15 12:30:25,143 - DEBUG - update_title_pos
+2019-05-15 12:30:25,151 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 12:30:27,499 - DEBUG - update_title_pos
+2019-05-15 12:30:27,545 - DEBUG - update_title_pos
+2019-05-15 12:34:26,993 - DEBUG - update_title_pos
+2019-05-15 12:34:27,002 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 12:34:29,530 - DEBUG - update_title_pos
+2019-05-15 12:34:29,574 - DEBUG - update_title_pos
+2019-05-15 12:37:51,644 - DEBUG - update_title_pos
+2019-05-15 12:37:51,652 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 12:37:54,158 - DEBUG - update_title_pos
+2019-05-15 12:37:54,216 - DEBUG - update_title_pos
+2019-05-15 12:43:25,409 - DEBUG - update_title_pos
+2019-05-15 12:43:25,418 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 12:43:27,466 - DEBUG - update_title_pos
+2019-05-15 12:43:27,515 - DEBUG - update_title_pos
+2019-05-15 12:44:25,644 - DEBUG - update_title_pos
+2019-05-15 12:44:25,652 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 12:44:33,115 - DEBUG - update_title_pos
+2019-05-15 12:44:33,163 - DEBUG - update_title_pos
+2019-05-15 13:05:59,090 - DEBUG - update_title_pos
+2019-05-15 13:05:59,099 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:06:02,309 - DEBUG - update_title_pos
+2019-05-15 13:06:02,358 - DEBUG - update_title_pos
+2019-05-15 13:07:38,933 - DEBUG - update_title_pos
+2019-05-15 13:07:38,946 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:07:40,880 - DEBUG - update_title_pos
+2019-05-15 13:07:40,930 - DEBUG - update_title_pos
+2019-05-15 13:14:26,417 - DEBUG - update_title_pos
+2019-05-15 13:14:26,425 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:14:28,659 - DEBUG - update_title_pos
+2019-05-15 13:14:28,707 - DEBUG - update_title_pos
+2019-05-15 13:16:42,292 - DEBUG - update_title_pos
+2019-05-15 13:16:42,300 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:16:44,030 - DEBUG - update_title_pos
+2019-05-15 13:16:44,078 - DEBUG - update_title_pos
+2019-05-15 13:22:34,739 - DEBUG - update_title_pos
+2019-05-15 13:22:34,748 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:22:37,073 - DEBUG - update_title_pos
+2019-05-15 13:22:37,120 - DEBUG - update_title_pos
+2019-05-15 13:24:35,073 - DEBUG - update_title_pos
+2019-05-15 13:24:35,081 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:24:36,946 - DEBUG - update_title_pos
+2019-05-15 13:24:36,995 - DEBUG - update_title_pos
+2019-05-15 13:24:47,888 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:47,896 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:47,901 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:47,911 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:55,600 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:55,605 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:55,612 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:55,615 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:59,386 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:59,394 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:59,400 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:24:59,407 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:26:17,701 - DEBUG - update_title_pos
+2019-05-15 13:26:17,709 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:26:19,669 - DEBUG - update_title_pos
+2019-05-15 13:26:19,716 - DEBUG - update_title_pos
+2019-05-15 13:33:03,813 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:33:03,822 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:33:03,827 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:33:03,833 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:33:43,197 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:33:43,210 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:33:43,217 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:33:43,220 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:34:21,067 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:34:21,073 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:34:21,080 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:34:21,084 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:34:22,758 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:34:22,763 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:34:22,770 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:34:22,773 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:34:37,786 - DEBUG - update_title_pos
+2019-05-15 13:34:37,794 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:34:40,523 - DEBUG - update_title_pos
+2019-05-15 13:34:40,570 - DEBUG - update_title_pos
+2019-05-15 13:35:09,754 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:35:09,760 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:35:09,767 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:35:09,773 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:35:53,928 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:35:53,933 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:35:53,941 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:35:53,944 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:37:00,396 - DEBUG - update_title_pos
+2019-05-15 13:37:00,404 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:37:02,380 - DEBUG - update_title_pos
+2019-05-15 13:37:02,428 - DEBUG - update_title_pos
+2019-05-15 13:44:55,342 - DEBUG - update_title_pos
+2019-05-15 13:44:55,349 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:44:57,764 - DEBUG - update_title_pos
+2019-05-15 13:44:57,810 - DEBUG - update_title_pos
+2019-05-15 13:45:59,019 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:45:59,024 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:45:59,030 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:45:59,035 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 347, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+  File "D:\Utilities\Miniconda3\envs\tf\lib\ntpath.py", line 76, in join
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2019-05-15 13:47:14,405 - DEBUG - update_title_pos
+2019-05-15 13:47:14,413 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:47:17,585 - DEBUG - update_title_pos
+2019-05-15 13:47:17,633 - DEBUG - update_title_pos
+2019-05-15 13:54:48,883 - DEBUG - update_title_pos
+2019-05-15 13:54:48,891 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 13:54:50,890 - DEBUG - update_title_pos
+2019-05-15 13:54:50,938 - DEBUG - update_title_pos
+2019-05-15 14:18:26,618 - DEBUG - update_title_pos
+2019-05-15 14:18:26,626 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 14:18:30,481 - DEBUG - update_title_pos
+2019-05-15 14:18:30,525 - DEBUG - update_title_pos
+2019-05-15 14:37:45,199 - DEBUG - update_title_pos
+2019-05-15 14:37:45,208 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 14:37:47,739 - DEBUG - update_title_pos
+2019-05-15 14:37:47,784 - DEBUG - update_title_pos
+2019-05-15 14:39:06,943 - DEBUG - update_title_pos
+2019-05-15 14:39:06,952 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 14:39:10,126 - DEBUG - update_title_pos
+2019-05-15 14:39:10,171 - DEBUG - update_title_pos
+2019-05-15 14:40:30,179 - DEBUG - update_title_pos
+2019-05-15 14:40:30,188 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 14:40:32,524 - DEBUG - update_title_pos
+2019-05-15 14:40:32,568 - DEBUG - update_title_pos
+2019-05-15 14:52:33,682 - DEBUG - update_title_pos
+2019-05-15 14:52:33,690 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 14:52:36,274 - DEBUG - update_title_pos
+2019-05-15 14:52:36,322 - DEBUG - update_title_pos
+2019-05-15 14:53:22,679 - DEBUG - update_title_pos
+2019-05-15 14:53:22,688 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 14:53:24,854 - DEBUG - update_title_pos
+2019-05-15 14:53:24,902 - DEBUG - update_title_pos
+2019-05-15 14:53:42,702 - DEBUG - update_title_pos
+2019-05-15 14:53:42,709 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 14:53:45,120 - DEBUG - update_title_pos
+2019-05-15 14:53:45,166 - DEBUG - update_title_pos
+2019-05-15 14:55:09,258 - DEBUG - update_title_pos
+2019-05-15 14:55:09,266 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 14:55:11,328 - DEBUG - update_title_pos
+2019-05-15 14:55:11,384 - DEBUG - update_title_pos
+2019-05-15 15:04:44,481 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
+TypeError: __init__() takes from 1 to 4 positional arguments but 5 were given
+2019-05-15 15:05:32,175 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 117, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
+TypeError: __init__() takes from 1 to 4 positional arguments but 5 were given
+2019-05-15 15:06:47,477 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 117, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
+TypeError: __init__() takes from 1 to 4 positional arguments but 5 were given
+2019-05-15 15:07:17,266 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 117, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
+TypeError: __init__() takes from 1 to 4 positional arguments but 5 were given
+2019-05-15 15:07:20,683 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 149, in setupUi
+    model_dialog = TfModelDialog(self, model_data, self.fs_params)
+TypeError: __init__() takes from 1 to 3 positional arguments but 4 were given
+2019-05-15 15:09:25,588 - DEBUG - update_title_pos
+2019-05-15 15:09:25,597 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 15:09:27,679 - DEBUG - update_title_pos
+2019-05-15 15:09:27,724 - DEBUG - update_title_pos
+2019-05-15 15:35:40,148 - DEBUG - update_title_pos
+2019-05-15 15:35:40,156 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 15:35:42,588 - DEBUG - update_title_pos
+2019-05-15 15:35:42,636 - DEBUG - update_title_pos
+2019-05-15 21:00:44,803 - DEBUG - update_title_pos
+2019-05-15 21:00:44,830 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 21:00:47,569 - DEBUG - update_title_pos
+2019-05-15 21:00:47,658 - DEBUG - update_title_pos
+2019-05-15 21:02:21,332 - DEBUG - update_title_pos
+2019-05-15 21:02:21,344 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 21:02:23,765 - DEBUG - update_title_pos
+2019-05-15 21:02:23,824 - DEBUG - update_title_pos
+2019-05-15 21:16:14,310 - DEBUG - update_title_pos
+2019-05-15 21:16:14,323 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 21:16:17,795 - DEBUG - update_title_pos
+2019-05-15 21:16:17,866 - DEBUG - update_title_pos
+2019-05-15 21:20:40,180 - DEBUG - update_title_pos
+2019-05-15 21:20:40,193 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 21:20:43,101 - DEBUG - update_title_pos
+2019-05-15 21:20:43,168 - DEBUG - update_title_pos
+2019-05-15 21:21:50,263 - DEBUG - update_title_pos
+2019-05-15 21:21:50,275 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 21:21:54,067 - DEBUG - update_title_pos
+2019-05-15 21:21:54,149 - DEBUG - update_title_pos
+2019-05-15 21:23:21,821 - DEBUG - update_title_pos
+2019-05-15 21:23:21,841 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 21:23:24,063 - DEBUG - update_title_pos
+2019-05-15 21:23:24,124 - DEBUG - update_title_pos
+2019-05-15 21:28:35,344 - DEBUG - update_title_pos
+2019-05-15 21:28:35,361 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 21:28:37,842 - DEBUG - update_title_pos
+2019-05-15 21:28:37,897 - DEBUG - update_title_pos
+2019-05-15 21:43:51,458 - DEBUG - update_title_pos
+2019-05-15 21:43:51,482 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 21:43:54,562 - DEBUG - update_title_pos
+2019-05-15 21:43:54,637 - DEBUG - update_title_pos
+2019-05-15 21:59:42,379 - DEBUG - update_title_pos
+2019-05-15 21:59:42,404 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-15 21:59:45,382 - DEBUG - update_title_pos
+2019-05-15 21:59:45,452 - DEBUG - update_title_pos
+2019-05-16 08:11:02,840 - DEBUG - update_title_pos
+2019-05-16 08:11:02,865 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 08:11:05,115 - DEBUG - update_title_pos
+2019-05-16 08:11:05,163 - DEBUG - update_title_pos
+2019-05-16 08:16:18,573 - DEBUG - update_title_pos
+2019-05-16 08:16:18,582 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 08:16:20,438 - DEBUG - update_title_pos
+2019-05-16 08:16:20,485 - DEBUG - update_title_pos
+2019-05-16 08:21:31,501 - DEBUG - update_title_pos
+2019-05-16 08:21:31,510 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 08:21:33,944 - DEBUG - update_title_pos
+2019-05-16 08:21:33,988 - DEBUG - update_title_pos
+2019-05-16 08:25:36,991 - DEBUG - update_title_pos
+2019-05-16 08:25:36,998 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 08:25:40,248 - DEBUG - update_title_pos
+2019-05-16 08:25:40,293 - DEBUG - update_title_pos
+2019-05-16 08:29:46,733 - DEBUG - update_title_pos
+2019-05-16 08:29:46,741 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 08:29:48,730 - DEBUG - update_title_pos
+2019-05-16 08:29:48,778 - DEBUG - update_title_pos
+2019-05-16 09:08:12,278 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 33, in __init__
+    self.model_params = self.model_data[self.model_data['model_class']]
+KeyError: 'MultinomialNB'
+2019-05-16 09:08:17,690 - DEBUG - update_title_pos
+2019-05-16 09:08:17,698 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 09:08:19,985 - DEBUG - update_title_pos
+2019-05-16 09:08:20,031 - DEBUG - update_title_pos
+2019-05-16 09:16:02,197 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 33, in __init__
+    self.model_params = self.model_data[self.model_data['model_class']]
+KeyError: 'MultinomialNB'
+2019-05-16 09:17:29,106 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 33, in __init__
+    self.model_params = self.model_data[self.model_data['model_class']]
+KeyError: 'MultinomialNB'
+2019-05-16 09:50:11,683 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 33, in __init__
+    self.model_params = self.model_data[self.model_data['model_class']]
+KeyError: 'MultinomialNB'
+2019-05-16 09:50:14,805 - DEBUG - update_title_pos
+2019-05-16 09:50:14,813 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 09:50:16,941 - DEBUG - update_title_pos
+2019-05-16 09:50:16,991 - DEBUG - update_title_pos
+2019-05-16 09:52:32,514 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 33, in __init__
+    self.model_params = self.model_data[self.model_data['model_class']]
+KeyError: 'MultinomialNB'
+2019-05-16 09:54:00,082 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 33, in __init__
+    self.model_params = self.model_data[self.model_data['model_class']]
+KeyError: 'MultinomialNB'
+2019-05-16 09:57:07,717 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 33, in __init__
+    self.model_params = self.model_data[self.model_data['model_class']]
+KeyError: 'MultinomialNB'
+2019-05-16 10:54:25,715 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:54:25,727 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:54:25,740 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:54:25,753 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:54:30,510 - DEBUG - update_title_pos
+2019-05-16 10:54:30,518 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 10:54:32,762 - DEBUG - update_title_pos
+2019-05-16 10:54:32,813 - DEBUG - update_title_pos
+2019-05-16 10:57:03,548 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:57:03,559 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:57:03,567 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:57:03,577 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:57:41,946 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:57:41,955 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:57:41,961 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:57:41,972 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:57:43,634 - DEBUG - update_title_pos
+2019-05-16 10:57:43,642 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 10:58:08,272 - DEBUG - update_title_pos
+2019-05-16 10:58:08,318 - DEBUG - update_title_pos
+2019-05-16 10:59:58,812 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:59:58,825 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:59:58,834 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 10:59:58,847 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:01:35,938 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:01:35,948 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:01:35,957 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:01:35,967 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:02:29,019 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:02:29,029 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:02:29,040 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:02:29,049 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:02:29,059 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 249, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '.\\package\\data\\versions\\experimental\\Q1\\TfidfVectorizer.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    model_data['model_class'] = self.getModelName()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 86, in getModelName
+    return self.model_params['model_class']
+KeyError: 'model_class'
+2019-05-16 11:02:29,062 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 249, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '.\\package\\data\\versions\\experimental\\Q1\\TfidfVectorizer.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    model_data['model_class'] = self.getModelName()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 86, in getModelName
+    return self.model_params['model_class']
+KeyError: 'model_class'
+2019-05-16 11:02:29,065 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 249, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '.\\package\\data\\versions\\experimental\\Q1\\TfidfVectorizer.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    model_data['model_class'] = self.getModelName()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 86, in getModelName
+    return self.model_params['model_class']
+KeyError: 'model_class'
+2019-05-16 11:02:29,070 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 249, in load_version_params
+    with open(os.path.join(path, filename), 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '.\\package\\data\\versions\\experimental\\Q1\\TfidfVectorizer.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    model_data['model_class'] = self.getModelName()
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 86, in getModelName
+    return self.model_params['model_class']
+KeyError: 'model_class'
+2019-05-16 11:03:47,559 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:03:47,571 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:03:47,580 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:03:47,588 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:03:47,600 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:03:47,603 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:03:47,605 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:03:47,609 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:04:37,904 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:04:37,914 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:04:37,922 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:04:37,930 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:04:37,942 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:04:37,945 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:04:37,947 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:04:37,949 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:04:53,645 - DEBUG - update_title_pos
+2019-05-16 11:04:53,653 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 11:04:55,770 - DEBUG - update_title_pos
+2019-05-16 11:04:55,818 - DEBUG - update_title_pos
+2019-05-16 11:04:59,313 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:04:59,316 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:04:59,319 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:04:59,323 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:06:02,845 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:08:21,491 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:08:21,501 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:08:21,511 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:08:21,518 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:08:21,529 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:08:21,532 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:08:21,537 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 261, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:08:21,539 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:09:05,568 - DEBUG - update_title_pos
+2019-05-16 11:09:05,577 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 11:09:07,657 - DEBUG - update_title_pos
+2019-05-16 11:09:07,706 - DEBUG - update_title_pos
+2019-05-16 11:09:14,350 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 261, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:10:47,767 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:10:47,778 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:10:47,787 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:10:47,798 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:10:47,815 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:10:47,824 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:10:47,833 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 260, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:10:47,843 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:10:56,337 - DEBUG - update_title_pos
+2019-05-16 11:10:56,346 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 11:12:10,533 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:12:10,543 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:12:10,553 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:12:10,562 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:12:10,578 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:12:10,588 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:12:10,599 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 260, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:12:10,610 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 258, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:13:44,460 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:13:44,467 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:13:44,473 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:13:44,479 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:13:44,496 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 257, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:13:44,505 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 257, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:13:44,514 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 259, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 280, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:13:44,525 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 257, in load_version_params
+    model_class = model_data['model_class']
+KeyError: 'model_class'
+2019-05-16 11:15:39,879 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:15:39,886 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:15:39,893 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:15:39,899 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:15:39,933 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:15:45,911 - DEBUG - update_title_pos
+2019-05-16 11:15:45,919 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 11:15:48,183 - DEBUG - update_title_pos
+2019-05-16 11:15:48,228 - DEBUG - update_title_pos
+2019-05-16 11:15:54,505 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:16:06,941 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:16:36,764 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:16:56,762 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:17:08,612 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:17:14,835 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in set_input_params
+    cla.setValue(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:18:32,883 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:18:32,891 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:18:32,898 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:18:32,905 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:18:32,936 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 273, in set_input_params
+    print(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:18:37,147 - DEBUG - update_title_pos
+2019-05-16 11:18:37,156 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 11:18:40,514 - DEBUG - update_title_pos
+2019-05-16 11:18:40,563 - DEBUG - update_title_pos
+2019-05-16 11:18:45,803 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 273, in set_input_params
+    print(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:18:58,925 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 273, in set_input_params
+    print(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:20:08,423 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 252, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 273, in set_input_params
+    print(v['default'])
+TypeError: 'int' object is not subscriptable
+2019-05-16 11:21:26,499 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:21:26,506 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:21:26,512 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:21:26,518 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:23:46,763 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:23:46,771 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:23:46,779 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:23:46,785 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:23:50,412 - DEBUG - update_title_pos
+2019-05-16 11:23:50,420 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 11:23:52,482 - DEBUG - update_title_pos
+2019-05-16 11:23:52,529 - DEBUG - update_title_pos
+2019-05-16 11:23:57,902 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 255, in load_version_params
+    self.set_input_params(model_data['tfidf_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 280, in set_input_params
+    cla.setValue(v)
+TypeError: 'PySide2.QtWidgets.QSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QSpinBox.setValue(list)
+Supported signatures:
+  PySide2.QtWidgets.QSpinBox.setValue(int)
+2019-05-16 11:26:49,645 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:26:49,652 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:26:49,661 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:26:49,667 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:27:58,747 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:27:58,755 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:27:58,763 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:27:58,773 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:28:01,931 - DEBUG - update_title_pos
+2019-05-16 11:28:01,939 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 11:28:04,001 - DEBUG - update_title_pos
+2019-05-16 11:28:04,049 - DEBUG - update_title_pos
+2019-05-16 11:30:14,657 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:30:14,664 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:30:14,671 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:30:14,677 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    input_field.setValue(v['default'])
+TypeError: 'PySide2.QtWidgets.QDoubleSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(str)
+Supported signatures:
+  PySide2.QtWidgets.QDoubleSpinBox.setValue(float)
+2019-05-16 11:30:16,164 - DEBUG - update_title_pos
+2019-05-16 11:30:16,171 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 11:30:18,618 - DEBUG - update_title_pos
+2019-05-16 11:30:18,665 - DEBUG - update_title_pos
+2019-05-16 11:30:54,120 - DEBUG - update_title_pos
+2019-05-16 11:30:54,128 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 11:30:56,302 - DEBUG - update_title_pos
+2019-05-16 11:30:56,351 - DEBUG - update_title_pos
+2019-05-16 15:10:45,009 - DEBUG - update_title_pos
+2019-05-16 15:10:45,022 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 15:10:47,497 - DEBUG - update_title_pos
+2019-05-16 15:10:47,568 - DEBUG - update_title_pos
+2019-05-16 15:10:57,515 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 255, in load_version_params
+    self.set_input_params(model_data['tfidf_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 278, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 17:26:04,604 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 17:26:16,915 - DEBUG - update_title_pos
+2019-05-16 17:26:16,924 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 17:26:18,899 - DEBUG - update_title_pos
+2019-05-16 17:26:18,945 - DEBUG - update_title_pos
+2019-05-16 17:27:02,494 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 77, in __init__
+    self.setupUI(self.tfidf_data['model_class'], self.tfidf_params, self.tfidf_param_form)
+KeyError: 'model_class'
+2019-05-16 17:27:12,702 - DEBUG - update_title_pos
+2019-05-16 17:27:12,710 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 17:27:15,418 - DEBUG - update_title_pos
+2019-05-16 17:27:15,464 - DEBUG - update_title_pos
+2019-05-16 17:36:16,050 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 31, in __init__
+    self.model_data = model_data
+NameError: name 'model_data' is not defined
+2019-05-16 17:36:32,926 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 31, in __init__
+    self.model_data = model_data
+NameError: name 'model_data' is not defined
+2019-05-16 17:57:25,124 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 32, in __init__
+    elf.input_widgets = {}
+NameError: name 'elf' is not defined
+2019-05-16 17:57:32,013 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 32, in __init__
+    elf.input_widgets = {}
+NameError: name 'elf' is not defined
+2019-05-16 18:00:04,027 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 56, in __init__
+    s
+NameError: name 's' is not defined
+2019-05-16 18:00:07,447 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 56, in __init__
+    s
+NameError: name 's' is not defined
+2019-05-16 18:00:21,054 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 57, in __init__
+    self.setWindowTitle(self.model_data['model_class'])
+AttributeError: 'SkModelDialog' object has no attribute 'model_data'
+2019-05-16 18:00:24,488 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 57, in __init__
+    self.setWindowTitle(self.model_data['model_class'])
+AttributeError: 'SkModelDialog' object has no attribute 'model_data'
+2019-05-16 18:16:04,710 - DEBUG - update_title_pos
+2019-05-16 18:16:04,722 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 18:16:07,972 - DEBUG - update_title_pos
+2019-05-16 18:16:08,019 - DEBUG - update_title_pos
+2019-05-16 18:17:20,421 - DEBUG - update_title_pos
+2019-05-16 18:17:20,429 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 18:17:22,821 - DEBUG - update_title_pos
+2019-05-16 18:17:22,867 - DEBUG - update_title_pos
+2019-05-16 18:23:04,903 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 58, in __init__
+    self.setWindowTitle(self.model_data['model_class'])
+AttributeError: 'SkModelDialog' object has no attribute 'model_data'
+2019-05-16 18:23:08,513 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 58, in __init__
+    self.setWindowTitle(self.model_data['model_class'])
+AttributeError: 'SkModelDialog' object has no attribute 'model_data'
+2019-05-16 18:23:30,213 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 68, in __init__
+    groupbox.setTitle()
+TypeError: setTitle() takes exactly one argument (0 given)
+2019-05-16 18:23:34,023 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 68, in __init__
+    groupbox.setTitle()
+TypeError: setTitle() takes exactly one argument (0 given)
+2019-05-16 18:24:48,011 - DEBUG - update_title_pos
+2019-05-16 18:24:48,019 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 18:24:51,651 - DEBUG - update_title_pos
+2019-05-16 18:24:51,697 - DEBUG - update_title_pos
+2019-05-16 18:38:13,103 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 81, in __init__
+    self.setupUI()
+TypeError: setupUI() missing 3 required positional arguments: 'param_type', 'param_dict', and 'form'
+2019-05-16 18:39:42,460 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 81, in __init__
+    self.setupUI()
+TypeError: setupUI() missing 3 required positional arguments: 'param_type', 'param_dict', and 'form'
+2019-05-16 18:43:06,540 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    for k, v in param_dict['params'].items():
+KeyError: 'params'
+2019-05-16 18:43:06,540 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    for k, v in param_dict['params'].items():
+KeyError: 'params'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 81, in __init__
+    self.setupUI(model, params, model_param_form)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 237, in setupUI
+    print("Exception {} occured with key {} and value {}".format(e, k, v))
+UnboundLocalError: local variable 'k' referenced before assignment
+2019-05-16 18:43:10,821 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    for k, v in param_dict['params'].items():
+KeyError: 'params'
+2019-05-16 18:43:10,822 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 162, in setupUI
+    for k, v in param_dict['params'].items():
+KeyError: 'params'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 81, in __init__
+    self.setupUI(model, params, model_param_form)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 237, in setupUI
+    print("Exception {} occured with key {} and value {}".format(e, k, v))
+UnboundLocalError: local variable 'k' referenced before assignment
+2019-05-16 18:46:51,876 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    for k, v in param_dict['params'].items():
+KeyError: 'params'
+2019-05-16 18:46:51,877 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    for k, v in param_dict['params'].items():
+KeyError: 'params'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 82, in __init__
+    self.setupUI(model, params, model_param_form)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 238, in setupUI
+    print("Exception {} occured with key {} and value {}".format(e, k, v))
+UnboundLocalError: local variable 'k' referenced before assignment
+2019-05-16 18:46:56,118 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    for k, v in param_dict['params'].items():
+KeyError: 'params'
+2019-05-16 18:46:56,118 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 163, in setupUI
+    for k, v in param_dict['params'].items():
+KeyError: 'params'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = SkModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 82, in __init__
+    self.setupUI(model, params, model_param_form)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 238, in setupUI
+    print("Exception {} occured with key {} and value {}".format(e, k, v))
+UnboundLocalError: local variable 'k' referenced before assignment
+2019-05-16 18:46:58,579 - DEBUG - update_title_pos
+2019-05-16 18:46:58,586 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 18:47:01,490 - DEBUG - update_title_pos
+2019-05-16 18:47:01,536 - DEBUG - update_title_pos
+2019-05-16 18:47:51,596 - ERROR - Error generating {} dialog.
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 234, in setupUI
+    form.addRow(label, input_field)
+UnboundLocalError: local variable 'input_field' referenced before assignment
+2019-05-16 18:47:53,321 - DEBUG - update_title_pos
+2019-05-16 18:47:53,329 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 18:47:55,348 - DEBUG - update_title_pos
+2019-05-16 18:47:55,395 - DEBUG - update_title_pos
+2019-05-16 18:49:12,613 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 18:49:18,970 - DEBUG - update_title_pos
+2019-05-16 18:49:18,980 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 18:49:21,407 - DEBUG - update_title_pos
+2019-05-16 18:49:21,454 - DEBUG - update_title_pos
+2019-05-16 18:50:23,997 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 118, in setupUi
+    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 37, in __init__
+    self.updated_params[name] = {}
+TypeError: list indices must be integers or slices, not str
+2019-05-16 18:50:28,886 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 18:50:50,400 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 18:50:53,389 - DEBUG - update_title_pos
+2019-05-16 18:50:53,396 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 18:50:58,175 - DEBUG - update_title_pos
+2019-05-16 18:50:58,219 - DEBUG - update_title_pos
+2019-05-16 18:51:48,762 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 18:51:56,811 - DEBUG - update_title_pos
+2019-05-16 18:51:56,819 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 18:51:59,152 - DEBUG - update_title_pos
+2019-05-16 18:51:59,200 - DEBUG - update_title_pos
+2019-05-16 19:03:11,998 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:03:17,472 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:03:33,197 - DEBUG - update_title_pos
+2019-05-16 19:03:33,208 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 19:03:37,162 - DEBUG - update_title_pos
+2019-05-16 19:03:37,212 - DEBUG - update_title_pos
+2019-05-16 19:06:53,950 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:07:58,864 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:08:02,260 - DEBUG - update_title_pos
+2019-05-16 19:08:02,268 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 19:08:06,090 - DEBUG - update_title_pos
+2019-05-16 19:08:06,138 - DEBUG - update_title_pos
+2019-05-16 19:08:32,323 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 283, in load_version_params
+    self.set_input_params(model_data['tfidf_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 308, in set_input_params
+    cla.setValue(v)
+TypeError: 'PySide2.QtWidgets.QSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QSpinBox.setValue(list)
+Supported signatures:
+  PySide2.QtWidgets.QSpinBox.setValue(int)
+2019-05-16 19:09:13,047 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 283, in load_version_params
+    self.set_input_params(model_data['tfidf_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 308, in set_input_params
+    cla.setValue(v)
+TypeError: 'PySide2.QtWidgets.QSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QSpinBox.setValue(list)
+Supported signatures:
+  PySide2.QtWidgets.QSpinBox.setValue(int)
+2019-05-16 19:09:24,248 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 283, in load_version_params
+    self.set_input_params(model_data['tfidf_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 308, in set_input_params
+    cla.setValue(v)
+TypeError: 'PySide2.QtWidgets.QSpinBox.setValue' called with wrong argument types:
+  PySide2.QtWidgets.QSpinBox.setValue(list)
+Supported signatures:
+  PySide2.QtWidgets.QSpinBox.setValue(int)
+2019-05-16 19:09:58,927 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:10:01,328 - DEBUG - update_title_pos
+2019-05-16 19:10:01,338 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 19:10:03,208 - DEBUG - update_title_pos
+2019-05-16 19:10:03,255 - DEBUG - update_title_pos
+2019-05-16 19:10:14,709 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 283, in load_version_params
+    self.set_input_params(model_data['tfidf_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 19:11:19,269 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:11:22,182 - DEBUG - update_title_pos
+2019-05-16 19:11:22,190 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 19:11:24,580 - DEBUG - update_title_pos
+2019-05-16 19:11:24,624 - DEBUG - update_title_pos
+2019-05-16 19:12:35,818 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:12:37,057 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 19:12:38,018 - DEBUG - update_title_pos
+2019-05-16 19:12:38,026 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 19:12:40,153 - DEBUG - update_title_pos
+2019-05-16 19:12:40,200 - DEBUG - update_title_pos
+2019-05-16 19:12:45,455 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 19:14:02,831 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:14:04,661 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 19:14:06,014 - DEBUG - update_title_pos
+2019-05-16 19:14:06,022 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 19:14:08,057 - DEBUG - update_title_pos
+2019-05-16 19:14:08,105 - DEBUG - update_title_pos
+2019-05-16 19:14:13,852 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 19:15:04,062 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:15:05,302 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(str)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 19:15:06,384 - DEBUG - update_title_pos
+2019-05-16 19:15:06,391 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 19:15:08,625 - DEBUG - update_title_pos
+2019-05-16 19:15:08,669 - DEBUG - update_title_pos
+2019-05-16 19:15:15,117 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(str)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 19:16:39,898 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 19:16:42,150 - DEBUG - update_title_pos
+2019-05-16 19:16:42,159 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 19:16:44,598 - DEBUG - update_title_pos
+2019-05-16 19:16:44,646 - DEBUG - update_title_pos
+2019-05-16 20:57:35,693 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 20:57:40,053 - DEBUG - update_title_pos
+2019-05-16 20:57:40,087 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 20:57:42,121 - DEBUG - update_title_pos
+2019-05-16 20:57:42,169 - DEBUG - update_title_pos
+2019-05-16 20:58:25,392 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 20:58:34,326 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 21:00:37,882 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 21:00:40,657 - DEBUG - update_title_pos
+2019-05-16 21:00:40,664 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 21:00:43,152 - DEBUG - update_title_pos
+2019-05-16 21:00:43,199 - DEBUG - update_title_pos
+2019-05-16 21:00:50,134 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)
+2019-05-16 21:01:58,796 - ERROR - Error opening Scikit model config files
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\SelectModelWidget.py", line 150, in setupUi
+    model_dialog = TfModelDialog(self, model_data)
+  File "D:\Programming\CATScore\package\train\models\TfModelDialog.py", line 23, in __init__
+    self.model_params = params['model_params']
+KeyError: 'model_params'
+2019-05-16 21:02:01,071 - DEBUG - update_title_pos
+2019-05-16 21:02:01,080 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2019-05-16 21:02:03,213 - DEBUG - update_title_pos
+2019-05-16 21:02:03,259 - DEBUG - update_title_pos
+2019-05-16 21:02:10,074 - ERROR - Error updating parameters
+Traceback (most recent call last):
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 281, in load_version_params
+    self.set_input_params(model_data['model_params'])
+  File "D:\Programming\CATScore\package\train\models\SkModelDialog.py", line 306, in set_input_params
+    cla.setCurrentIndex(v)
+TypeError: 'PySide2.QtWidgets.QComboBox.setCurrentIndex' called with wrong argument types:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(NoneType)
+Supported signatures:
+  PySide2.QtWidgets.QComboBox.setCurrentIndex(int)

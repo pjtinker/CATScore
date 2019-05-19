@@ -14,7 +14,7 @@
             },
             "fit_prior" : {
                 "type" : "dropdown",
-                "default" : 1,
+                "default" : true,
                 "options" : {
                     "False" : false,
                     "True" : true

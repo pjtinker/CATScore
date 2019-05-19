@@ -13,11 +13,11 @@
             },
             "max_features" : {
                 "type" : "dropdown",
-                "default" : 0,
+                "default" : "auto",
                 "options" : {
                     "auto" : "auto",
                     "sqrt" : "sqrt",
-                    "None" : null
+                    "None" : 0
                 }
             },
             "max_depth" : {
@@ -36,7 +36,7 @@
             },
             "bootstrap" : {
                 "type" : "dropdown",
-                "default" : 1,
+                "default" : true,
                 "options" : {
                     "False" : false,
                     "True" : true

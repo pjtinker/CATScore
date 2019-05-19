@@ -1,13 +1,19 @@
 {
-  "model_class" : "SVC",
-  "question_number" : "Q1",
-  "version" : "v5",
-  "model_params" : {
-      "C": 10,
-      "class_weight": null,
-      "kernel": "linear"
+  "model_class": "SVC",
+  "question_number": "Q1",
+  "version": "v5",
+  "params": {
+    "SVC": {
+      "C": 1.0,
+      "tol": 0.001
     },
-  "tfidf_params" : {
-
+    "TfidfVectorizer": {
+      "max_df": 1.0,
+      "min_df": 4
+    },
+    "SelectKBest": {
+      "k": 20000,
+      "score_options": "f_classif"
+    }
   }
 }

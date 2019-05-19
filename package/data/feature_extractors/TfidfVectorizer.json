@@ -3,11 +3,6 @@
     "model_module" : "sklearn.feature_extraction.text",
     "model_class" : "TfidfVectorizer",
     "TfidfVectorizer" : {
-        "restricted_params" : [
-            "preprocessor", "binary", "dtype", 
-            "analyzer", "tokenizer", "stop_words",
-            "lowercase", "input", "vocabulary", "token_pattern", "decode_error"
-        ],
         "Hyperparameters" : {
             "ngram_range" : {
                 "type" : "range",
@@ -17,7 +12,7 @@
             },
             "encoding" : {
                 "type" : "dropdown",
-                "default" : 0,
+                "default" : "utf-8",
                 "options" : {
                     "utf-8" : "utf-8",
                     "latin-1" : "latin-1"
@@ -27,7 +22,7 @@
                 "type" : "dropdown",
                 "default" : 0,
                 "options" : {
-                    "None" : null,
+                    "None" : "ascii",
                     "ascii" : "ascii",
                     "unicode" : "unicode"
                 }
@@ -49,10 +44,18 @@
             },
             "use_idf" : {
                 "type" : "dropdown",
-                "default" : 1,
+                "default" : true,
                 "options" : {
                     "False" : false,
                     "True" : true
+                }
+            },
+            "class_weight" : {
+                "type" : "dropdown",
+                "default" : 0,
+                "options" : {
+                    "None" : 0,
+                    "Balanced" : "balanced"
                 }
             }
         }   

@@ -110,7 +110,7 @@ class DataLoader(QWidget):
         self.text_proc_groupbox.setEnabled(False)
         self.text_proc_grid = QGridLayout()
         self.text_proc_groupbox.setLayout(self.text_proc_grid)
-        self.data_load.connect(self.setProcState)
+        #self.data_load.connect(self.setProcState)
         self.preprocess_text_btn = QPushButton('Preprocess Text', self)
         self.preprocess_text_btn.clicked.connect(
             lambda: self.applyPreprocessing())
@@ -121,14 +121,14 @@ class DataLoader(QWidget):
         self.left_column.addStretch()
 
         # Data subset save button
-        self.save_dataset_btn = QPushButton('&Save Dataset', self)
+        self.export_dataset_btn = QPushButton('&Export Data', self)
         icon = QIcon()
         icon.addPixmap(QPixmap('icons/Programming-Save-icon.png'))
-        self.save_dataset_btn.setIcon(icon)
-        self.save_dataset_btn.setEnabled(False)
-        self.save_dataset_btn.clicked.connect(lambda: self.saveData())
-        self.save_dataset_btn.resize(32, 32)
-        self.left_column.addWidget(self.save_dataset_btn)
+        self.export_dataset_btn.setIcon(icon)
+        self.export_dataset_btn.setEnabled(False)
+        self.export_dataset_btn.clicked.connect(lambda: self.saveData())
+        self.export_dataset_btn.resize(32, 32)
+        self.left_column.addWidget(self.export_dataset_btn)
 
         self.right_column.addLayout(self.full_text_hbox)
         self.right_column.addWidget(self.text_stats_groupbox)
@@ -159,15 +159,17 @@ class DataLoader(QWidget):
         self.selected_columns = self.available_column_model.getChecklist()
         if len(self.selected_columns) == 0:
             self.text_proc_groupbox.setEnabled(False)
-            self.preprocess_text_btn.setEnabled(False)
             self.selected_data = pd.DataFrame()
             self.text_table_model.loadData(None)
+            self.preprocess_text_btn.setEnabled(False)
+            self.export_dataset_btn.setEnabled(False)
             self.data_load.emit(1, False)
             # exceptionWarning('No questions selected')
         else:
             self.selected_data = self.full_data[self.selected_columns]
             self.text_table_model.loadData(self.selected_data.head())
-            self.data_load.emit(1, True)
+            self.setProcState(1, True)
+            #self.data_load.emit(1, True)
 
     def openFile(self):
         """Open file chooser for user to select the CSV file containing their data
@@ -186,7 +188,7 @@ class DataLoader(QWidget):
         Column 0 is used for the index column.\n
         chardet attempts to determine encoding if file is not utf-8.
             # Attributes
-                f_path: String, The filename selected via openFile
+                f_path(String): The filename selected via openFile
         """
         # FIXME: Reset status bar when new data is loaded.
         try:
@@ -321,7 +323,7 @@ class DataLoader(QWidget):
             truth = 1
         self.preprocessing_options[option] = truth
 
-    @Slot(int, bool)
+    # @Slot(int, bool)
     def setProcState(self, tab, state):
         """
         Slot for determining if text preprocessing options are selectable.  Based on
@@ -334,23 +336,26 @@ class DataLoader(QWidget):
         if not state:
             self.text_proc_groupbox.setEnabled(False)
             self.preprocess_text_btn.setEnabled(False)
-            self.save_dataset_btn.setEnabled(False)
+            #self.export_dataset_btn.setEnabled(False)
         else:
             self.text_proc_groupbox.setEnabled(True)
             self.preprocess_text_btn.setEnabled(True)
-            self.save_dataset_btn.setEnabled(True)
+            #self.export_dataset_btn.setEnabled(True)
 
     @Slot(pd.DataFrame)
     def updateData(self, data):
         self.load_data_btn.setEnabled(True)
-        self.text_proc_groupbox.setEnabled(True)
-        self.preprocess_text_btn.setEnabled(True)
-        self.save_dataset_btn.setEnabled(True)
+        # self.text_proc_groupbox.setEnabled(True)
+        # self.preprocess_text_btn.setEnabled(True)
+        # self.export_dataset_btn.setEnabled(True)
+        self.setProcState(1, True)
+        self.export_dataset_btn.setEnabled(True)
 
         self.update_statusbar.emit("Text preprocessing complete.")
         self.update_progressbar.emit(0, False)
         self.selected_data = data
         self.text_table_model.loadData(self.selected_data.head())
+        self.data_load.emit(1, True)
 
     def applyPreprocessing(self):
         """
@@ -360,7 +365,7 @@ class DataLoader(QWidget):
         self.load_data_btn.setEnabled(False)
         self.text_proc_groupbox.setEnabled(False)
         self.preprocess_text_btn.setEnabled(False)
-        self.save_dataset_btn.setEnabled(False)
+        self.export_dataset_btn.setEnabled(False)
         self.update_progressbar.emit(0, True)
         self.preproc_thread = PreprocessingThread(self.full_data[self.selected_columns],
                                                   self.preprocessing_options)

@@ -26,7 +26,7 @@ class TrainWidget(QTabWidget):
         self.model_widget = SelectModelWidget(self)
         self.addTab(self.data_loader, 'Load Data')      
         self.addTab(self.model_widget, 'Model Selection')
-        self.setTabEnabled(1, False)
+        self.setTabEnabled(1, True)
         self.data_loader.data_load.connect(self.setTab)
         self.data_loader.update_statusbar.connect(self.updateStatusBar)
 

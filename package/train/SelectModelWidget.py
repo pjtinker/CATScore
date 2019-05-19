@@ -23,7 +23,7 @@ from package.utils.catutils import exceptionWarning
 BASE_SK_MODEL_DIR = "./package/data/base_models"
 BASE_TF_MODEL_DIR = "./package/data/tensorflow_models"
 BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
-BASE_FS_DIR = "./package/data/feature_selection/FeatureSelection.json"
+BASE_FS_DIR = "./package/data/feature_selection/SelectKBest.json"
 
 class Communicate(QObject):
     version_change = Signal(str)
@@ -49,6 +49,9 @@ class SelectModelWidget(QTabWidget):
         self.tf_model_dialogs = []
         self.tf_model_dialog_btns = []
 
+        self.fs_model_dialogs = []
+        self.fs_model_dialog_btns = []
+
 
         self.main_layout = QVBoxLayout()
         self.form_grid = QGridLayout()
@@ -58,19 +61,24 @@ class SelectModelWidget(QTabWidget):
 
         self.skmodel_groupbox = QGroupBox("Sklearn Models")
         self.tf_model_groupbox = QGroupBox("Tensorflow Models")
-        self.fs_groupbox = QGroupBox("Feature Selection")
+        # self.fs_groupbox = QGroupBox("Feature Selection")
+
         self.tf_model_grid = QGridLayout()
+        self.tf_model_grid.setAlignment(Qt.AlignTop)
         self.sklearn_model_grid = QGridLayout()
-        self.feature_selection_param_form = QFormLayout()
+        self.sklearn_model_grid.setAlignment(Qt.AlignTop)
+        # self.fs_model_grid = QGridLayout()
+
         self.skmodel_groupbox.setLayout(self.sklearn_model_grid)
         self.tf_model_groupbox.setLayout(self.tf_model_grid)
-        self.fs_groupbox.setLayout(self.feature_selection_param_form)
+        # self.fs_groupbox.setLayout(self.fs_model_grid)
 
         self.setupUi()
         # self._build_fs_ui()
         self.form_grid.addWidget(self.skmodel_groupbox, 1, 0)
         self.form_grid.addWidget(self.tf_model_groupbox, 1, 1)
-        self.form_grid.addWidget(self.fs_groupbox, 1, 2)
+        self.form_grid.setAlignment(Qt.AlignTop)
+        # self.form_grid.addWidget(self.fs_groupbox, 1, 2)
         # self.left_column.addLayout(self.version_hbox)
         # self.version_hbox.addStretch()
         # self.left_column.addWidget(self.skmodel_groupbox)
@@ -87,6 +95,7 @@ class SelectModelWidget(QTabWidget):
 
     def setupUi(self):
         self.version_selection = QComboBox(objectName='version_select')
+        self.version_selection.addItem('Default', 'default')
         available_versions = os.listdir(".\\package\\data\\versions")
         for version in available_versions:
             self.version_selection.addItem(version, os.path.join('.\\package\\data\\versions', version))
@@ -115,7 +124,7 @@ class SelectModelWidget(QTabWidget):
                 with open(os.path.join(BASE_SK_MODEL_DIR, filename), 'r') as f:
                     print("Loading model:", filename)
                     model_data = json.load(f)
-                    model_dialog = SkModelDialog(self, model_data, tfidf_data)
+                    model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
                     self.comms.version_change.connect(model_dialog.update_version)
                     model = model_data['model_class']
                     # Initialize model as unselected
@@ -147,7 +156,7 @@ class SelectModelWidget(QTabWidget):
                 with open(os.path.join(BASE_TF_MODEL_DIR, filename), 'r') as f:
                     print("Loading model:", filename)
                     model_data = json.load(f)
-                    model_dialog = SkModelDialog(self, model_data)
+                    model_dialog = SkModelDialog(self, model_data, self.fs_params)
                     self.comms.version_change.connect(model_dialog.update_version)
                     model = model_data['model_class']
                     # Intialize model as unselected
@@ -167,7 +176,7 @@ class SelectModelWidget(QTabWidget):
             self.logger.error("OSError opening Tensorflow model config files", exc_info=True)
             exceptionWarning('Error opening Tensorflow model config files!', ose)
         except Exception as e:
-            self.logger.error("Error opening Scikit model config files", exc_info=True)
+            self.logger.error("Error opening Tensorflow model config files", exc_info=True)
             exceptionWarning('Error occured.', e)
             tb = traceback.format_exc()
             print(tb)

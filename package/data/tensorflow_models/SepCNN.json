@@ -56,96 +56,47 @@
             }
         },
         "Optimizer Parameters" : {
-            "optimizer" : {
-                "type" : "dynamic",
+            "lr" : {
+                "type" : "double",
+                "default" : 0.001,
+                "min" : 0.0001,
+                "max" : 10,
+                "step_size" : 0.001,
+                "decimal_len" : 4 
+            },
+            "beta_1" : {
+                "type" : "double",
+                "default" : 0.9,
+                "min" : 0.001,
+                "max" : 1,
+                "step_size" : 0.1,
+                "decimal_len" : 2 
+                },
+            "beta_2" : {
+                "type" : "double",
+                "default" : 0.999,
+                "min" : 0.0001,
+                "max" : 1,
+                "step_size" : 0.001,
+                "decimal_len" : 4 
+            },
+            "epsilon" : {
+                "type" : "double",
+                "default" : 0.0,
+                "min" : 0,
+                "max" : 10,
+                "step_size" : 0.001,
+                "decimal_len" : 3
+            },
+            "decay" : {
+                "type" : "double",
                 "default" : 0,
-                "options" : {
-                    "Adam" : {
-                        "lr" : {
-                           "type" : "double",
-                           "default" : 0.001,
-                           "min" : 0.0001,
-                           "max" : 10,
-                           "step_size" : 0.001,
-                           "decimal_len" : 4 
-                        },
-                        "beta_1" : {
-                            "type" : "double",
-                            "default" : 0.9,
-                            "min" : 0.001,
-                            "max" : 1,
-                            "step_size" : 0.1,
-                            "decimal_len" : 2 
-                         },
-                         "beta_2" : {
-                            "type" : "double",
-                            "default" : 0.999,
-                            "min" : 0.0001,
-                            "max" : 1,
-                            "step_size" : 0.001,
-                            "decimal_len" : 4 
-                         },
-                         "epsilon" : {
-                            "type" : "double",
-                            "default" : null,
-                            "min" : 0,
-                            "max" : 10,
-                            "step_size" : 0.001,
-                            "decimal_len" : 3
-                         },
-                         "decay" : {
-                            "type" : "double",
-                            "default" : 0,
-                            "min" : 0.0001,
-                            "max" : 10,
-                            "step_size" : 0.001,
-                            "decimal_len" : 3
-                         }
-                    },
-                    "Adamax" : {
-                        "lr" : {
-                            "type" : "double",
-                            "default" : 0.001,
-                            "min" : 0.0001,
-                            "max" : 10,
-                            "step_size" : 0.001,
-                            "decimal_len" : 4 
-                         },
-                         "beta_1" : {
-                             "type" : "double",
-                             "default" : 0.9,
-                             "min" : 0.001,
-                             "max" : 1,
-                             "step_size" : 0.1,
-                             "decimal_len" : 2 
-                          },
-                          "beta_2" : {
-                             "type" : "double",
-                             "default" : 0.999,
-                             "min" : 0.0001,
-                             "max" : 1,
-                             "step_size" : 0.001,
-                             "decimal_len" : 4 
-                          },
-                          "epsilon" : {
-                             "type" : "double",
-                             "default" : null,
-                             "min" : 0,
-                             "max" : 10,
-                             "step_size" : 0.001,
-                             "decimal_len" : 3
-                          },
-                          "decay" : {
-                             "type" : "double",
-                             "default" : 0,
-                             "min" : 0.0001,
-                             "max" : 10,
-                             "step_size" : 0.001,
-                             "decimal_len" : 3
-                          }
-                    }
-                }
+                "min" : 0.0001,
+                "max" : 10,
+                "step_size" : 0.001,
+                "decimal_len" : 3
             }
         }
     }
+     
 }
