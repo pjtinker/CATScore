@@ -110,7 +110,7 @@ class DataLoader(QWidget):
         self.text_proc_groupbox.setEnabled(False)
         self.text_proc_grid = QGridLayout()
         self.text_proc_groupbox.setLayout(self.text_proc_grid)
-        #self.data_load.connect(self.setProcState)
+        #self.data_load.connect(self.set_preprocessing_option_state)
         self.preprocess_text_btn = QPushButton('Preprocess Text', self)
         self.preprocess_text_btn.clicked.connect(
             lambda: self.applyPreprocessing())
@@ -168,7 +168,7 @@ class DataLoader(QWidget):
         else:
             self.selected_data = self.full_data[self.selected_columns]
             self.text_table_model.loadData(self.selected_data.head())
-            self.setProcState(1, True)
+            self.set_preprocessing_option_state(1, True)
             #self.data_load.emit(1, True)
 
     def openFile(self):
@@ -303,14 +303,14 @@ class DataLoader(QWidget):
             chkbox = QCheckBox(' '.join(k.split('_')))
             chkbox.setChecked(v)
             chkbox.stateChanged.connect(lambda state, o=k, :
-                                        self._updateTextPreprocessingOptions(
+                                        self._update_preprocessing_options(
                                             o, state)
                                         )
             self.text_proc_grid.addWidget(chkbox, row, 0)
             self.text_preprocessing_checkboxes.append(chkbox)
             row = row + 1
 
-    def _updateTextPreprocessingOptions(self, option, state):
+    def _update_preprocessing_options(self, option, state):
         """
         Updates the selected text preprocessing options.
             # Attributes
@@ -324,7 +324,7 @@ class DataLoader(QWidget):
         self.preprocessing_options[option] = truth
 
     # @Slot(int, bool)
-    def setProcState(self, tab, state):
+    def set_preprocessing_option_state(self, tab, state):
         """
         Slot for determining if text preprocessing options are selectable.  Based on
         if data has been successfully loaded and selected.  Reusing the Signal that
@@ -348,7 +348,7 @@ class DataLoader(QWidget):
         # self.text_proc_groupbox.setEnabled(True)
         # self.preprocess_text_btn.setEnabled(True)
         # self.export_dataset_btn.setEnabled(True)
-        self.setProcState(1, True)
+        self.set_preprocessing_option_state(1, True)
         self.export_dataset_btn.setEnabled(True)
 
         self.update_statusbar.emit("Text preprocessing complete.")

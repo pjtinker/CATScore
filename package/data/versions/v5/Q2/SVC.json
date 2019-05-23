@@ -1,18 +1,12 @@
 {
-  "model_class" : "SVC",
-  "question_number" : "Q2",
-  "version" : "v5",
-  "model_params" : {
-      "C": 1,
-      "class_weight": null,
-      "kernel": "linear"
+  "model_class": "SVC",
+  "question_number": "Q2",
+  "version": "v5",
+  "params": {
+    "SVC": {},
+    "TfidfVectorizer": {
+      "min_df": 1
     },
-  "tfidf_params" : {
-    "max_df" : 0.5,
-    "min_df" : 2,
-    "ngram_range" : 2,
-    "stop_words": null,
-    "strip_accents": null,
-    "use_idf": true
+    "SelectKBest": {}
   }
 }

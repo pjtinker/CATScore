@@ -3,7 +3,7 @@
     "model_module" : "sklearn.feature_extraction.text",
     "model_class" : "TfidfVectorizer",
     "TfidfVectorizer" : {
-        "Hyperparameters" : {
+        "Parameters" : {
             "ngram_range" : {
                 "type" : "range",
                 "min" : 1,
@@ -31,7 +31,7 @@
                 "type" : "double",
                 "default" :1.0,
                 "min" : 0,
-                "max" : 1,
+                "max" : 1.0,
                 "step_size" : 0.1,
                 "decimal_len" : 1
             },
@@ -54,7 +54,7 @@
                 "type" : "dropdown",
                 "default" : 0,
                 "options" : {
-                    "None" : 0,
+                    "None" : "",
                     "Balanced" : "balanced"
                 }
             }

@@ -1,0 +1,94 @@
+{                  
+    "model_base": "tpot",
+    "model_module": "tpot.TPOTClassifier",
+    "model_class" : "TPOTClassifier",
+    "model_url" : "https://epistasislab.github.io/tpot/api/",
+    "TPOTClassifier" : {
+        "Parameters" : {
+            "generations" : {
+                "type" : "int",
+                "default" : 100,
+                "min" : 5,
+                "max" : 1000,
+                "step_size" : 10
+            },
+            "population_size" : {
+                "type" : "int",
+                "default" : 100,
+                "min" : 20,
+                "max" : 100000,
+                "step_size" : 100
+            },
+            "mutation_rate" : {
+                "type" : "double",
+                "default" : 0.9,
+                "min" : 0,
+                "max" : 1,
+                "step_size" : 0.1,
+                "decimal_len" : 2
+            },
+            "scoring" : {
+                "type" : "dropdown",
+                "default" : "accuracy",
+                "options" : {
+                    "Accuracy" : "accuracy",
+                    "Balanced Acc." : "balanced_accuracy",
+                    "f1_weighted" : "f1_weighted"
+                }
+            },
+            "cv" : {
+                "type" : "int",
+                "default" : 5,
+                "min" : 1,
+                "max" : 10,
+                "step_size" : 1
+            },
+            "n_jobs" : {
+                "type" : "int",
+                "default" : 1,
+                "min" : -1,
+                "max" : 4,
+                "step_size" : 1
+            },
+            "max_time_mins" : {
+                "type" : "int",
+                "default" : "",
+                "min" : 0,
+                "max" : 100000,
+                "step_size" : 10
+            },
+            "max_eval_time" : {
+                "type" : "int",
+                "default" : 5,
+                "min" : 1,
+                "max" : 1000,
+                "step_size" : 1
+            },
+            "early_stop" : {
+                "type" : "int",
+                "default" : 0,
+                "min" : 2,
+                "max" : 20,
+                "step_size" : 1
+            },
+            "config_dict" : {
+                "type" : "dropdown",
+                "default" : "TPOT sparse",
+                "options" : {
+                    "TPOT sparse" : "TPOT sparse",
+                    "TPOT" : "TPOT",
+                    "TPOT light" : "TPOT light" 
+                }
+            },
+            "periodic_checkpoint_folder" : {
+                "type" : "dropdown",
+                "default" : true,
+                "options" : {
+                    "True" : true,
+                    "False" : false
+                }
+            }
+
+        }
+    }
+}

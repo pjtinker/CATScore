@@ -1,0 +1,12 @@
+{
+  "model_class": "MultinomialNB",
+  "question_number": "Test2",
+  "version": "v6",
+  "params": {
+    "MultinomialNB": {
+      "alpha": 5.0
+    },
+    "TfidfVectorizer": {},
+    "SelectKBest": {}
+  }
+}

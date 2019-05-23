@@ -7,6 +7,7 @@ from PySide2.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayo
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
                                QDoubleSpinBox, QSizePolicy, QLabel)
 import json
+import re
 import importlib 
 import traceback
 import inspect
@@ -14,7 +15,8 @@ import logging
 import os
 
 class SkModelDialog(QDialog):
-    """SkModelDialog is the basic structure behind model dialogs in CATScore.
+    """
+    SkModelDialog is the basic structure behind model dialogs in CATScore.
 
     # Arguments
         model_params: String, path to default parameters .json file.
@@ -38,22 +40,6 @@ class SkModelDialog(QDialog):
             name = param['model_class']
             self.model_params[name] = param[name]
             self.updated_params[name] = {}
-
-        # print("Params: ")
-        # print(json.dumps(self.model_params, indent=2))
-        # return
-        # self.model_data = model_data
-        # self.tfidf_data = tfidf_data
-        # self.model_params = self.model_data[self.model_data['model_class']]
-        # self.model = self.getClass(self.model_params)
-
-        # TODO: Add static params to model_params
-        # self.updated_params = {}
-        # self.updated_params[self.model_data['model_class']] = {}
-        # if self.tfidf_data:
-        #     self.tfidf_params = self.tfidf_data[self.tfidf_data['model_class']]
-        #     # self.tfidf = self.getClass(self.tfidf_params)
-        #     self.updated_params[self.tfidf_data['model_class']] = {}
 
         # input_widgets is a list of all dynamically created input widgets for the various model params.
         # Holds EVERY input widget, regardless of type.  Key = hyperparameter name
@@ -86,23 +72,6 @@ class SkModelDialog(QDialog):
                 self.ui_widgets.append(model_param_form)
                 self.setupUI(model, params, model_param_form)
 
-        # self.model_groupbox = QGroupBox()
-        # self.model_groupbox.setTitle("Model hyperparameters")
-        # self.tfidf_groupbox = QGroupBox()
-        # self.tfidf_groupbox.setTitle('TF-IDF hyperparameters')
-
-        
-        # self.model_param_form = QFormLayout()
-        # self.tfidf_param_form = QFormLayout()
-        
-        # self.model_groupbox.setLayout(self.model_param_form)
-        # self.tfidf_groupbox.setLayout(self.tfidf_param_form)
-
-        # self.form_grid.addWidget(self.model_groupbox, 1, 0)
-        # self.form_grid.addWidget(self.tfidf_groupbox, 1, 1)
-        # self.setupUI(self.model_data['model_class'], self.model_params, self.model_param_form)
-        # self.setupUI(self.tfidf_data['model_class'], self.tfidf_params, self.tfidf_param_form)
-        
         self.main_layout.addLayout(self.form_grid)
         self.main_layout.addWidget(self.buttonBox)
         self.setLayout(self.main_layout)
@@ -114,7 +83,8 @@ class SkModelDialog(QDialog):
 
 
     def getClass(self, params, init_class=None):
-        """Return instantiated class using importlib
+        """
+        Return instantiated class using importlib
         Loads any static parameters defined by the system.
             # Arguments
                 params: dict, dictionary of parameters necessary to instantiate
@@ -132,12 +102,12 @@ class SkModelDialog(QDialog):
         return model
 
 
-    def saveParams(self):
+    def save_params(self):
         """Saves the parameters entered by the user.  
         FIXME:
         """
         if (self.exec_() == QDialog.Accepted):
-            print("Updated Params as they hit saveParams:")
+            print("Updated Params as they hit save_params:")
             print(json.dumps(self.updated_params, indent=2))
             filename = self.main_model_name + '.json'
             save_dir = os.path.join(self.question_combobox.currentData(),
@@ -182,9 +152,6 @@ class SkModelDialog(QDialog):
                 param_dict: dict, dictionary of parameter/default values from model.
                 default_params: dict, dictionary of default parameters defined by me.
         """
-        # if "restricted_params" in default_params:
-        #     for k in default_params['restricted_params']:
-        #         param_dict.pop(k, None)
         try:
             for k, v in param_dict.items():
                 label_string = k 
@@ -209,6 +176,7 @@ class SkModelDialog(QDialog):
                 elif type == 'double':
                     input_field = QDoubleSpinBox(objectName=k)
                     input_field.setDecimals(v['decimal_len'])
+                    input_field.setRange(v['min'], v['max'])
                     input_field.setValue(v['default'])
                     input_field.setSingleStep(v['step_size'])
                     input_field.valueChanged.connect(
@@ -242,9 +210,6 @@ class SkModelDialog(QDialog):
                                 x, 
                                 y.value())
                             )
-                # elif inspect.isclass(v) or isinstance(v, type):
-                #     continue
-
                 form.addRow(label, input_field)
                 self.input_widgets[k] = input_field
         except Exception as e:
@@ -264,14 +229,25 @@ class SkModelDialog(QDialog):
         """
         print("Directory received by update_version", directory)
         self.current_version = directory
+        # Clear combobox to be reconstructed or blank if default.
+        self.question_combobox.clear()
         if self.current_version == 'default':
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            return
         else:
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-
-        self.question_combobox.clear()
         try:
             question_directories = [os.path.join(directory, o) for o in os.listdir(directory) if os.path.isdir(os.path.join(directory, o))]
+            # Sort the directories correctly.  
+            # Takes the last digit given as the sort key.
+            # If no numeric values, regex will return an empty list and sorting will be 
+            # alphabetic.
+            question_directories = sorted(question_directories, 
+                                            key=lambda item:
+                                               (int(re.findall('\d+|D+', item)[0])
+                                                if len(re.findall('\d+|D+', item)) > 0
+                                                    else float('inf'), item)
+                                    )
             for d in question_directories:
                 self.question_combobox.addItem(d.split('\\')[-1], d)
             self.form_grid.addWidget(self.question_combobox, 0, 0)
@@ -295,9 +271,6 @@ class SkModelDialog(QDialog):
         for model, types in self.model_params.items():
             for t, params in types.items():
                 self.set_input_params(params)
-        # self.set_input_params(self.model_data[self.model_data['model_class']]['params'])
-        # self.set_input_params(self.tfidf_data[self.tfidf_data['model_class']]['params'])
-        # self.set_input_params(self.fs_params)
 
         if path == None or path == 'default':
             return
@@ -311,10 +284,6 @@ class SkModelDialog(QDialog):
                 model_class = model_data['model_class']
                 for kind, params in model_data['params'].items():
                     self.set_input_params(params)
-                # if 'model_params' in model_data:
-                #     self.set_input_params(model_data['model_params'])
-                # if "tfidf_params" in model_data:
-                #     self.set_input_params(model_data['tfidf_params'])
             except FileNotFoundError as fnfe:
                 pass
 

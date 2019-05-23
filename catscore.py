@@ -12,7 +12,7 @@ import logging.handlers
 # logging.basicConfig(filename='cat.log', format=logFormatter, level=logging.DEBUG)
 from PySide2.QtWidgets import (QApplication, QHBoxLayout, QVBoxLayout, 
                                 QMainWindow, QSizePolicy, QWidget, 
-                                QPushButton, QTabWidget)
+                                QPushButton, QTabWidget, QMenuBar)
 
 from package.train.cattrain import CatTrain
 
@@ -37,6 +37,7 @@ class MainWindow(QMainWindow):
         self.open_cat_train_btn = QPushButton('CAT Train', self)
         self.open_cat_train_btn.clicked.connect(lambda: self.cat_train.show())
         self.main_layout.addWidget(self.open_cat_train_btn)
+
 
         self.setLayout(self.main_layout)
 

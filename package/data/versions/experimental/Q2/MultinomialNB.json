@@ -1,17 +1,17 @@
 {
   "model_class": "MultinomialNB",
-  "question_number": "Q1",
+  "question_number": "Q2",
   "version": "experimental",
   "params": {
     "MultinomialNB": {
-      "alpha": 4.0,
-      "fit_prior": false
+      "alpha": 1.0,
+      "fit_prior": true
     },
     "TfidfVectorizer": {
-      "ngram_range": 4
+      "ngram_range": 1
     },
     "SelectKBest": {
-      "k": 20200
+      "k": 20000
     }
   }
 }

@@ -5,7 +5,7 @@ from PySide2.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox,
                                 QTabWidget,
                                 QApplication, QLabel, QFileDialog, QHBoxLayout, 
                                 QVBoxLayout, QGridLayout, QHeaderView, QScrollArea, 
-                                QSizePolicy, QTableView, QWidget, QPushButton)
+                                QSizePolicy, QTableView, QWidget, QMenuBar, QPushButton)
 import os
 import json
 from collections import OrderedDict
@@ -22,6 +22,8 @@ class TrainWidget(QTabWidget):
         self.parent = parent
         # FIXME: reset statusbar when tabs are changed
         # self.currentChanged.connect(self.updateStatusBar(' '))
+
+
         self.data_loader = DataLoader(self)
         self.model_widget = SelectModelWidget(self)
         self.addTab(self.data_loader, 'Load Data')      

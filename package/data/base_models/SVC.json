@@ -2,8 +2,9 @@
     "model_base": "sklearn",
     "model_module": "sklearn.svm",
     "model_class" : "SVC",
+    "model_url" : "https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html",
     "SVC" : {
-        "Hyperparameters" : {
+        "Parameters" : {
             "C" : {
                 "type" : "double",
                 "default" : 1.0,

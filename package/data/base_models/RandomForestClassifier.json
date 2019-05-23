@@ -17,7 +17,7 @@
                 "options" : {
                     "auto" : "auto",
                     "sqrt" : "sqrt",
-                    "None" : 0
+                    "None" : ""
                 }
             },
             "max_depth" : {

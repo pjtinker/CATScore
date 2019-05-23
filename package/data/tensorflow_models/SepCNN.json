@@ -3,7 +3,7 @@
     "model_class" : "SepCNN",
     "embedding_data_dir" : ".\\package\\data\\embeddings\\glove6b\\",
     "SepCNN" : {
-        "Hyperparameters" : {
+        "Model" : {
             "epochs" : {
                 "type" : "int",
                 "default" : 20,
@@ -55,7 +55,7 @@
                 "decimal_len":  2
             }
         },
-        "Optimizer Parameters" : {
+        "Optimizer" : {
             "lr" : {
                 "type" : "double",
                 "default" : 0.001,

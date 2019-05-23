@@ -1,0 +1,17 @@
+{
+  "model_class": "SVC",
+  "question_number": "Test2",
+  "version": "v6",
+  "params": {
+    "SVC": {
+      "C": 6.0,
+      "cache_size": 100
+    },
+    "TfidfVectorizer": {
+      "class_weight": "balanced"
+    },
+    "SelectKBest": {
+      "score_options": "f_classif"
+    }
+  }
+}

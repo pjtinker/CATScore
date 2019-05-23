@@ -54,46 +54,45 @@ class SelectModelWidget(QTabWidget):
 
 
         self.main_layout = QVBoxLayout()
-        self.form_grid = QGridLayout()
-        # self.left_column = QVBoxLayout()
-        # self.right_column = QVBoxLayout()
-        # self.version_hbox = QHBoxLayout()
+        self.upper_hbox = QHBoxLayout()
+        self.model_form_grid = QGridLayout()
 
+        self.version_form = QFormLayout()
         self.skmodel_groupbox = QGroupBox("Sklearn Models")
         self.tf_model_groupbox = QGroupBox("Tensorflow Models")
-        # self.fs_groupbox = QGroupBox("Feature Selection")
+        self.model_selection_groupbox = QGroupBox("Model Selection")
+
+        self.model_training_groupbox = QGroupBox("Training/Tuning")
+        self.cv_groupbox = QGroupBox("Evaluation")
+        self.grid_search_groupbox = QGroupBox("Grid Search")
+        self.tpot_groupbox = QGroupBox("TPOT")
+        
 
         self.tf_model_grid = QGridLayout()
-        self.tf_model_grid.setAlignment(Qt.AlignTop)
-        self.sklearn_model_grid = QGridLayout()
-        self.sklearn_model_grid.setAlignment(Qt.AlignTop)
-        # self.fs_model_grid = QGridLayout()
+        # self.tf_model_grid.setAlignment(Qt.AlignTop)
+        self.sklearn_model_form = QFormLayout()
+        self.sklearn_model_form.setLabelAlignment(Qt.AlignLeft | Qt.AlignCenter)
+        self.sklearn_model_form.setFormAlignment(Qt.AlignCenter)
 
-        self.skmodel_groupbox.setLayout(self.sklearn_model_grid)
+        self.skmodel_groupbox.setLayout(self.sklearn_model_form)
         self.tf_model_groupbox.setLayout(self.tf_model_grid)
-        # self.fs_groupbox.setLayout(self.fs_model_grid)
 
         self.setupUi()
-        # self._build_fs_ui()
-        self.form_grid.addWidget(self.skmodel_groupbox, 1, 0)
-        self.form_grid.addWidget(self.tf_model_groupbox, 1, 1)
-        self.form_grid.setAlignment(Qt.AlignTop)
-        # self.form_grid.addWidget(self.fs_groupbox, 1, 2)
-        # self.left_column.addLayout(self.version_hbox)
-        # self.version_hbox.addStretch()
-        # self.left_column.addWidget(self.skmodel_groupbox)
-        # self.left_column.addWidget(self.tf_model_groupbox)
-        # self.left_column.addStretch()
-        # self.right_column.addStretch()
-        # self.main_layout.addLayout(self.left_column)
-        # self.main_layout.addStretch()
-        # self.main_layout.addLayout(self.right_column)
-        # self.main_layout.addStretch()
-        self.main_layout.addLayout(self.form_grid)
+
+        self.model_form_grid.addLayout(self.version_form, 0, 0)
+        self.model_form_grid.addWidget(self.skmodel_groupbox, 1, 0)
+        self.model_form_grid.addWidget(self.tf_model_groupbox, 2, 0)
+        # self.model_form_grid.setAlignment(Qt.AlignTop)
+        self.model_selection_groupbox.setLayout(self.model_form_grid)
+
+        self.upper_hbox.addWidget(self.model_selection_groupbox)
+        self.upper_hbox.addStretch()
+        self.main_layout.addLayout(self.upper_hbox)
         self.main_layout.addStretch()
         self.setLayout(self.main_layout)
 
     def setupUi(self):
+        self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
         self.version_selection.addItem('Default', 'default')
         available_versions = os.listdir(".\\package\\data\\versions")
@@ -102,8 +101,9 @@ class SelectModelWidget(QTabWidget):
         self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection: 
                                                             self._signal_update(y.currentData())
                                                             )
-        
-        self.form_grid.addWidget(self.version_selection, 0, 0)
+        self.version_form.addRow(self.version_selection_label, self.version_selection)
+        #self.model_form_grid.addWidget(self.version_selection_label, 0, 0)
+        #self.model_form_grid.addWidget(self.version_selection, 0, 1)
         # Load base TF-IDF and feature selection data
         try:
             with open(BASE_TFIDF_DIR, 'r') as f:
@@ -131,16 +131,27 @@ class SelectModelWidget(QTabWidget):
                     self.selected_models[model] = False
                     btn = QPushButton(model)
                     # Partial allows the connection of dynamically generated QObjects
-                    btn.clicked.connect(partial(self.openDialog, model_dialog))
+                    btn.clicked.connect(partial(self.open_dialog, model_dialog))
                     chkbox = QCheckBox()
                     chkbox.stateChanged.connect(lambda state, x=model :
                                             self._update_selected_models(x, state))
-                    self.sklearn_model_grid.addWidget(chkbox, row, 0)
-                    self.sklearn_model_grid.addWidget(btn, row, 1)
+                    self.sklearn_model_form.addRow(chkbox, btn)
                     self.sklearn_model_dialogs.append(model_dialog)
                     self.sklearn_model_dialog_btns.append(btn)
                     self.model_checkboxes.append(chkbox)
                     row += 1
+            # Create TPOT item
+            # self.selected_models['TPOT'] = False
+            # btn = QPushButton('TPOT')
+            # btn.setFlat(True)
+            # chkbox = QCheckBox()
+            # chkbox.stateChanged.connect(lambda state, x='TPOT' :
+            #                         self._update_selected_models(x, state))
+            # self.sklearn_model_form.addRow(chkbox, btn)
+            # self.sklearn_model_dialog_btns.append(btn)
+            # self.model_checkboxes.append(chkbox)
+    
+
         except OSError as ose:
             self.logger.error("OSError opening Scikit model config files", exc_info=True)
             exceptionWarning('OSError opening Scikit model config files!', ose)
@@ -162,7 +173,7 @@ class SelectModelWidget(QTabWidget):
                     # Intialize model as unselected
                     self.selected_models[model] = False
                     btn = QPushButton(model)
-                    btn.clicked.connect(partial(self.openDialog, model_dialog))
+                    btn.clicked.connect(partial(self.open_dialog, model_dialog))
                     chkbox = QCheckBox()
                     chkbox.stateChanged.connect(lambda state, x=model :
                                             self._update_selected_models(x, state))
@@ -181,17 +192,33 @@ class SelectModelWidget(QTabWidget):
             tb = traceback.format_exc()
             print(tb)
         
-
         # Trigger update to load model parameters
         self._signal_update(self.version_selection.currentData())
             
-    def openDialog(self, dialog):
-        dialog.saveParams()
+    def open_dialog(self, dialog):
+        dialog.save_params()
+
+    @Slot(str)
+    def add_new_version(self, v_dir):
+        """
+        Slot to receive new version created Signal.
+
+            # Arguments
+                v_dir(String): directory of newly created version.
+        """
+        version = v_dir.split('\\')[-1]
+        self.version_selection.addItem(version, v_dir)
 
     def _signal_update(self, directory):
-        print("Emitting {} from {}".format(directory, self.__class__.__name__))
+        """
+        Parses selected version directory and emits signal to update each ModelDialog
+
+            # Arguments
+                directory(String): directory selected by user.
+        """
+        # print("Emitting {} from {}".format(directory, self.__class__.__name__))
         self.selected_version = directory.split('\\')[-1]
-        print("selected version: ", self.selected_version)
+        # Emit signal
         self.comms.version_change.emit(directory)
 
     def _update_selected_models(self, model, state):
