@@ -29,8 +29,8 @@ class TrainWidget(QTabWidget):
         self.addTab(self.data_loader, 'Load Data')      
         self.addTab(self.model_widget, 'Model Selection')
         self.setTabEnabled(1, True)
-        self.data_loader.data_load.connect(self.setTab)
-        self.data_loader.update_statusbar.connect(self.updateStatusBar)
+        self.data_loader.data_load.connect(self.model_widget.load_data)
+        self.data_loader.update_statusbar.connect(self.update_statusbar)
 
     @Slot(int, bool)
     def setTab(self, tab, state):
@@ -38,7 +38,7 @@ class TrainWidget(QTabWidget):
 
 
     @Slot(str)
-    def updateStatusBar(self, msg):
+    def update_statusbar(self, msg):
         self.parent.statusBar().showMessage(msg)
         self.parent.repaint()
 

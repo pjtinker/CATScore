@@ -52,7 +52,7 @@
             },
             "max_time_mins" : {
                 "type" : "int",
-                "default" : "",
+                "default" : 0,
                 "min" : 0,
                 "max" : 100000,
                 "step_size" : 10

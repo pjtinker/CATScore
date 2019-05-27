@@ -24,9 +24,10 @@ CSV files must be formatted accordingly.
 
 
 class DataLoader(QWidget):
-    """TODO: Refactor this monstrosity into functions to setup UI
     """
-    data_load = Signal(int, bool)
+    TODO: Refactor this monstrosity into functions to setup UI
+    """
+    data_load = Signal(pd.DataFrame)
     update_statusbar = Signal(str)
     update_progressbar = Signal(int, bool)
 
@@ -42,7 +43,7 @@ class DataLoader(QWidget):
         self.full_data = pd.DataFrame()
         self.selected_data = pd.DataFrame()
         self.open_file_button = QPushButton('Import CSV', self)
-        self.open_file_button.clicked.connect(lambda: self.openFile())
+        self.open_file_button.clicked.connect(lambda: self.open_file())
 
         self.main_layout = QHBoxLayout()
         self.left_column = QVBoxLayout()
@@ -81,13 +82,13 @@ class DataLoader(QWidget):
         self.available_column_view.setModel(self.available_column_model)
         selection = self.available_column_view.selectionModel()
         selection.selectionChanged.connect(
-            lambda x: self.displaySelectedRow(x))
+            lambda x: self.display_selected_rows(x))
 
         self.left_column.addWidget(self.open_file_button)
         self.left_column.addWidget(self.available_column_view)
 
         self.load_data_btn = QPushButton('Load Data', self)
-        self.load_data_btn.clicked.connect(lambda: self.getSelectedData())
+        self.load_data_btn.clicked.connect(lambda: self.load_selected_data())
         self.select_all_btn = QPushButton('Select All', self)
         self.select_all_btn.clicked.connect(
             lambda: self.available_column_model.setCheckboxes(True))
@@ -126,7 +127,7 @@ class DataLoader(QWidget):
         icon.addPixmap(QPixmap('icons/Programming-Save-icon.png'))
         self.export_dataset_btn.setIcon(icon)
         self.export_dataset_btn.setEnabled(False)
-        self.export_dataset_btn.clicked.connect(lambda: self.saveData())
+        self.export_dataset_btn.clicked.connect(lambda: self.save_data())
         self.export_dataset_btn.resize(32, 32)
         self.left_column.addWidget(self.export_dataset_btn)
 
@@ -147,11 +148,11 @@ class DataLoader(QWidget):
         # self.main_layout.addStretch()
         self.main_layout.addLayout(self.right_column)
 
-        self.setupTextPreprocessingOptions()
+        self.setup_text_preproc_ui()
 
         self.setLayout(self.main_layout)
 
-    def getSelectedData(self):
+    def load_selected_data(self):
         """Return columns selected from dataframe by user.
             # Returns
                 list: column names selected by user
@@ -163,7 +164,7 @@ class DataLoader(QWidget):
             self.text_table_model.loadData(None)
             self.preprocess_text_btn.setEnabled(False)
             self.export_dataset_btn.setEnabled(False)
-            self.data_load.emit(1, False)
+            self.data_load.emit(pd.DataFrame())
             # exceptionWarning('No questions selected')
         else:
             self.selected_data = self.full_data[self.selected_columns]
@@ -171,8 +172,9 @@ class DataLoader(QWidget):
             self.set_preprocessing_option_state(1, True)
             #self.data_load.emit(1, True)
 
-    def openFile(self):
-        """Open file chooser for user to select the CSV file containing their data
+    def open_file(self):
+        """
+        Open file chooser for user to select the CSV file containing their data
         Only CSV files are allowed at this time.
         """
         self.column_checkboxes = []
@@ -180,15 +182,15 @@ class DataLoader(QWidget):
         file_name, filter = QFileDialog.getOpenFileName(
             self, 'Open CSV', os.getenv('HOME'), 'CSV(*.csv)')
         if file_name:
-            self.loadFile(file_name)
+            self.load_file(file_name)
 
-    def loadFile(self, f_path):
+    def load_file(self, f_path):
         """
         Load data from a CSV file to the workspace.\n
         Column 0 is used for the index column.\n
         chardet attempts to determine encoding if file is not utf-8.
             # Attributes
-                f_path(String): The filename selected via openFile
+                f_path(String): The filename selected via open_file
         """
         # FIXME: Reset status bar when new data is loaded.
         try:
@@ -232,7 +234,7 @@ class DataLoader(QWidget):
                         columns[columns.get_loc(column) + 1])
             self.available_column_model.loadData(self.available_columns)
             self.full_text_count.setText(str(self.full_data.shape[0]))
-            self.displaySelectedRow(None)
+            self.display_selected_rows(None)
             self.select_all_btn.setEnabled(True)
             self.deselect_all_btn.setEnabled(True)
 
@@ -244,7 +246,7 @@ class DataLoader(QWidget):
             self.logger.error("Error loading dataframe", exc_info=True)
             exceptionWarning("Unexpected error occured!", exception=e)
 
-    def displaySelectedRow(self, selection=None):
+    def display_selected_rows(self, selection=None):
         """
         Updates the stats and label distro plot when a question is selected.
             # Attributes
@@ -269,7 +271,7 @@ class DataLoader(QWidget):
         self.graph.chartSingleClassFrequency(
             self.full_data[self.full_data.columns[offset + 1]].values)
 
-    def saveData(self):
+    def save_data(self):
         if self.selected_data.empty:
             exceptionWarning('No data selected')
             return
@@ -280,7 +282,7 @@ class DataLoader(QWidget):
                 file_name, index_label='testnum', quoting=1, encoding='utf-8')
             self.update_statusbar.emit("Data saved successfully.")
 
-    def setupTextPreprocessingOptions(self):
+    def setup_text_preproc_ui(self):
         """
         Generate necessary UI and backend data structures for text preprocessing option
         selection.
@@ -343,7 +345,7 @@ class DataLoader(QWidget):
             #self.export_dataset_btn.setEnabled(True)
 
     @Slot(pd.DataFrame)
-    def updateData(self, data):
+    def update_data(self, data):
         self.load_data_btn.setEnabled(True)
         # self.text_proc_groupbox.setEnabled(True)
         # self.preprocess_text_btn.setEnabled(True)
@@ -355,7 +357,7 @@ class DataLoader(QWidget):
         self.update_progressbar.emit(0, False)
         self.selected_data = data
         self.text_table_model.loadData(self.selected_data.head())
-        self.data_load.emit(1, True)
+        self.data_load.emit(self.selected_data)
 
     def applyPreprocessing(self):
         """
@@ -369,7 +371,7 @@ class DataLoader(QWidget):
         self.update_progressbar.emit(0, True)
         self.preproc_thread = PreprocessingThread(self.full_data[self.selected_columns],
                                                   self.preprocessing_options)
-        self.preproc_thread.preprocessing_complete.connect(self.updateData)
+        self.preproc_thread.preprocessing_complete.connect(self.update_data)
         self.update_statusbar.emit(
             'Preprocessing text.  This may take several minutes.')
         self.preproc_thread.start()

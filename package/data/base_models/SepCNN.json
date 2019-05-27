@@ -1,0 +1,102 @@
+{
+    "model_base" : "tensorflow",
+    "model_class" : "SepCNN",
+    "embedding_data_dir" : ".\\package\\data\\embeddings\\glove6b\\",
+    "SepCNN" : {
+        "Model" : {
+            "epochs" : {
+                "type" : "int",
+                "default" : 20,
+                "min" : 2,
+                "max" : 10000,
+                "step_size" : 1
+            },
+            "batch_size" : {
+                "type" : "int",
+                "default" : 64,
+                "min" : 16,
+                "max" : 10000,
+                "step_size" : 1
+            },
+            "blocks" : {
+                "type" : "int",
+                "default" : 2,
+                "min" : 1,
+                "max" : 10,
+                "step_size" : 1
+            },
+            "filters" : {
+                "type" : "int",
+                "default" : 64,
+                "min" : 8,
+                "max" : 10000,
+                "step_size" : 1
+            },
+            "kernel_size" : {
+                "type" : "int",
+                "default" : 3,
+                "min" : 2,
+                "max" : 10,
+                "step_size" : 1
+            },
+            "pool_size" : {
+                "type" : "int",
+                "default" : 3,
+                "min" : 2,
+                "max" : 10,
+                "step_size" : 1
+            },
+            "dropout_rate" : {
+                "type" : "double",
+                "default" : 0.2,
+                "min" : 0,
+                "max" : 1,
+                "step_size" : 0.01,
+                "decimal_len":  2
+            }
+        },
+        "Optimizer" : {
+            "lr" : {
+                "type" : "double",
+                "default" : 0.001,
+                "min" : 0.0001,
+                "max" : 10,
+                "step_size" : 0.001,
+                "decimal_len" : 4 
+            },
+            "beta_1" : {
+                "type" : "double",
+                "default" : 0.9,
+                "min" : 0.001,
+                "max" : 1,
+                "step_size" : 0.1,
+                "decimal_len" : 2 
+                },
+            "beta_2" : {
+                "type" : "double",
+                "default" : 0.999,
+                "min" : 0.0001,
+                "max" : 1,
+                "step_size" : 0.001,
+                "decimal_len" : 4 
+            },
+            "epsilon" : {
+                "type" : "double",
+                "default" : 0.0,
+                "min" : 0,
+                "max" : 10,
+                "step_size" : 0.001,
+                "decimal_len" : 3
+            },
+            "decay" : {
+                "type" : "double",
+                "default" : 0,
+                "min" : 0.0001,
+                "max" : 10,
+                "step_size" : 0.001,
+                "decimal_len" : 3
+            }
+        }
+    }
+     
+}

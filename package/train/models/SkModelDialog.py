@@ -31,6 +31,8 @@ class SkModelDialog(QDialog):
         self.model_params = {}
         self.updated_params = {}
         self.ui_widgets = []
+        # input_widgets is a list of all dynamically created input widgets for the various model params.
+        # Holds EVERY input widget, regardless of type.  Key = hyperparameter name
         self.input_widgets = {}
         self.current_version = 'default'
         self.params = params
@@ -41,8 +43,6 @@ class SkModelDialog(QDialog):
             self.model_params[name] = param[name]
             self.updated_params[name] = {}
 
-        # input_widgets is a list of all dynamically created input widgets for the various model params.
-        # Holds EVERY input widget, regardless of type.  Key = hyperparameter name
         self.setWindowTitle(self.main_model_name)
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         self.buttonBox.setObjectName("model_buttonbox")
@@ -103,19 +103,26 @@ class SkModelDialog(QDialog):
 
 
     def save_params(self):
-        """Saves the parameters entered by the user.  
-        FIXME:
+        """
+        Saves the model parameters entered by the user. If default version is selected,
+        return without saving.
         """
         if (self.exec_() == QDialog.Accepted):
             print("Updated Params as they hit save_params:")
             print(json.dumps(self.updated_params, indent=2))
+            version = self.current_version.split('\\')[-1]
+            if version == 'default':
+                print("Default version selected.  Returning...")
+                return
             filename = self.main_model_name + '.json'
             save_dir = os.path.join(self.question_combobox.currentData(),
                                     filename)
             save_data = {
+                "model_base" : self.params[0]['model_base'],
+                "model_module": self.params[0]['model_module'],
                 "model_class" : self.main_model_name,
                 "question_number" : self.question_combobox.currentData().split('\\')[-1],
-                "version" : self.current_version.split('\\')[-1],
+                "version" : version,
                 "params" : {}
             }
             for param_type, params in self.updated_params.items():
@@ -128,9 +135,8 @@ class SkModelDialog(QDialog):
                 print("Exception {}".format(e))
                 tb = traceback.format_exc()
                 print(tb)
-
         else:
-            print("Denied!")
+            pass
 
 
     def _split_key(self, key):
@@ -251,6 +257,7 @@ class SkModelDialog(QDialog):
             for d in question_directories:
                 self.question_combobox.addItem(d.split('\\')[-1], d)
             self.form_grid.addWidget(self.question_combobox, 0, 0)
+            self.update()
         except FileNotFoundError as fnfe:
             pass
         except Exception as e:

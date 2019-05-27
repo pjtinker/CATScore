@@ -1,0 +1,25 @@
+{
+    "version" : "default",
+    "meta" : {
+
+        "created_at" : null,
+        "last_updated_at" : null,
+        "last_trained_at" : null,
+        "last_train_time" : null
+    },
+    "sklearn" : {
+        "train" : {
+            "eval_type" : "cv",
+            "eval_params" : {
+                "n_folds" : 5
+            }
+        },
+        "tune" : {
+            
+        }
+    },
+    "tensorflow" : {
+
+    }
+
+}
