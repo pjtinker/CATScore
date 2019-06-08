@@ -9,17 +9,20 @@
     },
     "sklearn" : {
         "train" : {
-            "eval_type" : "cv",
-            "eval_params" : {
-                "n_folds" : 5
-            }
-        },
+            "cv" : 5
+            },
         "tune" : {
             
         }
     },
     "tensorflow" : {
-
+        "train" : {
+            "validation_split" : 0.2,
+            "patience" : 2,
+            "embedding_type": "glove",
+            "embedding_dims" : 100,
+            "embedding_trainable" : true
+        }
     }
 
 }

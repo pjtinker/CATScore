@@ -167,7 +167,7 @@ class DataLoader(QWidget):
             self.data_load.emit(pd.DataFrame())
             # exceptionWarning('No questions selected')
         else:
-            self.selected_data = self.full_data[self.selected_columns]
+            self.selected_data = self.full_data[self.selected_columns].copy()
             self.text_table_model.loadData(self.selected_data.head())
             self.set_preprocessing_option_state(1, True)
             #self.data_load.emit(1, True)
@@ -370,7 +370,7 @@ class DataLoader(QWidget):
         self.export_dataset_btn.setEnabled(False)
         self.update_progressbar.emit(0, True)
         self.preproc_thread = PreprocessingThread(self.full_data[self.selected_columns],
-                                                  self.preprocessing_options)
+                                                  **self.preprocessing_options)
         self.preproc_thread.preprocessing_complete.connect(self.update_data)
         self.update_statusbar.emit(
             'Preprocessing text.  This may take several minutes.')
@@ -384,7 +384,7 @@ class PreprocessingThread(QThread):
     """
     preprocessing_complete = Signal(pd.DataFrame)
 
-    def __init__(self, data, kwargs):
+    def __init__(self, data, **kwargs):
         """
         Make a new thread instance to apply text preprocessing to 
         the selected data.
@@ -392,19 +392,33 @@ class PreprocessingThread(QThread):
                 data: pandas.DataFrame, user selected columns for preprocessing
                 kwargs: dict, Text preprocessing options
         """
-        super(self.__class__, self).__init__()
+        super(PreprocessingThread, self).__init__()
         self.data = data
         self.kwargs = kwargs
+        
+    # def _apply_preprocessing(self, unique_count=5000):
+    #     """
+    #     Apply preprocessing steps to provided data and emit signal when complete.  
+    #     FIXME: Using _Text to denote our text data.  Should this be customizable?
+    #     """
+    #     apply_cols = [
+    #         col for col in self.data.columns if col.endswith('_Text')]
+    #     self.data[apply_cols] = self.data[apply_cols].applymap(
+    #         lambda x: processText(str(x), **self.kwargs))
+    #     if self.kwargs['spell_correction']:
+    #         sentences = self.data[apply_cols].applymap(
+    #             lambda x: str(x).split()).values
+    #         sc = SpellCheck(sentences, 5000)
+    #         self.data[apply_cols] = self.data[apply_cols].applymap(
+    #             lambda x: sc.correct_spelling(x))
 
-    def _apply_preprocessing(self, unique_count=5000):
-        """
-        Apply preprocessing steps to provided data and emit signal when complete.  
-        FIXME: Using _Text to denote our text data.  Should this be customizable?
-        """
+    #     self.preprocessing_complete.emit(self.data)
+
+    def run(self):
         apply_cols = [
             col for col in self.data.columns if col.endswith('_Text')]
         self.data[apply_cols] = self.data[apply_cols].applymap(
-            lambda x: processText(str(x), **self.kwargs))
+            lambda x: processText(str(x), self.kwargs))
         if self.kwargs['spell_correction']:
             sentences = self.data[apply_cols].applymap(
                 lambda x: str(x).split()).values
@@ -414,17 +428,7 @@ class PreprocessingThread(QThread):
 
         self.preprocessing_complete.emit(self.data)
 
-    def run(self):
-        apply_cols = [
-            col for col in self.data.columns if col.endswith('_Text')]
-        self.data[apply_cols] = self.data[apply_cols].applymap(
-            lambda x: processText(str(x), **self.kwargs))
-        if self.kwargs['spell_correction']:
-            print()
-            sentences = self.data[apply_cols].applymap(
-                lambda x: str(x).split()).values
-            sc = SpellCheck(sentences, unique_count)
-            self.data[apply_cols] = self.data[apply_cols].applymap(
-                lambda x: sc.correct_spelling(x))
-
-        self.preprocessing_complete.emit(self.data)
+    def stop(self):
+        # TODO: Add funtionality to stop the thread
+        self.abort = True
+        self.wait(2000)

@@ -53,6 +53,7 @@ if __name__ == "__main__":
 
     # Qt Application
     app = QApplication(sys.argv)
+    # app.processEvents()
     # app.setStyle('Windows')
     window = MainWindow()
     window.show()

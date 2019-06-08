@@ -1,4 +1,4 @@
-from PySide2.QtCore import (Qt, Slot, Signal, QObject)
+from PySide2.QtCore import (Qt, Slot, Signal, QObject, QThread)
 from PySide2.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, 
                                 QTabWidget, QComboBox, QFormLayout,
                                 QLabel, QFileDialog, QHBoxLayout, 
@@ -38,7 +38,7 @@ class SelectModelWidget(QTabWidget):
         self.logger = logging.getLogger(__name__)
         self.parent = parent
 
-        self.training_data = None
+        self.training_data = pd.DataFrame()
 
         self.selected_version = 'experimental'
         self.comms = Communicate()
@@ -48,6 +48,8 @@ class SelectModelWidget(QTabWidget):
 
         self.training_params = {}
         self.training_params['sklearn'] = {}
+        self.training_params['sklearn']['type'] = None
+        self.training_params['sklearn']['value'] = None
         self.training_params['tensorflow'] = {}
         
         self.sklearn_model_dialogs = []
@@ -200,86 +202,116 @@ class SelectModelWidget(QTabWidget):
         Build ui components for training parameters for both Sklearn and Tensorflow
         """
         # Sklearn training first
-        cv_n_fold_input = QSpinBox(objectName='n_folds')
-        cv_n_fold_input.setRange(2, 10)
-        cv_n_fold_input.setValue(5)
-        # cv_n_fold_input.setEnabled(False)
-        cv_n_fold_input.valueChanged.connect(
-            lambda state, x=cv_n_fold_input:
-                self._update_training_params('sklearn', 'cv', x.value())
+        self.cv_n_fold_input = QSpinBox(objectName='n_folds')
+        self.cv_n_fold_input.setRange(2, 10)
+        self.cv_n_fold_input.setValue(5)
+        self.cv_n_fold_input.setEnabled(False)
+        self.cv_n_fold_input.valueChanged.connect(
+            lambda state, x=self.cv_n_fold_input:
+                self.update_training_params('sklearn', 'cv', x.value())
             )
-        cv_radio_btn = QRadioButton("Cross-validation", objectName='cv')
-        cv_radio_btn.toggled.connect(lambda state, x=cv_n_fold_input: 
-                                        self._update_training_params('sklearn', 'cv', x.value())
+        self.cv_radio_btn = QRadioButton("Cross-validation", objectName='cv')
+        self.cv_radio_btn.toggled.connect(lambda state, x=self.cv_n_fold_input: 
+                                        self._update_sklearn_training_type('cv', x.value())
                                     )
-        cv_radio_btn.toggle()
-        self.sklearn_training_inputs.append(cv_radio_btn)
-        self.sklearn_training_inputs.append(cv_n_fold_input)
-        self.sklearn_training_form.addRow(cv_radio_btn, cv_n_fold_input)
         
-        sk_validation_radio_btn = QRadioButton("Validation set")
-        sk_validation_percent_input = QDoubleSpinBox(objectName='test_split')
-        sk_validation_percent_input.setRange(0.05, 1)
-        # sk_validation_percent_input.setValue(0.2)
-        sk_validation_percent_input.setSingleStep(0.1)
-        # sk_validation_percent_input.setEnabled(False)
-        sk_validation_percent_input.valueChanged.connect(
-            lambda state, x=sk_validation_percent_input:
-                self._update_training_params('sklearn', 'validation', x.value())
+        # self.sklearn_training_inputs.append(self.cv_radio_btn)
+        # self.sklearn_training_inputs.append(self.cv_n_fold_input)
+        self.sklearn_training_form.addRow(self.cv_radio_btn, self.cv_n_fold_input)
+        
+        self.sk_validation_radio_btn = QRadioButton("Validation set")
+        self.sk_validation_percent_input = QDoubleSpinBox(objectName='test_split')
+        self.sk_validation_percent_input.setRange(0.05, 1)
+        # self.sk_validation_percent_input.setValue(0.2)
+        self.sk_validation_percent_input.setSingleStep(0.1)
+        self.sk_validation_percent_input.setEnabled(False)
+        self.sk_validation_percent_input.valueChanged.connect(
+            lambda state, x=self.sk_validation_percent_input:
+                self.update_training_params('sklearn', 'validation', x.value())
             )
 
-        sk_validation_radio_btn.toggled.connect(
-            lambda state, x=sk_validation_percent_input:
-                self._update_training_params('sklearn', 'validation', x.value())
+        self.sk_validation_radio_btn.toggled.connect(
+            lambda state, x=self.sk_validation_percent_input:
+                self._update_sklearn_training_type('validation', x.value())
             )
-        self.sklearn_training_inputs.append(sk_validation_radio_btn)
-        self.sklearn_training_inputs.append(sk_validation_percent_input)
-        self.sklearn_training_form.addRow(sk_validation_radio_btn, sk_validation_percent_input)
+        # self.sklearn_training_inputs.append(self.sk_validation_radio_btn)
+        # self.sklearn_training_inputs.append(self.sk_validation_percent_input)
+        self.sklearn_training_form.addRow(self.sk_validation_radio_btn, self.sk_validation_percent_input)
     
-        no_eval_btn = QRadioButton("No evaluation set", objectName='no_eval')
-        no_eval_btn.toggled.connect(lambda: self._update_training_params('sklearn', 'no_eval', None))
-        self.sklearn_training_inputs.append(no_eval_btn)
-        self.sklearn_training_form.addRow(no_eval_btn)
-        # TODO: Add _update_training_params to each field for tensorflow.
+        self.no_eval_btn = QRadioButton("No evaluation set", objectName='no_eval')
+        self.no_eval_btn.toggled.connect(lambda: 
+                                        self._update_sklearn_training_type(None, None)
+                                   )
+        # self.sklearn_training_inputs.append(self.no_eval_btn)
+        self.sklearn_training_form.addRow(self.no_eval_btn)
+        # TODO: Add update_training_params to each field for tensorflow.
         tf_val_label = QLabel("Validation split")
         tf_val_input = QDoubleSpinBox(objectName='validation_split')
         tf_val_input.setRange(0.05, 1)
         tf_val_input.setValue(0.2)
         tf_val_input.setSingleStep(0.1)
-        self.tensorflow_training_inputs.append([tf_val_input, tf_val_label])
+        tf_val_input.valueChanged.connect(
+            lambda state, x=tf_val_input:
+                self.update_training_params('tensorflow', 'validation_split', x.value())
+            )
+        # self.tensorflow_training_inputs.append([tf_val_input, tf_val_label])
         self.tensorflow_training_form.addRow(tf_val_label, tf_val_input)
 
-        tf_patience_label = QLabel("Patience")
-        tf_patience_input = QSpinBox(objectName='patience')
-        tf_patience_input.setRange(0, 1000)
-        tf_patience_input.setValue(2)
-        tf_patience_input.setSingleStep(1)
-        self.tensorflow_training_inputs.append([tf_patience_label, tf_patience_input])
-        self.tensorflow_training_form.addRow(tf_patience_label, tf_patience_input)
+        self.tf_patience_label = QLabel("Patience")
+        self.tf_patience_input = QSpinBox(objectName='patience')
+        self.tf_patience_input.setRange(0, 1000)
+        self.tf_patience_input.setValue(2)
+        self.tf_patience_input.setSingleStep(1)
+        self.tf_patience_input.valueChanged.connect(
+            lambda state, x=self.tf_patience_input:
+                self.update_training_params('tensorflow', 'patience', x.value())
+            )
+        # self.tensorflow_training_inputs.append([self.tf_patience_label, self.tf_patience_input])
+        self.tensorflow_training_form.addRow(self.tf_patience_label, self.tf_patience_input)
 
-        tf_embedding_type_label = QLabel("Embedding type")
-        tf_embedding_combobox = QComboBox(objectName='embedding_type')
-        tf_embedding_combobox.addItem('GloVe', 'glove')
-        tf_embedding_combobox.addItem('Word2Vec', 'word2vec')
-        tf_embedding_combobox.setCurrentIndex(0)
-        self.tensorflow_training_inputs.append([tf_embedding_type_label, tf_embedding_combobox])
-        self.tensorflow_training_form.addRow(tf_embedding_type_label, tf_embedding_combobox)
+        self.tf_embedding_type_label = QLabel("Embedding type")
+        self.tf_embedding_combobox = QComboBox(objectName='embedding_type')
+        self.tf_embedding_combobox.addItem('GloVe', 'glove')
+        self.tf_embedding_combobox.addItem('Word2Vec', 'word2vec')
+        self.tf_embedding_combobox.setCurrentIndex(0)
+        self.tf_embedding_combobox.currentIndexChanged.connect(
+            lambda state, x=self.tf_embedding_combobox:
+                self.update_training_params('tensorflow', 'embedding_type', x.currentData())
+            )
+        # self.tensorflow_training_inputs.append([self.tf_embedding_type_label, self.tf_embedding_combobox])
+        self.tensorflow_training_form.addRow(self.tf_embedding_type_label, self.tf_embedding_combobox)
 
-        tf_embedding_dims_label = QLabel("Embedding dims")
-        tf_embedding_dims_input = QSpinBox(objectName='embedding_dims')
-        tf_embedding_dims_input.setRange(100, 300)
-        tf_embedding_dims_input.setValue(100)
-        tf_embedding_dims_input.setSingleStep(100)
-        self.tensorflow_training_inputs.append([tf_embedding_dims_label, tf_embedding_dims_input])
-        self.tensorflow_training_form.addRow(tf_embedding_dims_label, tf_embedding_dims_input)
+        self.tf_embedding_dims_label = QLabel("Embedding dims")
+        self.tf_embedding_dims_input = QSpinBox(objectName='embedding_dims')
+        self.tf_embedding_dims_input.setRange(100, 300)
+        self.tf_embedding_dims_input.setValue(100)
+        self.tf_embedding_dims_input.setSingleStep(100)
+        self.tf_embedding_dims_input.valueChanged.connect(
+            lambda state, x=self.tf_embedding_dims_input:
+                self.update_training_params('tensorflow', 'embedding_dims', x.value())
+            )
+        # self.tensorflow_training_inputs.append([self.tf_embedding_dims_label, self.tf_embedding_dims_input])
+        self.tensorflow_training_form.addRow(self.tf_embedding_dims_label, self.tf_embedding_dims_input)
 
-        tf_embedding_trainable_label = QLabel("Train embeddings")
-        tf_embedding_trainable_chkbox = QCheckBox(objectName='embedding_trainable')
-        self.tensorflow_training_inputs.append([tf_embedding_trainable_label, tf_embedding_trainable_chkbox])
-        self.tensorflow_training_form.addRow(tf_embedding_trainable_label, tf_embedding_trainable_chkbox)
+        self.tf_embedding_trainable_label = QLabel("Train embeddings")
+        self.tf_embedding_trainable_chkbox = QCheckBox(objectName='embedding_trainable')
+        self.tf_embedding_trainable_chkbox.stateChanged.connect(
+            lambda state, x=self.tf_embedding_trainable_chkbox:
+                self.update_training_params('tensorflow', 'embedding_trainable', x.isChecked())
+            )
+        # self.tensorflow_training_inputs.append([self.tf_embedding_trainable_label, self.tf_embedding_trainable_chkbox])
+        self.tensorflow_training_form.addRow(self.tf_embedding_trainable_label, self.tf_embedding_trainable_chkbox)
 
+        self.cv_radio_btn.toggle()
 
     def open_dialog(self, dialog):
+        """
+        Opens the passed ModelDialog via the save_params function, allowing the user
+        to specify hyperparameters for each available version field.  
+
+            # Arguments
+                dialog(ModelDialog): Specified model dialog.
+        """
         dialog.save_params()
 
 
@@ -302,11 +334,11 @@ class SelectModelWidget(QTabWidget):
             # Arguments
                 data(pandas.DataFrame): DataFrame of training data
         """
+        self.training_data = data
         if(data.empty):
-            self.training_data = None
             self.run_btn.setEnabled(False)
         else:
-            self.training_data = data
+            # self.training_data = data
             self.run_btn.setEnabled(True)
 
     def _update_version(self, directory):
@@ -325,6 +357,14 @@ class SelectModelWidget(QTabWidget):
 
 
     def _update_selected_models(self, model, state):
+        """
+        Update the models selected by the user.  This function is connected to the
+        checkboxes associated with each model.
+
+            # Arguments:
+                model(String): name of the selected model
+                state(bool): the truth of the selection.  True->selected, False->unselected
+        """
         truth = 0
         if state == 2:
             truth = 1
@@ -333,28 +373,51 @@ class SelectModelWidget(QTabWidget):
 
 
     def _enable_tuning_ui(self, state):
-        truth = 0
-        if state == 2:
-            truth = 1
-        self.sklearn_tuning_groupbox.setEnabled(truth)
-        self.tensorflow_tuning_groupbox.setEnabled(truth)
+        """
+        Helper function to enable/disable the tuning parameter UI if selected 
+        by the user.
 
-    def _update_training_params(self, model_base, param, value):
-        
+            # Arguments:
+                state(bool): the state of tuning.  False->no tuning, True->tune models
+        """
+        # truth = 0
+        # if state == 2:
+        #     truth = 1
+        self.sklearn_tuning_groupbox.setEnabled(state)
+        self.tensorflow_tuning_groupbox.setEnabled(state)
+
+    def update_training_params(self, model_base, param, value):
+        """
+        Update the various training parameters with values supplied by the user.
+        Needs work as the sklearn training parameters are mutually exclusive.
+
+            # Arguments
+                model_base(String): model base for specified training params
+                param(String): parameter name
+                value(String, int, or double): value of specified parameter
+        """
         if model_base is None or param is None:
             return
         print(model_base, param, value)
         try:
-            # FIXME: This is super hackish.  Can it be done more eloquently?
+            # FIXME: This is super hackish and brittle.  Can it be done more eloquently?
             if model_base == 'sklearn':
-                self.training_params[model_base] = {}
-            self.training_params[model_base][param] = value
+                self._update_sklearn_training_type(param, value)
+            else:
+                self.training_params[model_base][param] = value
         except KeyError as ke:
             print(ke)
 
         print(json.dumps(self.training_params, indent=2))
 
+    def _update_sklearn_training_type(self, type, value):
+        truth = False
+        if type == 'cv':
+            truth = True
+        self.cv_n_fold_input.setEnabled(truth)
+        self.sk_validation_percent_input.setEnabled(not truth)
 
+        self.training_params['sklearn']['type'] = type
+        self.training_params['sklearn']['value'] = value
+        print(json.dumps(self.training_params, indent=2))
 
-
-    
