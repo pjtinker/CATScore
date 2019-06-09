@@ -278,7 +278,7 @@ class SkModelDialog(QDialog):
         for model, types in self.model_params.items():
             for t, params in types.items():
                 self.set_input_params(params)
-
+        # If true, default (or none available) selected, thus Return
         if path == None or path == 'default':
             return
 

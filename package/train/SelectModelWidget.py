@@ -18,6 +18,7 @@ import pandas as pd
 
 from package.train.models.SkModelDialog import SkModelDialog
 from package.train.models.TfModelDialog import TfModelDialog
+from package.train.ModelTrainer import ModelTrainer
 from package.utils.catutils import exceptionWarning
 
 BASE_SK_MODEL_DIR = "./package/data/base_models"
@@ -27,12 +28,14 @@ BASE_FS_DIR = "./package/data/feature_selection/SelectKBest.json"
 
 class Communicate(QObject):
     version_change = Signal(str)
+    enable_training_btn = Signal(bool)
 
 class SelectModelWidget(QTabWidget):
     """QTabWidget that holds all of the selectable models and the accompanying ModelDialog for each.
     """
     update_statusbar = Signal(str)
     update_progressbar = Signal(int, bool)
+
     def __init__(self, parent=None):
         super(SelectModelWidget, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
@@ -40,7 +43,7 @@ class SelectModelWidget(QTabWidget):
 
         self.training_data = pd.DataFrame()
 
-        self.selected_version = 'experimental'
+        self.selected_version = '.\\package\\data\\versions\\default'
         self.comms = Communicate()
 
         self.selected_models = {}
@@ -121,9 +124,11 @@ class SelectModelWidget(QTabWidget):
         self.setup_training_ui()
 
         self.main_layout.addStretch()
-        self.run_btn = QPushButton("Run!")
+        self.run_btn = QPushButton("Train Models")
+        self.run_btn.clicked.connect(lambda: self.train_models())
         self.run_btn.setEnabled(False)
 
+        self.comms.enable_training_btn.connect(self.set_training_btn_state)
         self.main_layout.addWidget(self.run_btn)
         self.setLayout(self.main_layout)
 
@@ -156,34 +161,36 @@ class SelectModelWidget(QTabWidget):
         except IOError as ioe:
             self.logger.error("Error loading base feature selector params", exc_info=True)
             exceptionWarning('Error occurred while loading base feature selector parameters.', repr(ioe))
-        
+        # Dynamically generate ModelDialogs for each model in the base model directory.
+        # Only loads .json files.
         try:
             row = 0
             for filename in os.listdir(BASE_SK_MODEL_DIR):
-                with open(os.path.join(BASE_SK_MODEL_DIR, filename), 'r') as f:
-                    print("Loading model:", filename)
-                    model_data = json.load(f)
-                    model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
-                    self.comms.version_change.connect(model_dialog.update_version)
-                    model = model_data['model_class']
-                    # Initialize model as unselected
-                    self.selected_models[model] = False
-                    btn = QPushButton(model)
-                    # Partial allows the connection of dynamically generated QObjects
-                    btn.clicked.connect(partial(self.open_dialog, model_dialog))
-                    chkbox = QCheckBox()
-                    chkbox.stateChanged.connect(lambda state, x=model :
-                                            self._update_selected_models(x, state))
-                    if model_data['model_base'] == 'tensorflow':
-                        self.tensorflow_model_form.addRow(chkbox, btn)
-                        self.tensorflow_model_dialogs.append(model_dialog)
-                        self.tensorflow_model_dialog_btns.append(btn)
-                    else:
-                        self.sklearn_model_form.addRow(chkbox, btn)
-                        self.sklearn_model_dialogs.append(model_dialog)
-                        self.sklearn_model_dialog_btns.append(btn)
-                    self.model_checkboxes.append(chkbox)
-                    row += 1
+                if filename.endswith('.json'):
+                    with open(os.path.join(BASE_SK_MODEL_DIR, filename), 'r') as f:
+                        print("Loading model:", filename)
+                        model_data = json.load(f)
+                        model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
+                        self.comms.version_change.connect(model_dialog.update_version)
+                        model = model_data['model_class']
+                        # Initialize model as unselected
+                        self.selected_models[model] = False
+                        btn = QPushButton(model)
+                        # Partial allows the connection of dynamically generated QObjects
+                        btn.clicked.connect(partial(self.open_dialog, model_dialog))
+                        chkbox = QCheckBox(objectName=model)
+                        chkbox.stateChanged.connect(lambda state, x=model :
+                                                self._update_selected_models(x, state))
+                        if model_data['model_base'] == 'tensorflow':
+                            self.tensorflow_model_form.addRow(chkbox, btn)
+                            self.tensorflow_model_dialogs.append(model_dialog)
+                            self.tensorflow_model_dialog_btns.append(btn)
+                        else:
+                            self.sklearn_model_form.addRow(chkbox, btn)
+                            self.sklearn_model_dialogs.append(model_dialog)
+                            self.sklearn_model_dialog_btns.append(btn)
+                        self.model_checkboxes.append(chkbox)
+                        row += 1
         except OSError as ose:
             self.logger.error("OSError opening model config files", exc_info=True)
             exceptionWarning('OSError opening model config files!', ose)
@@ -248,24 +255,24 @@ class SelectModelWidget(QTabWidget):
         tf_val_label = QLabel("Validation split")
         tf_val_input = QDoubleSpinBox(objectName='validation_split')
         tf_val_input.setRange(0.05, 1)
-        tf_val_input.setValue(0.2)
         tf_val_input.setSingleStep(0.1)
         tf_val_input.valueChanged.connect(
             lambda state, x=tf_val_input:
                 self.update_training_params('tensorflow', 'validation_split', x.value())
             )
+        tf_val_input.setValue(0.2)
         # self.tensorflow_training_inputs.append([tf_val_input, tf_val_label])
         self.tensorflow_training_form.addRow(tf_val_label, tf_val_input)
 
         self.tf_patience_label = QLabel("Patience")
         self.tf_patience_input = QSpinBox(objectName='patience')
         self.tf_patience_input.setRange(0, 1000)
-        self.tf_patience_input.setValue(2)
         self.tf_patience_input.setSingleStep(1)
         self.tf_patience_input.valueChanged.connect(
             lambda state, x=self.tf_patience_input:
                 self.update_training_params('tensorflow', 'patience', x.value())
             )
+        self.tf_patience_input.setValue(2)
         # self.tensorflow_training_inputs.append([self.tf_patience_label, self.tf_patience_input])
         self.tensorflow_training_form.addRow(self.tf_patience_label, self.tf_patience_input)
 
@@ -273,23 +280,24 @@ class SelectModelWidget(QTabWidget):
         self.tf_embedding_combobox = QComboBox(objectName='embedding_type')
         self.tf_embedding_combobox.addItem('GloVe', 'glove')
         self.tf_embedding_combobox.addItem('Word2Vec', 'word2vec')
-        self.tf_embedding_combobox.setCurrentIndex(0)
+        self.tf_embedding_combobox.setCurrentIndex(1)
         self.tf_embedding_combobox.currentIndexChanged.connect(
             lambda state, x=self.tf_embedding_combobox:
                 self.update_training_params('tensorflow', 'embedding_type', x.currentData())
             )
+        self.tf_embedding_combobox.setCurrentIndex(0)
         # self.tensorflow_training_inputs.append([self.tf_embedding_type_label, self.tf_embedding_combobox])
         self.tensorflow_training_form.addRow(self.tf_embedding_type_label, self.tf_embedding_combobox)
 
         self.tf_embedding_dims_label = QLabel("Embedding dims")
         self.tf_embedding_dims_input = QSpinBox(objectName='embedding_dims')
         self.tf_embedding_dims_input.setRange(100, 300)
-        self.tf_embedding_dims_input.setValue(100)
         self.tf_embedding_dims_input.setSingleStep(100)
         self.tf_embedding_dims_input.valueChanged.connect(
             lambda state, x=self.tf_embedding_dims_input:
                 self.update_training_params('tensorflow', 'embedding_dims', x.value())
             )
+        self.tf_embedding_dims_input.setValue(100)
         # self.tensorflow_training_inputs.append([self.tf_embedding_dims_label, self.tf_embedding_dims_input])
         self.tensorflow_training_form.addRow(self.tf_embedding_dims_label, self.tf_embedding_dims_input)
 
@@ -299,6 +307,7 @@ class SelectModelWidget(QTabWidget):
             lambda state, x=self.tf_embedding_trainable_chkbox:
                 self.update_training_params('tensorflow', 'embedding_trainable', x.isChecked())
             )
+        self.tf_embedding_trainable_chkbox.setChecked(True)
         # self.tensorflow_training_inputs.append([self.tf_embedding_trainable_label, self.tf_embedding_trainable_chkbox])
         self.tensorflow_training_form.addRow(self.tf_embedding_trainable_label, self.tf_embedding_trainable_chkbox)
 
@@ -335,11 +344,25 @@ class SelectModelWidget(QTabWidget):
                 data(pandas.DataFrame): DataFrame of training data
         """
         self.training_data = data
-        if(data.empty):
-            self.run_btn.setEnabled(False)
-        else:
-            # self.training_data = data
+        self.comms.enable_training_btn.emit(True)
+        # if(data.empty):
+        #     self.run_btn.setEnabled(False)
+        # else:
+        #     # self.training_data = data
+        #     self.run_btn.setEnabled(True)
+
+    @Slot(Qt.CheckState)
+    def set_training_btn_state(self, state):
+        if (not self.training_data.empty and 1 in self.selected_models.values()):
             self.run_btn.setEnabled(True)
+        else:
+            self.run_btn.setEnabled(False)
+
+    def train_models(self):
+        trainer = ModelTrainer(self.selected_models,
+                               self.selected_version,
+                               self.training_params,
+                               self.training_data)
 
     def _update_version(self, directory):
         """
@@ -350,7 +373,7 @@ class SelectModelWidget(QTabWidget):
         """
         version = directory.split('\\')[-1]
         
-        self.selected_version = version
+        self.selected_version = directory
         
         # Emit signal
         self.comms.version_change.emit(directory)
@@ -366,11 +389,10 @@ class SelectModelWidget(QTabWidget):
                 state(bool): the truth of the selection.  True->selected, False->unselected
         """
         truth = 0
-        if state == 2:
+        if state == Qt.Checked:
             truth = 1
-        print("Updated selected model {} to state {}".format(model, truth))
         self.selected_models[model] = truth
-
+        self.comms.enable_training_btn.emit(truth)
 
     def _enable_tuning_ui(self, state):
         """
@@ -411,6 +433,18 @@ class SelectModelWidget(QTabWidget):
         print(json.dumps(self.training_params, indent=2))
 
     def _update_sklearn_training_type(self, type, value):
+        """
+        SKlearn model tuning is mutually exclusive.  This helper function
+        Enables/disables the appropriate field and updates the appropriate
+        parameters of self.training_params
+
+        Currently, for SKlearn models, only cross-validation (cv) or a holdout set
+        (validation) or None are model evaluation options.  
+
+            # Arguments
+                type(String): The type of model evaluation specified by the user.
+                value(int or double): value corresponding to selected type
+        """
         truth = False
         if type == 'cv':
             truth = True

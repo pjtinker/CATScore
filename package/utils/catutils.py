@@ -6,7 +6,8 @@ from PySide2.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayo
                                QDoubleSpinBox, QSizePolicy, QLabel)
 import os
 
-"""Utility classes for CATScore
+"""
+Utility classes for CATScore
 
 @author pjtinker
 """
