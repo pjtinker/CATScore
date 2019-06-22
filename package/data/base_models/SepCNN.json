@@ -1,6 +1,8 @@
 {
     "model_base" : "tensorflow",
+    "model_module" : "tensorflow.SepCNN",
     "model_class" : "SepCNN",
+    "model_url" : null,
     "embedding_data_dir" : ".\\package\\data\\embeddings\\glove6b\\",
     "SepCNN" : {
         "Model" : {

@@ -123,6 +123,7 @@ class SelectModelWidget(QTabWidget):
         self.setup_model_selection_ui()
         self.setup_training_ui()
 
+        
         self.main_layout.addStretch()
         self.run_btn = QPushButton("Train Models")
         self.run_btn.clicked.connect(lambda: self.train_models())
@@ -131,11 +132,16 @@ class SelectModelWidget(QTabWidget):
         self.comms.enable_training_btn.connect(self.set_training_btn_state)
         self.main_layout.addWidget(self.run_btn)
         self.setLayout(self.main_layout)
+        
+        # Trigger update to load model parameters
+        self._update_version(self.version_selection.currentData())
 
     def setup_model_selection_ui(self):
         self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
-        self.version_selection.addItem('default', '.\\package\\data\\versions\\default')
+        # Changed default models to a unique directory.  This
+        # is where default models will be saved.  
+        self.version_selection.addItem('default', '.\\package\\data\\default_models\\default')
         available_versions = os.listdir(".\\package\\data\\versions")
         for version in available_versions:
             v_path = os.path.join('.\\package\\data\\versions', version)
@@ -175,7 +181,7 @@ class SelectModelWidget(QTabWidget):
                         model = model_data['model_class']
                         # Initialize model as unselected
                         self.selected_models[model] = False
-                        btn = QPushButton(model)
+                        btn = QPushButton(model, objectName= model + '_btn')
                         # Partial allows the connection of dynamically generated QObjects
                         btn.clicked.connect(partial(self.open_dialog, model_dialog))
                         chkbox = QCheckBox(objectName=model)
@@ -200,8 +206,7 @@ class SelectModelWidget(QTabWidget):
             tb = traceback.format_exc()
             print(tb)
         
-        # Trigger update to load model parameters
-        self._update_version(self.version_selection.currentData())
+
             
 
     def setup_training_ui(self):
@@ -358,11 +363,27 @@ class SelectModelWidget(QTabWidget):
         else:
             self.run_btn.setEnabled(False)
 
+    @Slot(str, bool)
+    def model_exists(self, model_name, truth):
+        print("model_exists fired with ", model_name, truth)
+        btn = self.findChild(QPushButton, model_name + '_btn')
+        if btn:
+            text = btn.text()
+            if text.endswith("*"):
+                text = text[:-1]
+            if truth:
+                btn.setText(text + "*")
+            else:
+                btn.setText(text)
+        else:
+            return
+
     def train_models(self):
-        trainer = ModelTrainer(self.selected_models,
+        self.model_trainer = ModelTrainer(self.selected_models,
                                self.selected_version,
                                self.training_params,
                                self.training_data)
+        self.model_trainer.start()
 
     def _update_version(self, directory):
         """
@@ -371,7 +392,7 @@ class SelectModelWidget(QTabWidget):
             # Arguments
                 directory(String): directory selected by user.
         """
-        version = directory.split('\\')[-1]
+        # version = directory.split('\\')[-1]
         
         self.selected_version = directory
         
@@ -388,9 +409,9 @@ class SelectModelWidget(QTabWidget):
                 model(String): name of the selected model
                 state(bool): the truth of the selection.  True->selected, False->unselected
         """
-        truth = 0
+        truth = False
         if state == Qt.Checked:
-            truth = 1
+            truth = True
         self.selected_models[model] = truth
         self.comms.enable_training_btn.emit(truth)
 

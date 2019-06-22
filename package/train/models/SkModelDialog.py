@@ -1,7 +1,7 @@
 
 """QDialog for model parameters for sklearn's Support Vector Classifier
 """
-from PySide2.QtCore import Signal, Slot
+from PySide2.QtCore import Signal, Slot, QObject
 from PySide2.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
                                QGroupBox, QWidget, QLineEdit, QGridLayout,
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
@@ -13,6 +13,9 @@ import traceback
 import inspect
 import logging
 import os
+
+class Communicate(QObject):
+    check_for_existing_model = Signal(str, bool)
 
 class SkModelDialog(QDialog):
     """
@@ -28,6 +31,9 @@ class SkModelDialog(QDialog):
                 *params):
         super(SkModelDialog, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
+        self.comms = Communicate()
+        self.comms.check_for_existing_model.connect(self.parent().model_exists)
+
         self.model_params = {}
         self.updated_params = {}
         self.ui_widgets = []
@@ -237,8 +243,14 @@ class SkModelDialog(QDialog):
         self.current_version = directory
         # Clear combobox to be reconstructed or blank if default.
         self.question_combobox.clear()
-        if self.current_version == 'default':
+        if self.current_version.split('\\')[-1] == 'default':
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            model_exists = False
+            for fname in os.listdir(self.current_version):
+                if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.hdf5':
+                    model_exists = True
+                    break
+            self.comms.check_for_existing_model.emit(self.main_model_name, model_exists)
             return
         else:
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
@@ -254,8 +266,18 @@ class SkModelDialog(QDialog):
                                                 if len(re.findall('\d+|D+', item)) > 0
                                                     else float('inf'), item)
                                     )
+            model_exists = False
             for d in question_directories:
-                self.question_combobox.addItem(d.split('\\')[-1], d)
+                # self.comms.check_for_existing_model.emit("Test", True)
+                combo_text = d.split('\\')[-1]
+                for fname in os.listdir(d):
+                    if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.hdf5':
+                        combo_text = combo_text + " *"
+                        model_exists = True
+                self.question_combobox.addItem(combo_text, d)
+
+            self.comms.check_for_existing_model.emit(self.main_model_name, model_exists)
+
             self.form_grid.addWidget(self.question_combobox, 0, 0)
             self.update()
         except FileNotFoundError as fnfe:
