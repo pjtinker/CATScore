@@ -2,13 +2,15 @@
   "model_base": "tensorflow",
   "model_module": "tensorflow.SepCNN",
   "model_class": "SepCNN",
-  "question_number": "Q1",
+  "question_number": "Q6",
   "version": "experimental",
   "params": {
     "SepCNN": {
-      "epochs": 22
+      "epochs": 26
     },
     "TfidfVectorizer": {},
-    "SelectKBest": {}
+    "SelectKBest": {
+      "score_options": "chi2"
+    }
   }
 }

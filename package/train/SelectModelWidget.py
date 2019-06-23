@@ -21,7 +21,7 @@ from package.train.models.TfModelDialog import TfModelDialog
 from package.train.ModelTrainer import ModelTrainer
 from package.utils.catutils import exceptionWarning
 
-BASE_SK_MODEL_DIR = "./package/data/base_models"
+BASE_MODEL_DIR = "./package/data/base_models"
 BASE_TF_MODEL_DIR = "./package/data/tensorflow_models"
 BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
 BASE_FS_DIR = "./package/data/feature_selection/SelectKBest.json"
@@ -47,6 +47,8 @@ class SelectModelWidget(QTabWidget):
         self.comms = Communicate()
 
         self.selected_models = {}
+        self.selected_models['sklearn'] = {}
+        self.selected_models['tensorflow'] = {}
         self.model_checkboxes = []
 
         self.training_params = {}
@@ -137,6 +139,11 @@ class SelectModelWidget(QTabWidget):
         self._update_version(self.version_selection.currentData())
 
     def setup_model_selection_ui(self):
+        """
+        Setup model selection ui.
+
+        The order of the parameters in ModelDialog matters.  model_data must come first!
+        """
         self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
         # Changed default models to a unique directory.  This
@@ -171,23 +178,25 @@ class SelectModelWidget(QTabWidget):
         # Only loads .json files.
         try:
             row = 0
-            for filename in os.listdir(BASE_SK_MODEL_DIR):
+            for filename in os.listdir(BASE_MODEL_DIR):
                 if filename.endswith('.json'):
-                    with open(os.path.join(BASE_SK_MODEL_DIR, filename), 'r') as f:
+                    with open(os.path.join(BASE_MODEL_DIR, filename), 'r') as f:
                         print("Loading model:", filename)
                         model_data = json.load(f)
+                        # The order of the arguments matters!  model_data must come first. 
                         model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
                         self.comms.version_change.connect(model_dialog.update_version)
                         model = model_data['model_class']
+                        model_base = model_data['model_base']
                         # Initialize model as unselected
-                        self.selected_models[model] = False
+                        self.selected_models[model_base][model] = False
                         btn = QPushButton(model, objectName= model + '_btn')
                         # Partial allows the connection of dynamically generated QObjects
                         btn.clicked.connect(partial(self.open_dialog, model_dialog))
                         chkbox = QCheckBox(objectName=model)
-                        chkbox.stateChanged.connect(lambda state, x=model :
-                                                self._update_selected_models(x, state))
-                        if model_data['model_base'] == 'tensorflow':
+                        chkbox.stateChanged.connect(lambda state, x=model, y=model_base :
+                                                self._update_selected_models(x, y, state))
+                        if model_base == 'tensorflow':
                             self.tensorflow_model_form.addRow(chkbox, btn)
                             self.tensorflow_model_dialogs.append(model_dialog)
                             self.tensorflow_model_dialog_btns.append(btn)
@@ -358,7 +367,11 @@ class SelectModelWidget(QTabWidget):
 
     @Slot(Qt.CheckState)
     def set_training_btn_state(self, state):
-        if (not self.training_data.empty and 1 in self.selected_models.values()):
+        if (not self.training_data.empty 
+            and 
+                (1 in self.selected_models['sklearn'].values() 
+            or 
+                1 in self.selected_models['tensorflow'].values()) ):
             self.run_btn.setEnabled(True)
         else:
             self.run_btn.setEnabled(False)
@@ -400,7 +413,7 @@ class SelectModelWidget(QTabWidget):
         self.comms.version_change.emit(directory)
 
 
-    def _update_selected_models(self, model, state):
+    def _update_selected_models(self, model, model_base, state):
         """
         Update the models selected by the user.  This function is connected to the
         checkboxes associated with each model.
@@ -412,7 +425,7 @@ class SelectModelWidget(QTabWidget):
         truth = False
         if state == Qt.Checked:
             truth = True
-        self.selected_models[model] = truth
+        self.selected_models[model_base][model] = truth
         self.comms.enable_training_btn.emit(truth)
 
     def _enable_tuning_ui(self, state):

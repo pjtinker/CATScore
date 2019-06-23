@@ -122,7 +122,14 @@ class SkModelDialog(QDialog):
                 return
             filename = self.main_model_name + '.json'
             save_dir = os.path.join(self.question_combobox.currentData(),
+                                    self.main_model_name)
+            print("ModalDialog save_dir: ", save_dir)
+            if not os.path.isdir(save_dir):
+                os.mkdir(save_dir)
+
+            save_file_path = os.path.join(save_dir,
                                     filename)
+            print("ModalDialog save_file_path: ", save_file_path)
             save_data = {
                 "model_base" : self.params[0]['model_base'],
                 "model_module": self.params[0]['model_module'],
@@ -134,7 +141,7 @@ class SkModelDialog(QDialog):
             for param_type, params in self.updated_params.items():
                 save_data['params'][param_type] = params
             try:
-                with open(save_dir, 'w') as outfile:
+                with open(save_file_path, 'w') as outfile:
                     json.dump(save_data, outfile, indent=2)
             except Exception as e:
                 self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
@@ -246,10 +253,13 @@ class SkModelDialog(QDialog):
         if self.current_version.split('\\')[-1] == 'default':
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
             model_exists = False
-            for fname in os.listdir(self.current_version):
-                if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.hdf5':
-                    model_exists = True
-                    break
+            for val in os.listdir(self.current_version):
+                path = os.path.join(self.current_version, val)
+                if os.path.isdir(path):
+                    for fname in os.listdir(path):
+                        if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.hdf5':
+                            model_exists = True
+                            break
             self.comms.check_for_existing_model.emit(self.main_model_name, model_exists)
             return
         else:
@@ -270,10 +280,15 @@ class SkModelDialog(QDialog):
             for d in question_directories:
                 # self.comms.check_for_existing_model.emit("Test", True)
                 combo_text = d.split('\\')[-1]
-                for fname in os.listdir(d):
-                    if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.hdf5':
-                        combo_text = combo_text + " *"
-                        model_exists = True
+                for val in os.listdir(d):
+                    path = os.path.join(d, val)
+                    print("val in ModelDialog:", path)
+                    if os.path.isdir(path):
+                        for fname in os.listdir(path):
+                            print("Filename in ModelDialog:", fname)
+                            if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.hdf5':
+                                combo_text = combo_text + "*"
+                                model_exists = True
                 self.question_combobox.addItem(combo_text, d)
 
             self.comms.check_for_existing_model.emit(self.main_model_name, model_exists)
@@ -290,11 +305,13 @@ class SkModelDialog(QDialog):
         # self.question_combobox.show()
 
     def load_version_params(self, path):
-        """Loads parameters from the selected version for a specific question.  If default is selected,
-            reloads base model parameters.  
+        """
+        Loads parameters from the selected version for a specific question.  
+        Resets parameters to default prior to loading.
+        If default or None is selected, returns after reload.  
 
             # Attributes
-                path: String, path to version parameters.  If None, reload default values.
+                path: String, path to version parameters.  
         """
         # Reset input parameters
         for model, types in self.model_params.items():
@@ -308,12 +325,14 @@ class SkModelDialog(QDialog):
         model_data = {}
         try:
             try:
-                with open(os.path.join(path, filename), 'r') as f:
+
+                with open(os.path.join(path, self.main_model_name, filename), 'r') as f:
                     model_data = json.load(f)
                 model_class = model_data['model_class']
                 for kind, params in model_data['params'].items():
                     self.set_input_params(params)
             except FileNotFoundError as fnfe:
+                # No parameter file exists.  Pass.
                 pass
 
         except Exception as e:

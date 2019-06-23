@@ -335,14 +335,16 @@ class DataLoader(QWidget):
                 tab: int, Tab to enable.  Irrelevant in this case.
                 state: bool, The state of the preprocess options.
         """
-        if not state:
-            self.text_proc_groupbox.setEnabled(False)
-            self.preprocess_text_btn.setEnabled(False)
-            #self.export_dataset_btn.setEnabled(False)
-        else:
-            self.text_proc_groupbox.setEnabled(True)
-            self.preprocess_text_btn.setEnabled(True)
-            #self.export_dataset_btn.setEnabled(True)
+        self.text_proc_groupbox.setEnabled(state)
+        self.preprocess_text_btn.setEnabled(state)
+        # if not state:
+        #     self.text_proc_groupbox.setEnabled(False)
+        #     self.preprocess_text_btn.setEnabled(False)
+        #     #self.export_dataset_btn.setEnabled(False)
+        # else:
+        #     self.text_proc_groupbox.setEnabled(True)
+        #     self.preprocess_text_btn.setEnabled(True)
+        #     #self.export_dataset_btn.setEnabled(True)
 
     @Slot(pd.DataFrame)
     def update_data(self, data):

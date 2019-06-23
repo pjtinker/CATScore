@@ -46,4 +46,6 @@ class ModelTrainer(QThread):
         for col_idx, col in enumerate(self.training_data.columns, 1): 
             if col.endswith('_Text'):
                 print("Training col: ", col, " Label col idx: ", col_idx)
-                # Next, we train/tune each selected model for that question
+                # sklearn cross_val_score should be used for evaluation, not 
+                # calling an eval method using cross_val_predict.
+                # I will use cross_val_predict for confusion matrix only.

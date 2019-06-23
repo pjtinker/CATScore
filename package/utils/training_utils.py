@@ -15,4 +15,6 @@ def get_model(model_module, model_class, hyperparameters=None):
         req_class = getattr(module, model_class)
         return req_class(hyperparameters)
     except Exception as e:
-        print("Exception occured while loading class.\n", e)
+        raise e
+        
+

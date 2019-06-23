@@ -1,5 +1,5 @@
 {                  
-    "model_base": "tpot",
+    "model_base": "sklearn",
     "model_module": "tpot.TPOTClassifier",
     "model_class" : "TPOTClassifier",
     "model_url" : "https://epistasislab.github.io/tpot/api/",
