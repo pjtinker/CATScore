@@ -25,6 +25,7 @@ BASE_MODEL_DIR = "./package/data/base_models"
 BASE_TF_MODEL_DIR = "./package/data/tensorflow_models"
 BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
 BASE_FS_DIR = "./package/data/feature_selection/SelectKBest.json"
+DEFAULT_MODEL_DIR = ".\\package\\data\\versions\\default"
 
 class Communicate(QObject):
     version_change = Signal(str)
@@ -43,7 +44,7 @@ class SelectModelWidget(QTabWidget):
 
         self.training_data = pd.DataFrame()
 
-        self.selected_version = '.\\package\\data\\versions\\default'
+        self.selected_version = DEFAULT_MODEL_DIR
         self.comms = Communicate()
 
         self.selected_models = {}

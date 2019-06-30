@@ -43,6 +43,18 @@
                 "min" : 100,
                 "max" : 100000,
                 "step_size" : 100
+            },
+            "class_weight" : {
+                "type" : "dropdown",
+                "default" : null,
+                "options" : {
+                    "None" : null,
+                    "Balanced" : "balanced"
+                }
+            },
+            "kernel" : {
+                "type" : "static",
+                "default" : "linear"
             }
         }
     }

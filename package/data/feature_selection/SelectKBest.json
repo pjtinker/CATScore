@@ -6,12 +6,12 @@
         "Hyperparameters" : {
             "k" : {
                 "type" : "int",
-                "default" : 20000,
+                "default" : 1000,
                 "min" : 0,
                 "max" : 100000,
                 "step_size" : 100
             },
-            "score_options" : { 
+            "score_func" : { 
                 "type" : "dropdown",
                 "default" : "f_classif",
                 "options" : {

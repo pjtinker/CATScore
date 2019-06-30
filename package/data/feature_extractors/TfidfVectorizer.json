@@ -49,14 +49,6 @@
                     "False" : false,
                     "True" : true
                 }
-            },
-            "class_weight" : {
-                "type" : "dropdown",
-                "default" : 0,
-                "options" : {
-                    "None" : "",
-                    "Balanced" : "balanced"
-                }
             }
         }   
     }

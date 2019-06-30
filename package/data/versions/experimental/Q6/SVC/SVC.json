@@ -1,0 +1,30 @@
+{
+  "model_base": "sklearn",
+  "model_module": "sklearn.svm",
+  "model_class": "SVC",
+  "question_number": "Q6",
+  "version": "experimental",
+  "params": {
+    "sklearn.svm.SVC": {
+      "C": 1.0,
+      "shrinking": false,
+      "probability": true,
+      "tol": 0.001,
+      "cache_size": 200,
+      "class_weight": "balanced",
+      "kernel": "linear"
+    },
+    "sklearn.feature_extraction.text.TfidfVectorizer": {
+      "ngram_range": 2,
+      "encoding": "utf-8",
+      "strip_accents": 0,
+      "max_df": 1.0,
+      "min_df": 1,
+      "use_idf": true
+    },
+    "sklearn.feature_selection.SelectKBest": {
+      "k": 1000,
+      "score_func": "f_classif"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "model_base": "sklearn",
+  "model_module": "sklearn.svm",
+  "model_class": "SVC",
+  "question_number": "Q1",
+  "version": "experimental",
+  "params": {
+    "sklearn.svm.SVC": {
+      "C": 1.0
+    },
+    "sklearn.feature_extraction.text.TfidfVectorizer": {},
+    "sklearn.feature_selection.SelectKBest": {}
+  }
+}

@@ -1,11 +1,13 @@
 
-"""QDialog for model parameters for sklearn's Support Vector Classifier
+"""QDialog for file defined models.
 """
 from PySide2.QtCore import Signal, Slot, QObject
 from PySide2.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
                                QGroupBox, QWidget, QLineEdit, QGridLayout,
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
                                QDoubleSpinBox, QSizePolicy, QLabel)
+from PySide2.QtGui import QColor 
+
 import json
 import re
 import importlib 
@@ -45,17 +47,20 @@ class SkModelDialog(QDialog):
         self.main_model_name = params[0]['model_class']
         print(self.main_model_name)
         for param in self.params:
-            name = param['model_class']
-            self.model_params[name] = param[name]
-            self.updated_params[name] = {}
+            cls_name = param['model_class']
+            full_name = param['model_module'] + '.' + param['model_class']
+            self.model_params[full_name] = param[cls_name]
+            self.updated_params[full_name] = {}
+
+        self.check_for_default()
 
         self.setWindowTitle(self.main_model_name)
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Apply | QDialogButtonBox.Cancel)
         self.buttonBox.setObjectName("model_buttonbox")
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.buttonBox.rejected.connect(self.reject)
-
+        self.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(lambda: self.apply_changes())        # self.buttonBox.clicked(QDialogButtonBox.Apply).connect(self.apply_changes())
         self.main_layout = QVBoxLayout()
         self.form_grid = QGridLayout()
         self.question_combobox = QComboBox()
@@ -69,7 +74,7 @@ class SkModelDialog(QDialog):
         for model, types in self.model_params.items():
             for t, params in types.items():
                 groupbox = QGroupBox()
-                groupbox.setTitle(model + " " + t)
+                groupbox.setTitle(model + " " + t.split('.')[-1])
                 model_param_form = QFormLayout()
                 groupbox.setLayout(model_param_form)
                 self.form_grid.addWidget(groupbox, row, col)
@@ -107,29 +112,30 @@ class SkModelDialog(QDialog):
             model = module_class(init_class)
         return model
 
+    def apply_changes(self):
+        print("apply_changes fired...")
+        print("Updated Params as they hit save_params:")
+        print(json.dumps(self.updated_params, indent=2))
+        version = self.current_version.split('\\')[-1]
+        if version == 'default':
+            print("Default version selected.  Returning...")
+            return
+        filename = self.main_model_name + '.json'
+        save_dir = os.path.join(self.question_combobox.currentData(),
+                                self.main_model_name)
 
-    def save_params(self):
-        """
-        Saves the model parameters entered by the user. If default version is selected,
-        return without saving.
-        """
-        if (self.exec_() == QDialog.Accepted):
-            print("Updated Params as they hit save_params:")
-            print(json.dumps(self.updated_params, indent=2))
-            version = self.current_version.split('\\')[-1]
-            if version == 'default':
-                print("Default version selected.  Returning...")
-                return
-            filename = self.main_model_name + '.json'
-            save_dir = os.path.join(self.question_combobox.currentData(),
-                                    self.main_model_name)
-            print("ModalDialog save_dir: ", save_dir)
-            if not os.path.isdir(save_dir):
-                os.mkdir(save_dir)
+        if not os.path.isdir(save_dir):
+            os.mkdir(save_dir)
 
-            save_file_path = os.path.join(save_dir,
-                                    filename)
-            print("ModalDialog save_file_path: ", save_file_path)
+        save_file_path = os.path.join(save_dir,
+                                filename)
+
+        if not os.path.isfile(save_file_path):
+            # Get default file and load those values
+            default_dir = os.path.join(".\\package\\data\\default_models\\default", self.main_model_name)
+            default_path = os.path.join(default_dir, self.main_model_name + '.json')
+            with open(default_path, 'r') as infile:
+                full_default_params = json.load(infile)
             save_data = {
                 "model_base" : self.params[0]['model_base'],
                 "model_module": self.params[0]['model_module'],
@@ -138,18 +144,89 @@ class SkModelDialog(QDialog):
                 "version" : version,
                 "params" : {}
             }
-            for param_type, params in self.updated_params.items():
-                save_data['params'][param_type] = params
-            try:
-                with open(save_file_path, 'w') as outfile:
-                    json.dump(save_data, outfile, indent=2)
-            except Exception as e:
-                self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
-                print("Exception {}".format(e))
-                tb = traceback.format_exc()
-                print(tb)
+            save_data['params'] = full_default_params['params']
+            print("save_data['params'] in save_params")
+            print(json.dumps(save_data['params'], indent=2))
         else:
-            pass
+            with open(save_file_path, 'r') as infile:
+                save_data = json.load(infile)
+
+        print("updated_params:")
+        print(json.dumps(self.updated_params, indent=2))
+        for param_type, params in self.updated_params.items():
+            if(params):
+                for param, val in params.items():
+                    save_data['params'][param_type][param] = val
+        try:
+            with open(save_file_path, 'w') as outfile:
+                json.dump(save_data, outfile, indent=2)
+        except Exception as e:
+            self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
+            print("Exception {}".format(e))
+            tb = traceback.format_exc()
+            print(tb)
+
+
+    def save_params(self):
+        """
+        Saves the model parameters entered by the user. If default version is selected,
+        return without saving.
+        """
+        if (self.exec_() == QDialog.Accepted):
+            self.apply_changes()
+        #     print("Updated Params as they hit save_params:")
+        #     print(json.dumps(self.updated_params, indent=2))
+        #     version = self.current_version.split('\\')[-1]
+        #     if version == 'default':
+        #         print("Default version selected.  Returning...")
+        #         return
+        #     filename = self.main_model_name + '.json'
+        #     save_dir = os.path.join(self.question_combobox.currentData(),
+        #                             self.main_model_name)
+
+        #     if not os.path.isdir(save_dir):
+        #         os.mkdir(save_dir)
+
+        #     save_file_path = os.path.join(save_dir,
+        #                             filename)
+
+        #     if not os.path.isfile(save_file_path):
+        #         # Get default file and load those values
+        #         default_dir = os.path.join(".\\package\\data\\default_models\\default", self.main_model_name)
+        #         default_path = os.path.join(default_dir, self.main_model_name + '.json')
+        #         with open(default_path, 'r') as infile:
+        #             full_default_params = json.load(infile)
+        #         save_data = {
+        #             "model_base" : self.params[0]['model_base'],
+        #             "model_module": self.params[0]['model_module'],
+        #             "model_class" : self.main_model_name,
+        #             "question_number" : self.question_combobox.currentData().split('\\')[-1],
+        #             "version" : version,
+        #             "params" : {}
+        #         }
+        #         save_data['params'] = full_default_params['params']
+        #         print("save_data['params'] in save_params")
+        #         print(json.dumps(save_data['params'], indent=2))
+        #     else:
+        #         with open(save_file_path, 'r') as infile:
+        #             save_data = json.load(infile)
+
+        #     print("updated_params:")
+        #     print(json.dumps(self.updated_params, indent=2))
+        #     for param_type, params in self.updated_params.items():
+        #         if(params):
+        #             for param, val in params.items():
+        #                 save_data['params'][param_type][param] = val
+        #     try:
+        #         with open(save_file_path, 'w') as outfile:
+        #             json.dump(save_data, outfile, indent=2)
+        #     except Exception as e:
+        #         self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
+        #         print("Exception {}".format(e))
+        #         tb = traceback.format_exc()
+        #         print(tb)
+        # else:
+        #     pass
 
 
     def _split_key(self, key):
@@ -175,8 +252,8 @@ class SkModelDialog(QDialog):
             for k, v in param_dict.items():
                 label_string = k 
                 label = QLabel(label_string)
-                type = v['type']
-                if type == 'dropdown':
+                val_type = v['type']
+                if val_type == 'dropdown':
                     input_field = QComboBox(objectName=k)
                     for name, value in v['options'].items():
                         input_field.addItem(name, value)
@@ -192,7 +269,7 @@ class SkModelDialog(QDialog):
                     form.addRow(label, input_field)
                     self.input_widgets[k] = input_field
 
-                elif type == 'double':
+                elif val_type == 'double':
                     input_field = QDoubleSpinBox(objectName=k)
                     input_field.setDecimals(v['decimal_len'])
                     input_field.setRange(v['min'], v['max'])
@@ -205,7 +282,7 @@ class SkModelDialog(QDialog):
                             y.value())
                     )
 
-                elif type == 'int':
+                elif val_type == 'int':
                     input_field = QSpinBox(objectName=k)
                     input_field.setRange(v['min'], v['max'])
                     input_field.setValue(v['default'])
@@ -216,7 +293,7 @@ class SkModelDialog(QDialog):
                             x, 
                             y.value())
                     )
-                elif type == 'range':
+                elif val_type == 'range':
                     label_string = k
                     label = QLabel(label_string + ' : 1,')
                     input_field = QSpinBox(objectName=k)
@@ -229,6 +306,13 @@ class SkModelDialog(QDialog):
                                 x, 
                                 y.value())
                             )
+                elif val_type == 'static':
+                    label_string = k
+                    input_field = QLineEdit(objectName=k)
+                    input_field.setText(str(v['default']))
+                    # input_field.textColor(QColor.red())
+                    input_field.setEnabled(False)
+                    self._update_param(param_type, k, v['default'])
                 form.addRow(label, input_field)
                 self.input_widgets[k] = input_field
         except Exception as e:
@@ -282,10 +366,10 @@ class SkModelDialog(QDialog):
                 combo_text = d.split('\\')[-1]
                 for val in os.listdir(d):
                     path = os.path.join(d, val)
-                    print("val in ModelDialog:", path)
+                    # print("val in ModelDialog:", path)
                     if os.path.isdir(path):
                         for fname in os.listdir(path):
-                            print("Filename in ModelDialog:", fname)
+                            # print("Filename in ModelDialog:", fname)
                             if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.hdf5':
                                 combo_text = combo_text + "*"
                                 model_exists = True
@@ -364,9 +448,47 @@ class SkModelDialog(QDialog):
                     idx = cla.findData(v)
                     if idx != -1:
                         cla.setCurrentIndex(idx)
+                elif isinstance(cla, QLineEdit):
+                    cla.setText(v)
                 else:
                     cla.setValue(v)
 
+    def check_for_default(self):
+        """
+        Checks for the existance of a default value file.  If none found,
+        one is created.
+        """
+        default_dir = os.path.join(".\\package\\data\\default_models\\default", self.main_model_name)
+        if not os.path.exists(default_dir):
+            os.mkdir(default_dir)
+
+        default_path = os.path.join(default_dir, self.main_model_name + '.json')
+
+        if not os.path.isfile(default_path):
+            save_data = {
+                "model_base" : self.params[0]['model_base'],
+                "model_module": self.params[0]['model_module'],
+                "model_class" : self.main_model_name,
+                "question_number" : "default",
+                "version" : "default",
+                "params" : {}
+            }
+
+            for model, types in self.model_params.items():
+                for t, params in types.items():
+                    save_data['params'][model] = {}
+                    for param_name, data in params.items():
+                        save_data['params'][model][param_name] = data['default']
+                # for param_type, params in self.updated_params.items():
+                #     save_data['params'][param_type] = params
+                try:
+                    with open(default_path, 'w') as outfile:
+                        json.dump(save_data, outfile, indent=2)
+                except Exception as e:
+                    self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
+                    print("Exception {}".format(e))
+                    tb = traceback.format_exc()
+                    print(tb)
 
 if __name__ == "__main__":
     import sys

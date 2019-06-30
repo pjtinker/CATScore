@@ -1,0 +1,30 @@
+{
+  "model_base": "sklearn",
+  "model_module": "xgboost.sklearn",
+  "model_class": "XGBClassifier",
+  "question_number": "default",
+  "version": "default",
+  "params": {
+    "xgboost.sklearn.XGBClassifier": {
+      "n_estimators": 100,
+      "max_features": "auto",
+      "gamma": 0,
+      "subsample": 1,
+      "colsample_bytree": 1,
+      "reg_alpha": 0,
+      "reg_lambda": 1.0
+    },
+    "sklearn.feature_extraction.text.TfidfVectorizer": {
+      "ngram_range": 1,
+      "encoding": "utf-8",
+      "strip_accents": 0,
+      "max_df": 1.0,
+      "min_df": 1,
+      "use_idf": true
+    },
+    "sklearn.feature_selection.SelectKBest": {
+      "k": 1000,
+      "score_func": "f_classif"
+    }
+  }
+}

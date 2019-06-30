@@ -26,5 +26,3 @@ def clearLayout(layout):
         if child.widget():
             child.widget().deleteLater()
 
-def buildUiComponent(param_type, param_dict, default_params):
-    pass
