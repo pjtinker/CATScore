@@ -273,7 +273,8 @@ class SkModelDialog(QDialog):
                     input_field = QDoubleSpinBox(objectName=k)
                     input_field.setDecimals(v['decimal_len'])
                     input_field.setRange(v['min'], v['max'])
-                    input_field.setValue(v['default'])
+                    if v['default'] is not None:
+                        input_field.setValue(v['default'])
                     input_field.setSingleStep(v['step_size'])
                     input_field.valueChanged.connect(
                         lambda state, x=k, y=input_field: self._update_param(
@@ -285,7 +286,8 @@ class SkModelDialog(QDialog):
                 elif val_type == 'int':
                     input_field = QSpinBox(objectName=k)
                     input_field.setRange(v['min'], v['max'])
-                    input_field.setValue(v['default'])
+                    if v['default'] is not None:
+                        input_field.setValue(v['default'])
                     input_field.setSingleStep(v['step_size'])
                     input_field.valueChanged.connect(
                         lambda state, x=k, y=input_field: self._update_param(
@@ -298,7 +300,8 @@ class SkModelDialog(QDialog):
                     label = QLabel(label_string + ' : 1,')
                     input_field = QSpinBox(objectName=k)
                     input_field.setRange(v['min'], v['max'])
-                    input_field.setValue(v['default'])
+                    if v['default'] is not None:
+                        input_field.setValue(v['default'])
                     input_field.valueChanged.connect(
                         lambda state, x=k, y=input_field:
                             self._update_param(
@@ -473,22 +476,45 @@ class SkModelDialog(QDialog):
                 "version" : "default",
                 "params" : {}
             }
-
-            for model, types in self.model_params.items():
-                for t, params in types.items():
-                    save_data['params'][model] = {}
-                    for param_name, data in params.items():
-                        save_data['params'][model][param_name] = data['default']
+            # TODO: Correct this.  TPOTClassifier at training time should be just that
+            if self.main_model_name == 'TPOTClassifier':
+                save_data['model_module'] = 'sklearn.naive_bayes',
+                save_data['model_class'] = 'BernoulliNB',
+                params ={
+                    "sklearn.naive_bayes.BernoulliNB": {
+                        "alpha": 1.0,
+                        "fit_prior": True
+                    },
+                    "sklearn.feature_extraction.text.TfidfVectorizer": {
+                        "ngram_range": 1,
+                        "encoding": "utf-8",
+                        "strip_accents": 0,
+                        "max_df": 1.0,
+                        "min_df": 1,
+                        "use_idf": True
+                    },
+                    "sklearn.feature_selection.SelectKBest": {
+                        "k": 1000,
+                        "score_func": "f_classif"
+                    }
+                }
+                save_data['params'] = params
+            else:
+                for model, types in self.model_params.items():
+                    for t, params in types.items():
+                        save_data['params'][model] = {}
+                        for param_name, data in params.items():
+                            save_data['params'][model][param_name] = data['default']
                 # for param_type, params in self.updated_params.items():
                 #     save_data['params'][param_type] = params
-                try:
-                    with open(default_path, 'w') as outfile:
-                        json.dump(save_data, outfile, indent=2)
-                except Exception as e:
-                    self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
-                    print("Exception {}".format(e))
-                    tb = traceback.format_exc()
-                    print(tb)
+            try:
+                with open(default_path, 'w') as outfile:
+                    json.dump(save_data, outfile, indent=2)
+            except Exception as e:
+                self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
+                print("Exception {}".format(e))
+                tb = traceback.format_exc()
+                print(tb)
 
 if __name__ == "__main__":
     import sys

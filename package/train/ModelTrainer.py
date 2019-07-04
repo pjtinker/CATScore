@@ -10,11 +10,15 @@ import traceback
 import inspect
 import logging
 import os
+import pickle 
 
 import pandas as pd
+import numpy as np
 
-from sklearn.pipeline import make_pipeline
-from sklearn.model_selection import cross_val_score
+from sklearn.pipeline import make_pipeline, Pipeline
+from sklearn.model_selection import cross_val_score, StratifiedKFold
+from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
+from sklearn.externals import joblib
 
 import package.utils.training_utils as tu
 
@@ -29,6 +33,7 @@ class ModelTrainer(QThread):
                  training_eval_params, training_data, **kwargs
                 ):
         super(ModelTrainer, self).__init__()
+        self.logger = logging.getLogger(__name__)
         self.allowed_pipeline_types = [
             'feature_extraction',
             'feature_selection'
@@ -44,6 +49,7 @@ class ModelTrainer(QThread):
         print(self.training_data.head())
         self.kwargs = kwargs
 
+        self.all_predictions_dict = {}
     
     def run(self):
         # Run thru enumeration of columns.  The second argument in enumerate
@@ -61,47 +67,82 @@ class ModelTrainer(QThread):
                 col_label = col.split("_")[0]
                 col_path = os.path.join(self.version_directory, col_label)
                 print("col_path:", col_path)
-                for models, truth in self.selected_models['sklearn'].items():
+
+                # self.all_predictions_dict[col_label] = pd.DataFrame()
+                results = pd.DataFrame()
+
+                for model, truth in self.selected_models['sklearn'].items():
                     # for model, truth in self.selected_models['sklearn'].items():
-                    print("Current model from os.listdir(col_path)", models)
+                    print("Current model from os.listdir(col_path)", model)
                     if truth:
-                        # if truth:
                         try:
-                            model_path = os.path.join(col_path, models, models + '.json')
+                            model_path = os.path.join(col_path, model, model + '.json')
                             if not os.path.isfile(model_path):
-                                # with open(model_path, 'r') as param_file:
-                                #     model_params = json.load(param_file)
-                                # print("Loaded params from: ", model_path)
-                                # print(json.dumps(model_params, indent=2))
+                                # Get default values
                                 model_path = os.path.join(".\\package\\data\\default_models\\default",
-                                                            models,
-                                                            models + '.json')
-                            # else:
+                                                            model,
+                                                            model + '.json')
+
                             print("model_path", model_path)
                             with open(model_path, 'r') as param_file:
                                 model_params = json.load(param_file)
 
-                            # pipeline = self.get_pipeline(model_params['params'])
-                            learners = self.get_pipeline(model_params['params'])
+                            # pipeline = make_pipeline(*self.get_pipeline(model_params['params']))
+                            pipeline = Pipeline(self.get_pipeline(model_params['params']))
+                            # learners = self.get_pipeline(model_params['params'])
 
                             x = self.training_data[col]
-                            y = self.training_data[self.training_data.columns[col_idx]]
+                            y = self.training_data[self.training_data.columns[col_idx]].values
+                            preds = np.empty(y.shape)
+                            probs = np.empty(shape=(y.shape[0], len(np.unique(y))))
 
-                            x_vecs = learners[0].fit_transform(x)
-                            learners[1].fit(x_vecs, y)
-                            x_selected = learners[1].transform(x_vecs).astype('float32')
+                            if self.training_eval_params['sklearn']['type'] == 'cv':
+                                skf = StratifiedKFold(n_splits=self.training_eval_params['sklearn']['value'])
+
+                                for train, test in skf.split(x, y):
+                                    preds[test] = pipeline.fit(x.iloc[train], y[train]).predict(x.iloc[test])
+                                    try:
+                                        probs[test] = pipeline.predict_proba(x.iloc[test])
+                                    except AttributeError:
+                                        self.logger.debug("{} does not support predict_proba".format(model))
+                                        print(model, "does not support predict_proba")
+                                        
+                            else:
+                                print("Training_eval_params:", json.dumps(self.training_eval_params))
+                            pred_col_name = col_label + '_' + model + '_preds'
+                            prob_col_name = col_label + '_' + model + '_probs'
+                            results[pred_col_name] = preds.astype(int)
+                            if probs.size:
+                                results[prob_col_name] = np.amax(probs, axis=1)
+                            # results[col_label + ]
+                            # print(results.head())
+                            # x_vecs = learners[0].fit_transform(x)
+                            # learners[1].fit(x_vecs, y)
+                            # x_selected = learners[1].transform(x_vecs).astype('float32')
                             # scores = cross_val_score(pipeline, 
-                            scores = cross_val_score(learners[2],
+                            # scores = cross_val_score(learners[2],
                                                     #  self.training_data[col],
                                                     #  self.training_data[self.training_data.columns[col_idx]],
-                                                     x_selected,
-                                                     y,
-                                                     cv=3,
-                                                     scoring='accuracy')
+                                                    #  x_selected,
+                                                    #  x,
+                                                    #  y,
+                                                    #  cv=3,
+                                                    #  scoring='accuracy')
 
-                            print(scores.mean())
+                            print("Accuracy: ", accuracy_score(y, preds))
+                            
+                            pipeline.fit(x,y)
+                            print(pipeline.named_steps)
+                            clf = pipeline.named_steps[model]
+
+                            save_path = os.path.join(col_path, model)
+                            if not os.path.exists(save_path):
+                                os.makedirs(save_path)
+                            save_file = os.path.join(save_path, model + '.pkl')
+                            print("Saving model to :", save_path)
+                            pickle.dump(clf, open(save_file, 'wb'))
                         except Exception as e:
-                            print(e)
+                            self.logger.error("Exception occured in ModelTrainer", exc_info=True)
                             tb = traceback.format_exc()
                             print(tb)
 
@@ -128,11 +169,11 @@ class ModelTrainer(QThread):
                     fs_module = importlib.import_module("sklearn.feature_selection")
                     fs_class = getattr(fs_module, values['score_func'])
                     values['score_func'] = fs_class
-                step = current_class(**values)
+                step = (full_class[-1], current_class(**values))
             else:
-                step = current_class()
-            print("Params for ", args)
-            print(step.get_params())
+                step = (full_class[-1], current_class())
+            # print("Params for ", args)
+            # print(step.get_params())
             pipeline_steps[idx] = step
 
 

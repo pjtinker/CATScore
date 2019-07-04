@@ -22,7 +22,7 @@
             },
             "max_depth" : {
                 "type" : "int",
-                "default" : 0,
+                "default" : 1000,
                 "min" : 0,
                 "max" : 100,
                 "step_size" : 1

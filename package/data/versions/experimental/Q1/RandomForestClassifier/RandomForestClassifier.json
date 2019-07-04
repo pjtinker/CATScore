@@ -2,13 +2,13 @@
   "model_base": "sklearn",
   "model_module": "sklearn.ensemble",
   "model_class": "RandomForestClassifier",
-  "question_number": "default",
-  "version": "default",
+  "question_number": "Q1",
+  "version": "experimental",
   "params": {
     "sklearn.ensemble.RandomForestClassifier": {
       "n_estimators": 100,
       "max_features": "auto",
-      "max_depth": 1000,
+      "max_depth": 10,
       "min_samples_split": 2,
       "bootstrap": true
     },

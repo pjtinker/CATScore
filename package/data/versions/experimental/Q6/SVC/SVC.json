@@ -10,7 +10,7 @@
       "shrinking": false,
       "probability": true,
       "tol": 0.001,
-      "cache_size": 200,
+      "cache_size": 2000,
       "class_weight": "balanced",
       "kernel": "linear"
     },
