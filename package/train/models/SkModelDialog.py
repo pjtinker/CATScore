@@ -74,7 +74,7 @@ class SkModelDialog(QDialog):
         for model, types in self.model_params.items():
             for t, params in types.items():
                 groupbox = QGroupBox()
-                groupbox.setTitle(model + " " + t.split('.')[-1])
+                groupbox.setTitle(model.split('.')[-1] + " " + t)
                 model_param_form = QFormLayout()
                 groupbox.setLayout(model_param_form)
                 self.form_grid.addWidget(groupbox, row, col)
@@ -89,11 +89,11 @@ class SkModelDialog(QDialog):
         self.move(20, 10)
 
     @property
-    def getModelName(self):
+    def get_model_name(self):
         return self.main_model_name
 
 
-    def getClass(self, params, init_class=None):
+    def get_class(self, params, init_class=None):
         """
         Return instantiated class using importlib
         Loads any static parameters defined by the system.
@@ -142,6 +142,7 @@ class SkModelDialog(QDialog):
                 "model_class" : self.main_model_name,
                 "question_number" : self.question_combobox.currentData().split('\\')[-1],
                 "version" : version,
+                "tuned" : False,
                 "params" : {}
             }
             save_data['params'] = full_default_params['params']
@@ -174,59 +175,6 @@ class SkModelDialog(QDialog):
         """
         if (self.exec_() == QDialog.Accepted):
             self.apply_changes()
-        #     print("Updated Params as they hit save_params:")
-        #     print(json.dumps(self.updated_params, indent=2))
-        #     version = self.current_version.split('\\')[-1]
-        #     if version == 'default':
-        #         print("Default version selected.  Returning...")
-        #         return
-        #     filename = self.main_model_name + '.json'
-        #     save_dir = os.path.join(self.question_combobox.currentData(),
-        #                             self.main_model_name)
-
-        #     if not os.path.isdir(save_dir):
-        #         os.mkdir(save_dir)
-
-        #     save_file_path = os.path.join(save_dir,
-        #                             filename)
-
-        #     if not os.path.isfile(save_file_path):
-        #         # Get default file and load those values
-        #         default_dir = os.path.join(".\\package\\data\\default_models\\default", self.main_model_name)
-        #         default_path = os.path.join(default_dir, self.main_model_name + '.json')
-        #         with open(default_path, 'r') as infile:
-        #             full_default_params = json.load(infile)
-        #         save_data = {
-        #             "model_base" : self.params[0]['model_base'],
-        #             "model_module": self.params[0]['model_module'],
-        #             "model_class" : self.main_model_name,
-        #             "question_number" : self.question_combobox.currentData().split('\\')[-1],
-        #             "version" : version,
-        #             "params" : {}
-        #         }
-        #         save_data['params'] = full_default_params['params']
-        #         print("save_data['params'] in save_params")
-        #         print(json.dumps(save_data['params'], indent=2))
-        #     else:
-        #         with open(save_file_path, 'r') as infile:
-        #             save_data = json.load(infile)
-
-        #     print("updated_params:")
-        #     print(json.dumps(self.updated_params, indent=2))
-        #     for param_type, params in self.updated_params.items():
-        #         if(params):
-        #             for param, val in params.items():
-        #                 save_data['params'][param_type][param] = val
-        #     try:
-        #         with open(save_file_path, 'w') as outfile:
-        #             json.dump(save_data, outfile, indent=2)
-        #     except Exception as e:
-        #         self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
-        #         print("Exception {}".format(e))
-        #         tb = traceback.format_exc()
-        #         print(tb)
-        # else:
-        #     pass
 
 
     def _split_key(self, key):
@@ -474,37 +422,38 @@ class SkModelDialog(QDialog):
                 "model_class" : self.main_model_name,
                 "question_number" : "default",
                 "version" : "default",
+                "tuned" : False,
                 "params" : {}
             }
             # TODO: Correct this.  TPOTClassifier at training time should be just that
-            if self.main_model_name == 'TPOTClassifier':
-                save_data['model_module'] = 'sklearn.naive_bayes',
-                save_data['model_class'] = 'BernoulliNB',
-                params ={
-                    "sklearn.naive_bayes.BernoulliNB": {
-                        "alpha": 1.0,
-                        "fit_prior": True
-                    },
-                    "sklearn.feature_extraction.text.TfidfVectorizer": {
-                        "ngram_range": 1,
-                        "encoding": "utf-8",
-                        "strip_accents": 0,
-                        "max_df": 1.0,
-                        "min_df": 1,
-                        "use_idf": True
-                    },
-                    "sklearn.feature_selection.SelectKBest": {
-                        "k": 1000,
-                        "score_func": "f_classif"
-                    }
-                }
-                save_data['params'] = params
-            else:
-                for model, types in self.model_params.items():
-                    for t, params in types.items():
-                        save_data['params'][model] = {}
-                        for param_name, data in params.items():
-                            save_data['params'][model][param_name] = data['default']
+            # if self.main_model_name == 'TPOTClassifier':
+            #     save_data['model_module'] = 'sklearn.naive_bayes',
+            #     save_data['model_class'] = 'BernoulliNB',
+            #     params ={
+            #         "sklearn.naive_bayes.BernoulliNB": {
+            #             "alpha": 1.0,
+            #             "fit_prior": True
+            #         },
+            #         "sklearn.feature_extraction.text.TfidfVectorizer": {
+            #             "ngram_range": 1,
+            #             "encoding": "utf-8",
+            #             "strip_accents": 0,
+            #             "max_df": 1.0,
+            #             "min_df": 1,
+            #             "use_idf": True
+            #         },
+            #         "sklearn.feature_selection.SelectKBest": {
+            #             "k": 1000,
+            #             "score_func": "f_classif"
+            #         }
+            #     }
+            #     save_data['params'] = params
+        # else:
+            for model, types in self.model_params.items():
+                for t, params in types.items():
+                    save_data['params'][model] = {}
+                    for param_name, data in params.items():
+                        save_data['params'][model][param_name] = data['default']
                 # for param_type, params in self.updated_params.items():
                 #     save_data['params'][param_type] = params
             try:

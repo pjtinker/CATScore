@@ -16,11 +16,25 @@ import pandas as pd
 import numpy as np
 
 from sklearn.pipeline import make_pipeline, Pipeline
-from sklearn.model_selection import cross_val_score, StratifiedKFold
+from sklearn.model_selection import cross_val_score, StratifiedKFold, train_test_split, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from sklearn.externals import joblib
 
+import scipy
+
+from tensorflow.python.keras.preprocessing import sequence, text
+from tensorflow.python.keras.wrappers.scikit_learn import KerasClassifier
+from tensorflow.python.keras.callbacks import EarlyStopping
+
 import package.utils.training_utils as tu
+import package.utils.keras_models as keras_models
+import package.utils.embedding_utils as embed_utils
+
+RANDOM_SEED = 1337
+TOP_K = 20000
+MAX_SEQUENCE_LENGTH = 1000
+BASE_MODEL_DIR = "./package/data/base_models"
+BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
 
 class ModelTrainer(QThread):
     """
@@ -30,7 +44,8 @@ class ModelTrainer(QThread):
     training_complete = Signal(pd.DataFrame)
 
     def __init__(self, selected_models, version_directory, 
-                 training_eval_params, training_data, **kwargs
+                 training_eval_params, training_data, 
+                 tune_models, **kwargs
                 ):
         super(ModelTrainer, self).__init__()
         self.logger = logging.getLogger(__name__)
@@ -47,8 +62,9 @@ class ModelTrainer(QThread):
         print(json.dumps(self.training_eval_params, indent=2))
         self.training_data = training_data
         print(self.training_data.head())
+        print("Tune models?", tune_models)
+        self.tune_models = tune_models
         self.kwargs = kwargs
-
         self.all_predictions_dict = {}
     
     def run(self):
@@ -70,11 +86,19 @@ class ModelTrainer(QThread):
 
                 # self.all_predictions_dict[col_label] = pd.DataFrame()
                 results = pd.DataFrame()
+                
+                x = self.training_data[col]
+                y = self.training_data[self.training_data.columns[col_idx]].values
+                preds = np.empty(y.shape)
+                probs = np.empty(shape=(y.shape[0], len(np.unique(y))))
+
 
                 for model, truth in self.selected_models['sklearn'].items():
-                    # for model, truth in self.selected_models['sklearn'].items():
                     print("Current model from os.listdir(col_path)", model)
                     if truth:
+                        if model == 'TPOTClassifier':
+                            print("TPOTClassifier's turn.  Doing special thing...")
+                            continue
                         try:
                             model_path = os.path.join(col_path, model, model + '.json')
                             if not os.path.isfile(model_path):
@@ -87,53 +111,36 @@ class ModelTrainer(QThread):
                             with open(model_path, 'r') as param_file:
                                 model_params = json.load(param_file)
 
-                            # pipeline = make_pipeline(*self.get_pipeline(model_params['params']))
                             pipeline = Pipeline(self.get_pipeline(model_params['params']))
-                            # learners = self.get_pipeline(model_params['params'])
-
-                            x = self.training_data[col]
-                            y = self.training_data[self.training_data.columns[col_idx]].values
-                            preds = np.empty(y.shape)
-                            probs = np.empty(shape=(y.shape[0], len(np.unique(y))))
-
-                            if self.training_eval_params['sklearn']['type'] == 'cv':
-                                skf = StratifiedKFold(n_splits=self.training_eval_params['sklearn']['value'])
-
-                                for train, test in skf.split(x, y):
-                                    preds[test] = pipeline.fit(x.iloc[train], y[train]).predict(x.iloc[test])
-                                    try:
-                                        probs[test] = pipeline.predict_proba(x.iloc[test])
-                                    except AttributeError:
-                                        self.logger.debug("{} does not support predict_proba".format(model))
-                                        print(model, "does not support predict_proba")
-                                        
-                            else:
-                                print("Training_eval_params:", json.dumps(self.training_eval_params))
-                            pred_col_name = col_label + '_' + model + '_preds'
-                            prob_col_name = col_label + '_' + model + '_probs'
-                            results[pred_col_name] = preds.astype(int)
-                            if probs.size:
-                                results[prob_col_name] = np.amax(probs, axis=1)
-                            # results[col_label + ]
-                            # print(results.head())
-                            # x_vecs = learners[0].fit_transform(x)
-                            # learners[1].fit(x_vecs, y)
-                            # x_selected = learners[1].transform(x_vecs).astype('float32')
-                            # scores = cross_val_score(pipeline, 
-                            # scores = cross_val_score(learners[2],
-                                                    #  self.training_data[col],
-                                                    #  self.training_data[self.training_data.columns[col_idx]],
-                                                    #  x_selected,
-                                                    #  x,
-                                                    #  y,
-                                                    #  cv=3,
-                                                    #  scoring='accuracy')
-
-                            print("Accuracy: ", accuracy_score(y, preds))
                             
-                            pipeline.fit(x,y)
-                            print(pipeline.named_steps)
-                            clf = pipeline.named_steps[model]
+                            if self.tune_models:
+                                self.grid_search(model, x, y, pipeline, 20, True)
+                            else:                               
+                                if self.training_eval_params['sklearn']['type'] == 'cv':
+                                    skf = StratifiedKFold(n_splits=self.training_eval_params['sklearn']['value'],
+                                                            random_state=RANDOM_SEED)
+
+                                    for train, test in skf.split(x, y):
+                                        preds[test] = pipeline.fit(x.iloc[train], y[train]).predict(x.iloc[test])
+                                        try:
+                                            probs[test] = pipeline.predict_proba(x.iloc[test])
+                                        except AttributeError:
+                                            self.logger.debug("{} does not support predict_proba".format(model))
+                                            print(model, "does not support predict_proba")
+                                            
+                                else:
+                                    print("Training_eval_params:", json.dumps(self.training_eval_params))
+                                pred_col_name = col_label + '_' + model + '_preds'
+                                prob_col_name = col_label + '_' + model + '_probs'
+                                results[pred_col_name] = preds.astype(int)
+                                if probs.size:
+                                    results[prob_col_name] = np.amax(probs, axis=1)
+
+                                print("Accuracy: ", accuracy_score(y, preds))
+                                
+                                pipeline.fit(x,y)
+                                print(pipeline.named_steps)
+                                clf = pipeline.steps[-1:]
 
                             save_path = os.path.join(col_path, model)
                             if not os.path.exists(save_path):
@@ -142,9 +149,77 @@ class ModelTrainer(QThread):
                             print("Saving model to :", save_path)
                             pickle.dump(clf, open(save_file, 'wb'))
                         except Exception as e:
-                            self.logger.error("Exception occured in ModelTrainer", exc_info=True)
+                            self.logger.error("ModelTrainer.run (Sklearn):", exc_info=True)
                             tb = traceback.format_exc()
                             print(tb)
+                # TENSORFLOW BEGINS
+                if (1 in self.selected_models['tensorflow'].values()):
+                    print("Tokenizing input text for Tensorflow models...")
+                    tokenizer = text.Tokenizer(num_words=TOP_K)
+                    tokenizer.fit_on_texts([str(word) for word in x])
+                    xdata = tokenizer.texts_to_sequences([str(word) for word in x])
+
+                    max_len = len(max(xdata, key=len))
+                    if max_len > MAX_SEQUENCE_LENGTH:
+                        max_len = MAX_SEQUENCE_LENGTH
+
+                    xdata = sequence.pad_sequences(xdata, maxlen=max_len)
+
+                    num_classes = len(np.unique(y))
+                    num_features = min(len(tokenizer.word_index) + 1, TOP_K)
+
+                    eu = embed_utils.EmbeddingUtils()
+                    if self.training_eval_params['tensorflow']['embedding_trainable']:
+                        use_pretrained_embedding = True
+                        eu.generate_embedding_matrix(tokenizer.word_index)
+                    else:
+                        use_pretrained_embedding = False
+
+                    for model, truth in self.selected_models['tensorflow'].items():
+                        print("Current model from os.listdir(col_path)", model)
+                        if truth:
+                            try:
+                                model_path = os.path.join(col_path, model, model + '.json')
+                                if not os.path.isfile(model_path):
+                                    # Get default values
+                                    model_path = os.path.join(".\\package\\data\\default_models\\default",
+                                                                model,
+                                                                model + '.json')
+                                print("model_path", model_path)
+                                with open(model_path, 'r') as param_file:
+                                    model_params = json.load(param_file)
+                                print(model_params)
+                                patience = self.training_eval_params['tensorflow']['patience']
+                                if patience > 0:
+                                    callbacks = [EarlyStopping(monitor='val_loss', 
+                                                                patience=4)]
+                                else:
+                                    callbacks = None
+
+                                param_dict = dict(input_shape=xdata.shape[1:],
+                                                    num_classes=num_classes,
+                                                    num_features=num_features,
+                                                    epochs=100,
+                                                    validation_split=0.2,
+                                                    batch_size=64,
+                                                    callbacks=callbacks,
+                                                    use_pretrained_embedding=use_pretrained_embedding,
+                                                    embedding_matrix=eu.get_em())
+
+                                model = KerasClassifier(build_fn=keras_models.sepcnn_model, **param_dict)
+                                x_train, x_test, y_train, y_test = train_test_split(xdata, y,
+                                                                                    test_size = self.training_eval_params['tensorflow']['validation_split'],
+                                                                                    shuffle=True,
+                                                                                    stratify=y)
+                                history = model.fit(x_train, y_train)
+                                tf_preds = model.predict(x_test)
+                                print("Accuracy: ", accuracy_score(y_test, tf_preds))
+
+
+                            except Exception as e:
+                                self.logger.error("ModelTrainer.run (Tensorflow):", exc_info=True)
+                                tb = traceback.format_exc()
+                                print(tb)
 
 
     def get_pipeline(self, param_dict):
@@ -178,3 +253,64 @@ class ModelTrainer(QThread):
 
 
         return pipeline_steps
+
+    def grid_search(self, model, x, y, pipeline, n_iter=10, include_tfidf=False):
+        try:
+            filepath = os.path.join(BASE_MODEL_DIR, model + '.json')
+            with open(filepath, 'r') as f:
+                print("Loading model:", filepath)
+                model_data = json.load(f)
+            grid_params = {}
+            default_params = model_data[model]
+            
+            for param_types, types in default_params.items():
+                for t, params in types.items():
+                    param_name = model + '__' + t
+                    if params['type'] == 'dropdown':
+                        param_options = list(params['options'].keys())
+                    elif params['type'] == 'double':
+                        param_options = scipy.stats.expon(scale=params['step_size'])
+                    elif params['type'] == 'int':
+                        param_options = scipy.stats.randint(params['min'], params['max'] + 1)
+                    elif params['type'] == 'range':
+                        param_options = [(1,1), (1,2), (1,3), (1,4)]
+                    
+                    grid_params.update({param_name : param_options})
+            if include_tfidf:
+                with open(BASE_TFIDF_DIR, 'r') as f:
+                    print("Loading model:", BASE_TFIDF_DIR)
+                    model_data = json.load(f)
+                model_class = model_data['model_class']
+                default_params = model_data[model_class]
+                
+                for param_types, types in default_params.items():
+                    for t, params in types.items():
+                        param_name = model_class + '__' + t
+                        if params['type'] == 'dropdown':
+                            param_options = list(params['options'].values())
+                        elif params['type'] == 'double':
+                            param_options = scipy.stats.expon(scale=params['step_size'])
+                        elif params['type'] == 'int':
+                            param_options = scipy.stats.randint(params['min'], params['max'])
+                        elif params['type'] == 'range':
+                            param_options = [(1,1), (1,2), (1,3), (1,4)]
+                        
+                        grid_params.update({param_name : param_options})
+                
+            grid_params['SelectKBest__k'] = ['all']
+            print("Beginning RandomizedSearchCV...")
+            print("Params: ", grid_params)
+            print("Pipeline:", [name for name, _ in pipeline.steps])
+            rscv = RandomizedSearchCV(pipeline, grid_params, n_jobs=-1, cv=3, n_iter=n_iter)
+
+            rscv.fit(x, y)
+            print("Best params:")
+            print(rscv.best_estimator_.get_params())
+
+
+        except FileNotFoundError as fnfe:
+            self.logger.debug("ModelTrainer.grid_search {} not found".format(filepath))
+        except Exception as e:
+            self.logger.error("ModelTrainer.grid_search {}:".format(model), exc_info=True)
+            tb = traceback.format_exc()
+            print(tb)

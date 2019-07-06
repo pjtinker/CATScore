@@ -397,38 +397,26 @@ class PreprocessingThread(QThread):
         super(PreprocessingThread, self).__init__()
         self.data = data
         self.kwargs = kwargs
-        
-    # def _apply_preprocessing(self, unique_count=5000):
-    #     """
-    #     Apply preprocessing steps to provided data and emit signal when complete.  
-    #     FIXME: Using _Text to denote our text data.  Should this be customizable?
-    #     """
-    #     apply_cols = [
-    #         col for col in self.data.columns if col.endswith('_Text')]
-    #     self.data[apply_cols] = self.data[apply_cols].applymap(
-    #         lambda x: processText(str(x), **self.kwargs))
-    #     if self.kwargs['spell_correction']:
-    #         sentences = self.data[apply_cols].applymap(
-    #             lambda x: str(x).split()).values
-    #         sc = SpellCheck(sentences, 5000)
-    #         self.data[apply_cols] = self.data[apply_cols].applymap(
-    #             lambda x: sc.correct_spelling(x))
-
-    #     self.preprocessing_complete.emit(self.data)
+    
 
     def run(self):
         apply_cols = [
-            col for col in self.data.columns if col.endswith('_Text')]
+            col for col in self.data.columns if col.endswith('_Text')
+            ]
         self.data[apply_cols] = self.data[apply_cols].applymap(
-            lambda x: processText(str(x), self.kwargs))
+            lambda x: processText(str(x), self.kwargs)
+            )
         if self.kwargs['spell_correction']:
             sentences = self.data[apply_cols].applymap(
-                lambda x: str(x).split()).values
+                lambda x: str(x).split()
+            ).values
             sc = SpellCheck(sentences, 5000)
             self.data[apply_cols] = self.data[apply_cols].applymap(
-                lambda x: sc.correct_spelling(x))
+                lambda x: sc.correct_spelling(x)
+            )
 
         self.preprocessing_complete.emit(self.data)
+        
 
     def stop(self):
         # TODO: Add funtionality to stop the thread

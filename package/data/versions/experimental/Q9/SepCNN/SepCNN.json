@@ -2,8 +2,8 @@
   "model_base": "tensorflow",
   "model_module": "tensorflow.SepCNN",
   "model_class": "SepCNN",
-  "question_number": "default",
-  "version": "default",
+  "question_number": "Q9",
+  "version": "experimental",
   "tuned": false,
   "params": {
     "tensorflow.SepCNN.SepCNN": {
@@ -11,7 +11,16 @@
       "beta_1": 0.9,
       "beta_2": 0.999,
       "epsilon": 0.0,
-      "decay": 0
+      "decay": 0,
+      "epochs": 22
+    },
+    "sklearn.feature_extraction.text.TfidfVectorizer": {
+      "ngram_range": 1,
+      "encoding": "utf-8",
+      "strip_accents": 0,
+      "max_df": 1.0,
+      "min_df": 1,
+      "use_idf": true
     },
     "sklearn.feature_selection.SelectKBest": {
       "k": 1000,

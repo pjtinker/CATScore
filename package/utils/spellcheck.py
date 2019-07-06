@@ -28,6 +28,7 @@ class SpellCheck():
     def words(text): return re.findall(r'\w+', text.lower())
 
     def load_embedding_vocab(self):
+        # TODO: Configure to use with embeddings after final dir structure known
         words = []
         try:
             print("Loading embeddding vocabulary...")

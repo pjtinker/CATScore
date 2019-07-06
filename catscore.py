@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
         self.height = 400
         self.setWindowTitle(self.title)
         geometry = app.desktop().availableGeometry(self)
-        self.setGeometry(0, 0, geometry.width() * 0.2, geometry.height() * 0.2)
+        self.setGeometry(10, 50, geometry.width() * 0.2, geometry.height() * 0.2)
 
         self.cat_train = CatTrain(self)
 
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     # Qt Application
     app = QApplication(sys.argv)
     # app.processEvents()
-    # app.setStyle('Windows')
+    app.setStyle('Fusion')
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())

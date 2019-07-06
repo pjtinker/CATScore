@@ -1,25 +1,28 @@
-from PySide2.QtCore import (Qt, Slot, Signal, QObject, QThread)
-from PySide2.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, 
-                                QTabWidget, QComboBox, QFormLayout,
-                                QLabel, QFileDialog, QHBoxLayout, 
-                                QVBoxLayout, QGridLayout, QScrollArea, 
-                                QSizePolicy, QPushButton, QButtonGroup,
-                                QRadioButton, QSpinBox, QDoubleSpinBox)
-import os
 import json
+import logging
+import os
+import traceback
 from collections import OrderedDict
-import pkg_resources
-import traceback 
 from functools import partial
-import logging 
 
 import pandas as pd
-# from addict import Dict
+import pkg_resources
+from PySide2.QtCore import QObject, Qt, QThread, Signal, Slot, QSize
+from PySide2.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
+                               QDoubleSpinBox, QFileDialog, QFormLayout,
+                               QGridLayout, QGroupBox, QHBoxLayout, QLabel,
+                               QMessageBox, QPushButton, QRadioButton,
+                               QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
+                               QVBoxLayout)
+
 
 from package.train.models.SkModelDialog import SkModelDialog
 from package.train.models.TfModelDialog import TfModelDialog
 from package.train.ModelTrainer import ModelTrainer
 from package.utils.catutils import exceptionWarning
+
+# from addict import Dict
+
 
 BASE_MODEL_DIR = "./package/data/base_models"
 BASE_TF_MODEL_DIR = "./package/data/tensorflow_models"
@@ -51,13 +54,18 @@ class SelectModelWidget(QTabWidget):
         self.selected_models['sklearn'] = {}
         self.selected_models['tensorflow'] = {}
         self.model_checkboxes = []
-
+        # Initialize training parameter dict.  
+        # Has entry for both model base types
         self.training_params = {}
         self.training_params['sklearn'] = {}
         self.training_params['sklearn']['type'] = None
         self.training_params['sklearn']['value'] = None
         self.training_params['tensorflow'] = {}
-        
+        # Init tuning param dict
+        # Currently only using gridsearch
+        self.tuning_params = {}
+        self.tuning_params['gridsearch'] = {}
+
         self.sklearn_model_dialogs = []
         self.sklearn_model_dialog_btns = []
         self.sklearn_training_inputs = []
@@ -68,6 +76,8 @@ class SelectModelWidget(QTabWidget):
         self.tensorflow_model_dialog_btns = []
 
         self.main_layout = QVBoxLayout()
+        self.upper_hbox = QHBoxLayout()
+
         self.version_form = QFormLayout()
         self.header_hbox = QHBoxLayout()
         self.header_hbox.addLayout(self.version_form)
@@ -78,6 +88,16 @@ class SelectModelWidget(QTabWidget):
                                             self._enable_tuning_ui(state)
                                             )
         self.main_layout.addLayout(self.header_hbox)
+        self.main_layout.addLayout(self.upper_hbox)
+
+        self.model_vbox = QVBoxLayout()
+        # self.model_vbox.addSpacing(100)
+        self.tuning_vbox = QVBoxLayout()
+
+        self.upper_hbox.addLayout(self.model_vbox)
+        self.upper_hbox.addSpacing(10)
+        self.upper_hbox.addLayout(self.tuning_vbox)
+        self.upper_hbox.addSpacing(200)
         # Build sklearn ui components
         self.sklearn_hbox = QHBoxLayout()
         self.sklearn_groupbox = QGroupBox("Sklearn")
@@ -97,10 +117,11 @@ class SelectModelWidget(QTabWidget):
         self.sklearn_hbox.addWidget(self.sklearn_training_groupbox)
         # self.sklearn_training_radio_btngroup = QButtonGroup()
 
-        self.sklearn_tuning_groupbox = QGroupBox("Tuning")
-        self.sklearn_hbox.addWidget(self.sklearn_tuning_groupbox)
+        # self.sklearn_tuning_groupbox = QGroupBox("Tuning")
+        # self.sklearn_hbox.addWidget(self.sklearn_tuning_groupbox)
 
-        self.main_layout.addWidget(self.sklearn_groupbox)
+        # self.main_layout.addWidget(self.sklearn_groupbox)
+        self.model_vbox.addWidget(self.sklearn_groupbox)
 
         # Build Tensorflow ui components
         self.tensorflow_hbox = QHBoxLayout()
@@ -117,15 +138,23 @@ class SelectModelWidget(QTabWidget):
         self.tensorflow_training_form = QFormLayout()
         self.tensorflow_training_groupbox.setLayout(self.tensorflow_training_form)
         self.tensorflow_hbox.addWidget(self.tensorflow_training_groupbox)
-        self.tensorflow_tuning_groupbox = QGroupBox("Tuning")
-        self.tensorflow_hbox.addWidget(self.tensorflow_tuning_groupbox)
 
-        self.main_layout.addWidget(self.tensorflow_groupbox)
+        # self.tensorflow_tuning_groupbox = QGroupBox("Tuning")
+        # self.tensorflow_hbox.addWidget(self.tensorflow_tuning_groupbox)
+
+        # self.main_layout.addWidget(self.tensorflow_groupbox)
+        self.model_vbox.addWidget(self.tensorflow_groupbox)
+
+        self.tuning_groupbox = QGroupBox("Tuning")
+        self.tuning_form = QFormLayout()
+        self.tuning_groupbox.setLayout(self.tuning_form)
+        self.tuning_vbox.addWidget(self.tuning_groupbox)
+        self.tuning_groupbox.setEnabled(False)
         self.model_form_grid = QGridLayout()
 
         self.setup_model_selection_ui()
         self.setup_training_ui()
-
+        self.setup_tuning_ui()
         
         self.main_layout.addStretch()
         self.run_btn = QPushButton("Train Models")
@@ -184,11 +213,15 @@ class SelectModelWidget(QTabWidget):
                     with open(os.path.join(BASE_MODEL_DIR, filename), 'r') as f:
                         print("Loading model:", filename)
                         model_data = json.load(f)
-                        # The order of the arguments matters!  model_data must come first. 
-                        model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
-                        self.comms.version_change.connect(model_dialog.update_version)
                         model = model_data['model_class']
                         model_base = model_data['model_base']
+                        
+                        # The order of the arguments matters!  model_data must come first. 
+                        if model_base == 'tensorflow':
+                            model_dialog = SkModelDialog(self, model_data, self.fs_params)
+                        else:
+                            model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
+                        self.comms.version_change.connect(model_dialog.update_version)
                         # Initialize model as unselected
                         self.selected_models[model_base][model] = False
                         btn = QPushButton(model, objectName= model + '_btn')
@@ -266,7 +299,7 @@ class SelectModelWidget(QTabWidget):
                                    )
         # self.sklearn_training_inputs.append(self.no_eval_btn)
         self.sklearn_training_form.addRow(self.no_eval_btn)
-        # TODO: Add update_training_params to each field for tensorflow.
+
         tf_val_label = QLabel("Validation split")
         tf_val_input = QDoubleSpinBox(objectName='validation_split')
         tf_val_input.setRange(0.05, 1)
@@ -328,6 +361,19 @@ class SelectModelWidget(QTabWidget):
 
         self.cv_radio_btn.toggle()
 
+    def setup_tuning_ui(self):
+        self.tuning_n_iter_label = QLabel("Number of iterations")
+        self.tuning_n_iter_input = QSpinBox(objectName='n_iter')
+        self.tuning_n_iter_input.setRange(2, 1000)
+        self.tuning_n_iter_input.setSingleStep(10)
+        self.tuning_n_iter_input.setValue(10)
+        self.tuning_n_iter_input.valueChanged.connect(
+            lambda state, x=self.tuning_n_iter_input:
+                self.update_tuning_params('gridsearch', 'n_iter', x.value())
+        )
+        self.tuning_form.addRow(self.tuning_n_iter_label, self.tuning_n_iter_input)
+
+
     def open_dialog(self, dialog):
         """
         Opens the passed ModelDialog via the save_params function, allowing the user
@@ -372,14 +418,14 @@ class SelectModelWidget(QTabWidget):
             and 
                 (1 in self.selected_models['sklearn'].values() 
             or 
-                1 in self.selected_models['tensorflow'].values()) ):
+                1 in self.selected_models['tensorflow'].values()) 
+            ):
             self.run_btn.setEnabled(True)
         else:
             self.run_btn.setEnabled(False)
 
     @Slot(str, bool)
     def model_exists(self, model_name, truth):
-        print("model_exists fired with ", model_name, truth)
         btn = self.findChild(QPushButton, model_name + '_btn')
         if btn:
             text = btn.text()
@@ -393,10 +439,12 @@ class SelectModelWidget(QTabWidget):
             return
 
     def train_models(self):
+        train_models = self.tune_models_chkbox.isChecked()
         self.model_trainer = ModelTrainer(self.selected_models,
                                self.selected_version,
                                self.training_params,
-                               self.training_data)
+                               self.training_data,
+                               train_models)
         self.model_trainer.start()
 
     def _update_version(self, directory):
@@ -406,10 +454,7 @@ class SelectModelWidget(QTabWidget):
             # Arguments
                 directory(String): directory selected by user.
         """
-        # version = directory.split('\\')[-1]
-        
         self.selected_version = directory
-        
         # Emit signal
         self.comms.version_change.emit(directory)
 
@@ -437,11 +482,12 @@ class SelectModelWidget(QTabWidget):
             # Arguments:
                 state(bool): the state of tuning.  False->no tuning, True->tune models
         """
-        # truth = 0
-        # if state == 2:
-        #     truth = 1
-        self.sklearn_tuning_groupbox.setEnabled(state)
-        self.tensorflow_tuning_groupbox.setEnabled(state)
+        self.tuning_groupbox.setEnabled(state)
+
+
+    def update_tuning_params(self, model_base, param, value):
+        pass
+
 
     def update_training_params(self, model_base, param, value):
         """
@@ -467,7 +513,7 @@ class SelectModelWidget(QTabWidget):
 
         print(json.dumps(self.training_params, indent=2))
 
-    def _update_sklearn_training_type(self, type, value):
+    def _update_sklearn_training_type(self, eval_type, value):
         """
         SKlearn model tuning is mutually exclusive.  This helper function
         Enables/disables the appropriate field and updates the appropriate
@@ -477,16 +523,20 @@ class SelectModelWidget(QTabWidget):
         (validation) or None are model evaluation options.  
 
             # Arguments
-                type(String): The type of model evaluation specified by the user.
+                eval_type(String): The type of model evaluation specified by the user.
                 value(int or double): value corresponding to selected type
         """
         truth = False
-        if type == 'cv':
-            truth = True
-        self.cv_n_fold_input.setEnabled(truth)
-        self.sk_validation_percent_input.setEnabled(not truth)
+        if eval_type == 'cv':
+            self.cv_n_fold_input.setEnabled(not truth)
+            self.sk_validation_percent_input.setEnabled(truth)     
+        elif eval_type == 'validation':
+            self.cv_n_fold_input.setEnabled(truth)
+            self.sk_validation_percent_input.setEnabled(not truth)
+        elif eval_type == None:
+            self.cv_n_fold_input.setEnabled(False)
+            self.sk_validation_percent_input.setEnabled(False)
 
-        self.training_params['sklearn']['type'] = type
+        self.training_params['sklearn']['type'] = eval_type
         self.training_params['sklearn']['value'] = value
         print(json.dumps(self.training_params, indent=2))
-
