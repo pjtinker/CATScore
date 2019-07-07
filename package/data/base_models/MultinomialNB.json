@@ -10,7 +10,8 @@
                 "min" : 0,
                 "max" : 100,
                 "step_size" : 1,
-                "decimal_len" : 2
+                "decimal_len" : 2,
+                "tunable" : true
             },
             "fit_prior" : {
                 "type" : "dropdown",
@@ -18,7 +19,8 @@
                 "options" : {
                     "False" : false,
                     "True" : true
-                }
+                },
+                "tunable" : true
             }
         }
     }

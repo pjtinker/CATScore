@@ -1,17 +1,14 @@
 {
   "model_base": "sklearn",
-  "model_module": "sklearn.ensemble",
-  "model_class": "RandomForestClassifier",
-  "question_number": "default",
-  "version": "default",
+  "model_module": "sklearn.naive_bayes",
+  "model_class": "MultinomialNB",
+  "question_number": "Q2",
+  "version": "experimental",
   "tuned": false,
   "params": {
-    "sklearn.ensemble.RandomForestClassifier": {
-      "n_estimators": 100,
-      "max_features": "auto",
-      "max_depth": 1000,
-      "min_samples_split": 2,
-      "bootstrap": true
+    "sklearn.naive_bayes.MultinomialNB": {
+      "alpha": 1.0,
+      "fit_prior": true
     },
     "sklearn.feature_extraction.text.TfidfVectorizer": {
       "ngram_range": 1,

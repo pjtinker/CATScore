@@ -1,11 +1,12 @@
-from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            Qt, QTimeZone, QByteArray, Signal, Slot, QThread)
-from PySide2.QtGui import QMovie, QIcon, QPixmap
-from PySide2.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, QApplication, QLabel, QFileDialog, QHBoxLayout, QVBoxLayout,
+from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
+                            Qt, QTimeZone, QByteArray, pyqtSignal, pyqtSlot, QThread)
+from PyQt5.QtGui import QMovie, QIcon, QPixmap
+from PyQt5.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, QApplication, QLabel, QFileDialog, QHBoxLayout, QVBoxLayout,
                                QGridLayout, QHeaderView, QProgressBar, QScrollArea, QSizePolicy, QTableView, QWidget, QPushButton)
 import os
 import logging
 from functools import partial
+import sys 
 
 import pandas as pd
 from chardet.universaldetector import UniversalDetector
@@ -27,9 +28,9 @@ class DataLoader(QWidget):
     """
     TODO: Refactor this monstrosity into functions to setup UI
     """
-    data_load = Signal(pd.DataFrame)
-    update_statusbar = Signal(str)
-    update_progressbar = Signal(int, bool)
+    data_load = pyqtSignal(pd.DataFrame)
+    update_statusbar = pyqtSignal(str)
+    update_progressbar = pyqtSignal(int, bool)
 
     def __init__(self, parent=None):
         super(DataLoader, self).__init__(parent)
@@ -325,11 +326,11 @@ class DataLoader(QWidget):
             truth = 1
         self.preprocessing_options[option] = truth
 
-    # @Slot(int, bool)
+    # @pyqtSlot(int, bool)
     def set_preprocessing_option_state(self, tab, state):
         """
-        Slot for determining if text preprocessing options are selectable.  Based on
-        if data has been successfully loaded and selected.  Reusing the Signal that
+        pyqtSlot for determining if text preprocessing options are selectable.  Based on
+        if data has been successfully loaded and selected.  Reusing the pyqtSignal that
         enables the Model Selection tab, thus the tab attribute is irrelevant.
             # Attributes:
                 tab: int, Tab to enable.  Irrelevant in this case.
@@ -346,7 +347,7 @@ class DataLoader(QWidget):
         #     self.preprocess_text_btn.setEnabled(True)
         #     #self.export_dataset_btn.setEnabled(True)
 
-    @Slot(pd.DataFrame)
+    @pyqtSlot(pd.DataFrame)
     def update_data(self, data):
         self.load_data_btn.setEnabled(True)
         # self.text_proc_groupbox.setEnabled(True)
@@ -384,7 +385,7 @@ class PreprocessingThread(QThread):
     QThread to handle all text data preprocessing.
     This can be an expensive operation, especially if spell_correction is requested.
     """
-    preprocessing_complete = Signal(pd.DataFrame)
+    preprocessing_complete = pyqtSignal(pd.DataFrame)
 
     def __init__(self, data, **kwargs):
         """
@@ -400,6 +401,8 @@ class PreprocessingThread(QThread):
     
 
     def run(self):
+        sys.stdout = open('nul', 'w')
+        print()
         apply_cols = [
             col for col in self.data.columns if col.endswith('_Text')
             ]
@@ -411,10 +414,11 @@ class PreprocessingThread(QThread):
                 lambda x: str(x).split()
             ).values
             sc = SpellCheck(sentences, 5000)
+            
             self.data[apply_cols] = self.data[apply_cols].applymap(
                 lambda x: sc.correct_spelling(x)
             )
-
+        sys.stdout = sys.__stdout__
         self.preprocessing_complete.emit(self.data)
         
 

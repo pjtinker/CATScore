@@ -8,7 +8,8 @@
                 "type" : "range",
                 "min" : 1,
                 "max" : 9,
-                "default" : 1
+                "default" : 1,
+                "tunable" : true
             },
             "encoding" : {
                 "type" : "dropdown",
@@ -16,7 +17,8 @@
                 "options" : {
                     "utf-8" : "utf-8",
                     "latin-1" : "latin-1"
-                }
+                },
+                "tunable" : true
             },
             "strip_accents" : {
                 "type" : "dropdown",
@@ -25,7 +27,25 @@
                     "None" : "",
                     "ascii" : "ascii",
                     "unicode" : "unicode"
-                }
+                },
+                "tunable" : true
+            },
+            "max_df" : {
+                "type" : "double",
+                "default" :1.0,
+                "min" : 0,
+                "max" : 1.0,
+                "step_size" : 0.1,
+                "decimal_len" : 1,
+                "tunable" : false
+            },
+            "min_df" : {
+                "type" : "int",
+                "default" : 1,
+                "min" : 0,
+                "max" : 1000,
+                "step_size" : 1,
+                "tunable" : false
             },
             "use_idf" : {
                 "type" : "dropdown",
@@ -33,7 +53,8 @@
                 "options" : {
                     "False" : false,
                     "True" : true
-                }
+                },
+                "tunable" : true
             }
         }   
     }

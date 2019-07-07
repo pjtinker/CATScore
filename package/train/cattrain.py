@@ -12,8 +12,8 @@ import logging
 import json
 import os
 
-from PySide2.QtCore import (Qt, Slot, Signal)
-from PySide2.QtWidgets import (QApplication, QHBoxLayout, QDialog, QHeaderView, QAction,
+from PyQt5.QtCore import (Qt, pyqtSlot, pyqtSignal)
+from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QDialog, QHeaderView, QAction,
                                QMainWindow, QSizePolicy, QProgressBar, QWidget,
                                QVBoxLayout, QFormLayout, QGroupBox, QLineEdit,
                                QLabel, QDialogButtonBox, QMessageBox, QPushButton)
@@ -57,7 +57,7 @@ class CatTrain(QMainWindow):
     def closeEvent(self, event):
         print("closeEvent fired")
 
-    @Slot(int, bool)
+    @pyqtSlot(int, bool)
     def updateStatusbar(self, val, pulse):
         if pulse:
             self.progressBar.setRange(0,0)
@@ -75,7 +75,7 @@ class CreateVersionWidget(QDialog):
     Allows user to input the expected question labels which will
     become the directory structure for storing models and parameters.
     """
-    version_created = Signal(str)
+    version_created = pyqtSignal(str)
     def __init__(self, parent=None):
         super(CreateVersionWidget, self).__init__(parent)
         self.logger = logging.getLogger(__name__)

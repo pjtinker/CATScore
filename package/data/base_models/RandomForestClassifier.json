@@ -9,7 +9,8 @@
                 "default" : 100,
                 "min" : 10,
                 "max" : 10000,
-                "step_size" : 10
+                "step_size" : 10,
+                "tunable" : true
             },
             "max_features" : {
                 "type" : "dropdown",
@@ -18,21 +19,24 @@
                     "auto" : "auto",
                     "sqrt" : "sqrt",
                     "None" : ""
-                }
+                },
+                "tunable" : true
             },
             "max_depth" : {
                 "type" : "int",
                 "default" : 1000,
-                "min" : 0,
-                "max" : 100,
-                "step_size" : 1
+                "min" : 1,
+                "max" : 1000,
+                "step_size" : 1,
+                "tunable" : false
             },
             "min_samples_split" : {
                 "type" : "int",
                 "default" : 2,
-                "min" : 0,
-                "max" : 100,
-                "step_size" : 1
+                "min" : 2,
+                "max" : 10,
+                "step_size" : 1,
+                "tunable" : true
             },
             "bootstrap" : {
                 "type" : "dropdown",
@@ -40,7 +44,8 @@
                 "options" : {
                     "False" : false,
                     "True" : true
-                }
+                },
+                "tunable" : true
             }
         }
     }

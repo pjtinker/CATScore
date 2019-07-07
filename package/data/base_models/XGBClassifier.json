@@ -9,7 +9,8 @@
                 "default" : 100,
                 "min" : 10,
                 "max" : 10000,
-                "step_size" : 10
+                "step_size" : 10,
+                "tunable" : true
             },
             "max_features" : {
                 "type" : "dropdown",
@@ -18,39 +19,44 @@
                     "auto" : "auto",
                     "sqrt" : "sqrt",
                     "None" : ""
-                }
+                },
+                "tunable" : true
             },
             "gamma" : {
                 "type" : "double",
-                "default" : 0,
-                "min" : 0,
-                "max" : 100,
+                "default" : 0.0,
+                "min" : 0.0,
+                "max" : 100.0,
                 "step_size" : 0.01,
-                "decimal_len":  2
+                "decimal_len":  2,
+                "tunable" : true
             },
             "subsample" : {
                 "type" : "double",
-                "default" : 1,
-                "min" : 0,
-                "max" : 1,
+                "default" : 1.0,
+                "min" : 0.0,
+                "max" : 1.0,
                 "step_size" : 0.01,
-                "decimal_len":  2
+                "decimal_len":  2,
+                "tunable" : true
             },
             "colsample_bytree" : {
                 "type" : "double",
-                "default" : 1,
-                "min" : 0,
-                "max" : 1,
+                "default" : 1.0,
+                "min" : 0.0,
+                "max" : 1.0,
                 "step_size" : 0.01,
-                "decimal_len":  2
+                "decimal_len":  2,
+                "tunable" : true
             },
             "reg_alpha" : {
                 "type" : "double",
-                "default" : 0,
-                "min" : 0,
-                "max" : 1,
+                "default" : 0.0,
+                "min" : 0.0,
+                "max" : 1.0,
                 "step_size" : 0.01,
-                "decimal_len":  2
+                "decimal_len":  2,
+                "tunable" : true
             },
             "reg_lambda" : {
                 "type" : "double",
@@ -58,7 +64,8 @@
                 "min" : 0.0,
                 "max" : 1.0,
                 "step_size" : 0.1,
-                "decimal_len":  1
+                "decimal_len":  1,
+                "tunable" : false
             }
         }
     }

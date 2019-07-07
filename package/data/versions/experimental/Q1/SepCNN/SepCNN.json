@@ -2,8 +2,8 @@
   "model_base": "tensorflow",
   "model_module": "tensorflow.SepCNN",
   "model_class": "SepCNN",
-  "question_number": "default",
-  "version": "default",
+  "question_number": "Q1",
+  "version": "experimental",
   "tuned": false,
   "params": {
     "tensorflow.SepCNN.SepCNN": {
@@ -11,7 +11,11 @@
       "beta_1": 0.9,
       "beta_2": 0.999,
       "epsilon": 0.0,
-      "decay": 0
+      "decay": 0,
+      "pool_size": 2,
+      "kernel_size": 4,
+      "dropout_rate": 0.21000000000000002,
+      "filters": 72
     }
   }
 }

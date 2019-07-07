@@ -10,12 +10,12 @@
       "fit_prior": true
     },
     "sklearn.feature_extraction.text.TfidfVectorizer": {
-      "ngram_range": 1,
+      "ngram_range": 4,
       "encoding": "utf-8",
       "strip_accents": 0,
-      "max_df": 0.0,
-      "min_df": 10,
-      "use_idf": true
+      "use_idf": true,
+      "max_df": 0.8,
+      "min_df": 1
     },
     "sklearn.feature_selection.SelectKBest": {
       "k": 80,

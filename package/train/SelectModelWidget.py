@@ -7,8 +7,8 @@ from functools import partial
 
 import pandas as pd
 import pkg_resources
-from PySide2.QtCore import QObject, Qt, QThread, Signal, Slot, QSize
-from PySide2.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
+from PyQt5.QtCore import QObject, Qt, QThread, QThreadPool, pyqtSignal, pyqtSlot, QSize
+from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
                                QDoubleSpinBox, QFileDialog, QFormLayout,
                                QGridLayout, QGroupBox, QHBoxLayout, QLabel,
                                QMessageBox, QPushButton, QRadioButton,
@@ -31,19 +31,21 @@ BASE_FS_DIR = "./package/data/feature_selection/SelectKBest.json"
 DEFAULT_MODEL_DIR = ".\\package\\data\\versions\\default"
 
 class Communicate(QObject):
-    version_change = Signal(str)
-    enable_training_btn = Signal(bool)
+    version_change = pyqtSignal(str)
+    enable_training_btn = pyqtSignal(Qt.CheckState)
 
 class SelectModelWidget(QTabWidget):
     """QTabWidget that holds all of the selectable models and the accompanying ModelDialog for each.
     """
-    update_statusbar = Signal(str)
-    update_progressbar = Signal(int, bool)
+    update_statusbar = pyqtSignal(str)
+    update_progressbar = pyqtSignal(int, bool)
 
     def __init__(self, parent=None):
         super(SelectModelWidget, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
         self.parent = parent
+        self.threadpool = QThreadPool()
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
         self.training_data = pd.DataFrame()
 
@@ -218,7 +220,7 @@ class SelectModelWidget(QTabWidget):
                         
                         # The order of the arguments matters!  model_data must come first. 
                         if model_base == 'tensorflow':
-                            model_dialog = SkModelDialog(self, model_data, self.fs_params)
+                            model_dialog = SkModelDialog(self, model_data)
                         else:
                             model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
                         self.comms.version_change.connect(model_dialog.update_version)
@@ -328,6 +330,7 @@ class SelectModelWidget(QTabWidget):
         self.tf_embedding_combobox = QComboBox(objectName='embedding_type')
         self.tf_embedding_combobox.addItem('GloVe', 'glove')
         self.tf_embedding_combobox.addItem('Word2Vec', 'word2vec')
+        self.tf_embedding_combobox.addItem('Generate', '')
         self.tf_embedding_combobox.setCurrentIndex(1)
         self.tf_embedding_combobox.currentIndexChanged.connect(
             lambda state, x=self.tf_embedding_combobox:
@@ -365,7 +368,7 @@ class SelectModelWidget(QTabWidget):
         self.tuning_n_iter_label = QLabel("Number of iterations")
         self.tuning_n_iter_input = QSpinBox(objectName='n_iter')
         self.tuning_n_iter_input.setRange(2, 1000)
-        self.tuning_n_iter_input.setSingleStep(10)
+        self.tuning_n_iter_input.setSingleStep(1)
         self.tuning_n_iter_input.setValue(10)
         self.tuning_n_iter_input.valueChanged.connect(
             lambda state, x=self.tuning_n_iter_input:
@@ -385,10 +388,10 @@ class SelectModelWidget(QTabWidget):
         dialog.save_params()
 
 
-    @Slot(str)
+    @pyqtSlot(str)
     def add_new_version(self, v_dir):
         """
-        Slot to receive new version created Signal.
+        pyqtSlot to receive new version created pyqtSignal.
 
             # Arguments
                 v_dir(String): directory of newly created version.
@@ -396,10 +399,10 @@ class SelectModelWidget(QTabWidget):
         version = v_dir.split('\\')[-1]
         self.version_selection.addItem(version, v_dir)
 
-    @Slot(pd.DataFrame)
+    @pyqtSlot(pd.DataFrame)
     def load_data(self, data):
         """
-        Slot to receive pandas DataFrame after DataLoader has completed it's work
+        pyqtSlot to receive pandas DataFrame after DataLoader has completed it's work
 
             # Arguments
                 data(pandas.DataFrame): DataFrame of training data
@@ -412,7 +415,7 @@ class SelectModelWidget(QTabWidget):
         #     # self.training_data = data
         #     self.run_btn.setEnabled(True)
 
-    @Slot(Qt.CheckState)
+    @pyqtSlot(Qt.CheckState)
     def set_training_btn_state(self, state):
         if (not self.training_data.empty 
             and 
@@ -424,7 +427,7 @@ class SelectModelWidget(QTabWidget):
         else:
             self.run_btn.setEnabled(False)
 
-    @Slot(str, bool)
+    @pyqtSlot(str, bool)
     def model_exists(self, model_name, truth):
         btn = self.findChild(QPushButton, model_name + '_btn')
         if btn:
@@ -444,18 +447,19 @@ class SelectModelWidget(QTabWidget):
                                self.selected_version,
                                self.training_params,
                                self.training_data,
-                               train_models)
-        self.model_trainer.start()
+                               train_models,
+                               self.tuning_n_iter_input.value())
+        self.threadpool.start(self.model_trainer)
 
     def _update_version(self, directory):
         """
-        Parses selected version directory and emits signal to update each ModelDialog
+        Parses selected version directory and emits pyqtSignal to update each ModelDialog
 
             # Arguments
                 directory(String): directory selected by user.
         """
         self.selected_version = directory
-        # Emit signal
+        # Emit pyqtSignal
         self.comms.version_change.emit(directory)
 
 

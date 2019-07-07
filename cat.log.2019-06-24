@@ -1,6 +1,0 @@
-2019-06-24 21:02:05,323 - DEBUG - update_title_pos
-2019-06-24 21:02:05,374 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
-2019-06-24 21:19:15,879 - DEBUG - update_title_pos
-2019-06-24 21:19:15,888 - DEBUG - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('D:\\Utilities\\Miniconda3\\envs\\tf\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
-2019-06-24 21:19:20,325 - DEBUG - update_title_pos
-2019-06-24 21:19:20,375 - DEBUG - update_title_pos

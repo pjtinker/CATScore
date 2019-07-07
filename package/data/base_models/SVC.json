@@ -11,7 +11,8 @@
                 "min" : 0,
                 "max" : 1000,
                 "step_size" : 1,
-                "decimal_len" : 1
+                "decimal_len" : 1,
+                "tunable" : true
             },
             "shrinking" : {
                 "type" : "dropdown",
@@ -19,7 +20,8 @@
                 "options" : {
                     "True" : true,
                     "False" : false
-                }
+                },
+                "tunable" : true
             },
             "probability" : {
                 "type" : "dropdown",
@@ -27,7 +29,8 @@
                 "options" : {
                     "True" : true,
                     "False" : false
-                }
+                },
+                "tunable" : false
             },
             "tol" : {
                 "type" : "double",
@@ -35,14 +38,16 @@
                 "min" : 0,
                 "max" : 100,
                 "step_size" : 0.001,
-                "decimal_len":  4
+                "decimal_len":  4,
+                "tunable" : true
             },
             "cache_size" : {
                 "type" : "int",
                 "default" : 200,
                 "min" : 100,
                 "max" : 100000,
-                "step_size" : 100
+                "step_size" : 100,
+                "tunable" : false
             },
             "class_weight" : {
                 "type" : "dropdown",
@@ -50,11 +55,18 @@
                 "options" : {
                     "None" : null,
                     "Balanced" : "balanced"
-                }
+                },
+                "tunable" : true
             },
             "kernel" : {
                 "type" : "static",
-                "default" : "linear"
+                "default" : "linear",
+                "tunable" : false
+            },
+            "gamma" : {
+                "type" : "static",
+                "default" : "scale",
+                "tunable" : false
             }
         }
     }

@@ -1,7 +1,7 @@
-from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            Qt, QTimeZone, QByteArray, Slot, SIGNAL)
-from PySide2.QtGui import QMovie
-from PySide2.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, 
+from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
+                            Qt, QTimeZone, QByteArray, pyqtSlot, pyqtSignal)
+from PyQt5.QtGui import QMovie
+from PyQt5.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, 
                                 QTabWidget,
                                 QApplication, QLabel, QFileDialog, QHBoxLayout, 
                                 QVBoxLayout, QGridLayout, QHeaderView, QScrollArea, 
@@ -30,12 +30,12 @@ class TrainWidget(QTabWidget):
         self.data_loader.data_load.connect(self.model_widget.load_data)
         self.data_loader.update_statusbar.connect(self.update_statusbar)
 
-    @Slot(int, bool)
+    @pyqtSlot(int, bool)
     def setTab(self, tab, state):
         self.setTabEnabled(tab, state)
 
 
-    @Slot(str)
+    @pyqtSlot(str)
     def update_statusbar(self, msg):
         self.parent.statusBar().showMessage(msg)
         self.parent.repaint()

@@ -1,6 +1,6 @@
-from PySide2.QtCore import (Qt)
-from PySide2.QtGui import QMovie
-from PySide2.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
+from PyQt5.QtCore import (Qt)
+from PyQt5.QtGui import QMovie
+from PyQt5.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
                                QGroupBox, QWidget, QLineEdit, QGridLayout, QMessageBox,
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
                                QDoubleSpinBox, QSizePolicy, QLabel)

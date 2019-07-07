@@ -6,7 +6,7 @@ from collections import Counter
 import matplotlib
 # Make sure that we are using QT5
 matplotlib.use('Qt5Agg')
-from PySide2 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from numpy import arange, sin, pi
 import numpy as np

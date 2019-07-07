@@ -1,12 +1,12 @@
 
 """QDialog for file defined models.
 """
-from PySide2.QtCore import Signal, Slot, QObject
-from PySide2.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject
+from PyQt5.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
                                QGroupBox, QWidget, QLineEdit, QGridLayout,
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
                                QDoubleSpinBox, QSizePolicy, QLabel)
-from PySide2.QtGui import QColor 
+from PyQt5.QtGui import QColor 
 
 import json
 import re
@@ -17,7 +17,7 @@ import logging
 import os
 
 class Communicate(QObject):
-    check_for_existing_model = Signal(str, bool)
+    check_for_existing_model = pyqtSignal(str, bool)
 
 class SkModelDialog(QDialog):
     """
@@ -52,6 +52,7 @@ class SkModelDialog(QDialog):
             self.model_params[full_name] = param[cls_name]
             self.updated_params[full_name] = {}
 
+        self.is_dirty = False
         self.check_for_default()
 
         self.setWindowTitle(self.main_model_name)
@@ -113,59 +114,63 @@ class SkModelDialog(QDialog):
         return model
 
     def apply_changes(self):
-        print("apply_changes fired...")
-        print("Updated Params as they hit save_params:")
-        print(json.dumps(self.updated_params, indent=2))
+        # print("apply_changes fired...")
+        # print("Updated Params as they hit save_params:")
+        # print(json.dumps(self.updated_params, indent=2))
         version = self.current_version.split('\\')[-1]
         if version == 'default':
             print("Default version selected.  Returning...")
             return
-        filename = self.main_model_name + '.json'
-        save_dir = os.path.join(self.question_combobox.currentData(),
-                                self.main_model_name)
+        if self.is_dirty:
+            filename = self.main_model_name + '.json'
+            save_dir = os.path.join(self.question_combobox.currentData(),
+                                    self.main_model_name)
 
-        if not os.path.isdir(save_dir):
-            os.mkdir(save_dir)
+            if not os.path.isdir(save_dir):
+                os.mkdir(save_dir)
 
-        save_file_path = os.path.join(save_dir,
-                                filename)
+            save_file_path = os.path.join(save_dir,
+                                    filename)
 
-        if not os.path.isfile(save_file_path):
-            # Get default file and load those values
-            default_dir = os.path.join(".\\package\\data\\default_models\\default", self.main_model_name)
-            default_path = os.path.join(default_dir, self.main_model_name + '.json')
-            with open(default_path, 'r') as infile:
-                full_default_params = json.load(infile)
-            save_data = {
-                "model_base" : self.params[0]['model_base'],
-                "model_module": self.params[0]['model_module'],
-                "model_class" : self.main_model_name,
-                "question_number" : self.question_combobox.currentData().split('\\')[-1],
-                "version" : version,
-                "tuned" : False,
-                "params" : {}
-            }
-            save_data['params'] = full_default_params['params']
-            print("save_data['params'] in save_params")
-            print(json.dumps(save_data['params'], indent=2))
-        else:
-            with open(save_file_path, 'r') as infile:
-                save_data = json.load(infile)
+            if not os.path.isfile(save_file_path):
+                # Get default file and load those values
+                default_dir = os.path.join(".\\package\\data\\default_models\\default", self.main_model_name)
+                default_path = os.path.join(default_dir, self.main_model_name + '.json')
+                with open(default_path, 'r') as infile:
+                    full_default_params = json.load(infile)
+                save_data = {
+                    "model_base" : self.params[0]['model_base'],
+                    "model_module": self.params[0]['model_module'],
+                    "model_class" : self.main_model_name,
+                    "question_number" : self.question_combobox.currentData().split('\\')[-1],
+                    "version" : version,
+                    "tuned" : False,
+                    "params" : {}
+                }
+                save_data['params'] = full_default_params['params']
+                print("save_data['params'] in save_params")
+                print(json.dumps(save_data['params'], indent=2))
+            else:
+                with open(save_file_path, 'r') as infile:
+                    save_data = json.load(infile)
 
-        print("updated_params:")
-        print(json.dumps(self.updated_params, indent=2))
-        for param_type, params in self.updated_params.items():
-            if(params):
-                for param, val in params.items():
-                    save_data['params'][param_type][param] = val
-        try:
-            with open(save_file_path, 'w') as outfile:
-                json.dump(save_data, outfile, indent=2)
-        except Exception as e:
-            self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
-            print("Exception {}".format(e))
-            tb = traceback.format_exc()
-            print(tb)
+            print("updated_params:")
+            print(json.dumps(self.updated_params, indent=2))
+            for param_type, params in self.updated_params.items():
+                if(params):
+                    for param, val in params.items():
+                        save_data['params'][param_type][param] = val
+            try:
+                with open(save_file_path, 'w') as outfile:
+                    json.dump(save_data, outfile, indent=2)
+            except Exception as e:
+                self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
+                print("Exception {}".format(e))
+                tb = traceback.format_exc()
+                print(tb)
+
+        self.is_dirty = False
+        return
 
 
     def save_params(self):
@@ -186,6 +191,7 @@ class SkModelDialog(QDialog):
         #class_key = '__' + key + '__'
         if self.current_version != 'default':
             self.updated_params[param_type][key] = value
+            self.is_dirty = True
 
 
     def setupUI(self, param_type, param_dict, form):
@@ -272,7 +278,7 @@ class SkModelDialog(QDialog):
             tb = traceback.format_exc()
             print(tb)
 
-    @Slot(str)
+    @pyqtSlot(str)
     def update_version(self, directory):
         """
         Updates the question combobox based upon selected directory.
@@ -282,6 +288,7 @@ class SkModelDialog(QDialog):
                 load default values.  
         """
         print("Directory received by update_version", directory)
+        self.is_dirty = False
         self.current_version = directory
         # Clear combobox to be reconstructed or blank if default.
         self.question_combobox.clear()
@@ -354,6 +361,7 @@ class SkModelDialog(QDialog):
                 self.set_input_params(params)
         # If true, default (or none available) selected, thus Return
         if path == None or path == 'default':
+            self.is_dirty = False
             return
 
         filename = self.main_model_name + '.json'
@@ -369,7 +377,7 @@ class SkModelDialog(QDialog):
             except FileNotFoundError as fnfe:
                 # No parameter file exists.  Pass.
                 pass
-
+            self.is_dirty = False
         except Exception as e:
             self.logger.error("Error updating parameters", exc_info=True)
             print("Exception {}".format(e))
@@ -425,30 +433,6 @@ class SkModelDialog(QDialog):
                 "tuned" : False,
                 "params" : {}
             }
-            # TODO: Correct this.  TPOTClassifier at training time should be just that
-            # if self.main_model_name == 'TPOTClassifier':
-            #     save_data['model_module'] = 'sklearn.naive_bayes',
-            #     save_data['model_class'] = 'BernoulliNB',
-            #     params ={
-            #         "sklearn.naive_bayes.BernoulliNB": {
-            #             "alpha": 1.0,
-            #             "fit_prior": True
-            #         },
-            #         "sklearn.feature_extraction.text.TfidfVectorizer": {
-            #             "ngram_range": 1,
-            #             "encoding": "utf-8",
-            #             "strip_accents": 0,
-            #             "max_df": 1.0,
-            #             "min_df": 1,
-            #             "use_idf": True
-            #         },
-            #         "sklearn.feature_selection.SelectKBest": {
-            #             "k": 1000,
-            #             "score_func": "f_classif"
-            #         }
-            #     }
-            #     save_data['params'] = params
-        # else:
             for model, types in self.model_params.items():
                 for t, params in types.items():
                     save_data['params'][model] = {}

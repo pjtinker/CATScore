@@ -1,8 +1,8 @@
 
 """QDialog for model parameters for sklearn's Support Vector Classifier
 """
-from PySide2 import QtCore
-from PySide2.QtWidgets import (QPushButton, QVBoxLayout, QFormLayout, QGroupBox, QWidget, 
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import (QPushButton, QVBoxLayout, QFormLayout, QGroupBox, QWidget, 
                                QDialog, QDialogButtonBox, QComboBox, QDoubleSpinBox, QSizePolicy, QLabel)
 import json
 

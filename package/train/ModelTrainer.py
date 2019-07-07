@@ -1,7 +1,7 @@
 """
 QThread for model training
 """
-from PySide2.QtCore import (Qt, Slot, Signal, QObject, QThread)
+from PyQt5.QtCore import (Qt, pyqtSlot, pyqtSignal, QObject, QThread, QRunnable)
 
 import json
 import re
@@ -11,6 +11,7 @@ import inspect
 import logging
 import os
 import pickle 
+import threading
 
 import pandas as pd
 import numpy as np
@@ -18,7 +19,10 @@ import numpy as np
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.model_selection import cross_val_score, StratifiedKFold, train_test_split, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
-from sklearn.externals import joblib
+from sklearn.utils import parallel_backend, register_parallel_backend
+
+import joblib
+from joblib._parallel_backends import ThreadingBackend
 
 import scipy
 
@@ -36,18 +40,20 @@ MAX_SEQUENCE_LENGTH = 1000
 BASE_MODEL_DIR = "./package/data/base_models"
 BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
 
-class ModelTrainer(QThread):
+class ModelTrainer(QRunnable):
     """
     QThread tasked with running all model training/tuning.  
     This could potentially take days to complete.
     """
-    training_complete = Signal(pd.DataFrame)
+    training_complete = pyqtSignal(pd.DataFrame)
+    register_parallel_backend('threading', ThreadingBackend, make_default=True)
 
     def __init__(self, selected_models, version_directory, 
                  training_eval_params, training_data, 
-                 tune_models, **kwargs
+                 tune_models, n_iter, **kwargs
                 ):
         super(ModelTrainer, self).__init__()
+        # threading.current_thread().name == 'MainThread'
         self.logger = logging.getLogger(__name__)
         self.allowed_pipeline_types = [
             'feature_extraction',
@@ -70,6 +76,7 @@ class ModelTrainer(QThread):
     def run(self):
         # Run thru enumeration of columns.  The second argument in enumerate
         # tells python where to begin the idx count.  Here, 1 for our offset
+
         for col_idx, col in enumerate(self.training_data.columns, 1): 
             if col.endswith('_Text'):
                 print("Training col: ", col, " Label col idx: ", col_idx)
@@ -100,22 +107,31 @@ class ModelTrainer(QThread):
                             print("TPOTClassifier's turn.  Doing special thing...")
                             continue
                         try:
-                            model_path = os.path.join(col_path, model, model + '.json')
-                            if not os.path.isfile(model_path):
-                                # Get default values
-                                model_path = os.path.join(".\\package\\data\\default_models\\default",
-                                                            model,
-                                                            model + '.json')
-
-                            print("model_path", model_path)
-                            with open(model_path, 'r') as param_file:
-                                model_params = json.load(param_file)
-
-                            pipeline = Pipeline(self.get_pipeline(model_params['params']))
-                            
                             if self.tune_models:
-                                self.grid_search(model, x, y, pipeline, 20, True)
+                                model_path = os.path.join(".\\package\\data\\default_models\\default",
+                                                                model,
+                                                                model + '.json')
+
+                                print("model_path", model_path)
+                                with open(model_path, 'r') as param_file:
+                                    model_params = json.load(param_file)
+
+                                pipeline = Pipeline(self.get_pipeline(model_params['params']))
+                                rscv = self.grid_search(model, x, y, pipeline, 20, True)
                             else:                               
+                                model_path = os.path.join(col_path, model, model + '.json')
+                                if not os.path.isfile(model_path):
+                                    # Get default values
+                                    model_path = os.path.join(".\\package\\data\\default_models\\default",
+                                                                model,
+                                                                model + '.json')
+
+                                print("model_path", model_path)
+                                with open(model_path, 'r') as param_file:
+                                    model_params = json.load(param_file)
+
+                                pipeline = Pipeline(self.get_pipeline(model_params['params']))
+                                
                                 if self.training_eval_params['sklearn']['type'] == 'cv':
                                     skf = StratifiedKFold(n_splits=self.training_eval_params['sklearn']['value'],
                                                             random_state=RANDOM_SEED)
@@ -130,6 +146,7 @@ class ModelTrainer(QThread):
                                             
                                 else:
                                     print("Training_eval_params:", json.dumps(self.training_eval_params))
+                                    
                                 pred_col_name = col_label + '_' + model + '_preds'
                                 prob_col_name = col_label + '_' + model + '_probs'
                                 results[pred_col_name] = preds.astype(int)
@@ -140,14 +157,17 @@ class ModelTrainer(QThread):
                                 
                                 pipeline.fit(x,y)
                                 print(pipeline.named_steps)
-                                clf = pipeline.steps[-1:]
+                                # clf = pipeline.steps[-1:]
 
                             save_path = os.path.join(col_path, model)
                             if not os.path.exists(save_path):
                                 os.makedirs(save_path)
                             save_file = os.path.join(save_path, model + '.pkl')
                             print("Saving model to :", save_path)
-                            pickle.dump(clf, open(save_file, 'wb'))
+                            if self.tune_models:
+                                joblib.dump(rscv, save_file, compress=1)
+                            else:
+                                joblib.dump(pipeline, save_file, compress=1)
                         except Exception as e:
                             self.logger.error("ModelTrainer.run (Sklearn):", exc_info=True)
                             tb = traceback.format_exc()
@@ -223,6 +243,7 @@ class ModelTrainer(QThread):
 
 
     def get_pipeline(self, param_dict):
+        
         pipeline_steps = [None] * len(param_dict)
         for args, values in param_dict.items():
             full_class = args.split('.')
@@ -247,8 +268,6 @@ class ModelTrainer(QThread):
                 step = (full_class[-1], current_class(**values))
             else:
                 step = (full_class[-1], current_class())
-            # print("Params for ", args)
-            # print(step.get_params())
             pipeline_steps[idx] = step
 
 
@@ -265,17 +284,20 @@ class ModelTrainer(QThread):
             
             for param_types, types in default_params.items():
                 for t, params in types.items():
-                    param_name = model + '__' + t
-                    if params['type'] == 'dropdown':
-                        param_options = list(params['options'].keys())
-                    elif params['type'] == 'double':
-                        param_options = scipy.stats.expon(scale=params['step_size'])
-                    elif params['type'] == 'int':
-                        param_options = scipy.stats.randint(params['min'], params['max'] + 1)
-                    elif params['type'] == 'range':
-                        param_options = [(1,1), (1,2), (1,3), (1,4)]
-                    
-                    grid_params.update({param_name : param_options})
+                    if params['tunable']:
+                        param_name = model + '__' + t
+                        if params['type'] == 'dropdown':
+                            param_options = list(params['options'].values())
+                        elif params['type'] == 'double':
+                            param_options = scipy.stats.expon(scale=params['step_size'])
+                        elif params['type'] == 'int':
+                            param_options = scipy.stats.randint(params['min'], params['max'] + 1)
+                        elif params['type'] == 'range':
+                            param_options = [(1,1), (1,2), (1,3), (1,4)]
+                        grid_params.update({param_name : param_options})
+                    else:
+                        continue
+
             if include_tfidf:
                 with open(BASE_TFIDF_DIR, 'r') as f:
                     print("Loading model:", BASE_TFIDF_DIR)
@@ -285,28 +307,32 @@ class ModelTrainer(QThread):
                 
                 for param_types, types in default_params.items():
                     for t, params in types.items():
-                        param_name = model_class + '__' + t
-                        if params['type'] == 'dropdown':
-                            param_options = list(params['options'].values())
-                        elif params['type'] == 'double':
-                            param_options = scipy.stats.expon(scale=params['step_size'])
-                        elif params['type'] == 'int':
-                            param_options = scipy.stats.randint(params['min'], params['max'])
-                        elif params['type'] == 'range':
-                            param_options = [(1,1), (1,2), (1,3), (1,4)]
-                        
-                        grid_params.update({param_name : param_options})
-                
-            grid_params['SelectKBest__k'] = ['all']
+                        if params['tunable']:
+                            param_name = model_class + '__' + t
+                            if params['type'] == 'dropdown':
+                                param_options = list(params['options'].values())
+                            elif params['type'] == 'double':
+                                param_options = scipy.stats.expon(scale=params['step_size'])
+                            elif params['type'] == 'int':
+                                param_options = scipy.stats.randint(params['min'], params['max'] + 1)
+                            elif params['type'] == 'range':
+                                param_options = [(1,1), (1,2), (1,3), (1,4)]
+                            grid_params.update({param_name : param_options})
+                        else:
+                            continue
+            
+            if 'SelectKBest' in pipeline.named_steps:
+                grid_params['SelectKBest__k'] = ['all']
+
             print("Beginning RandomizedSearchCV...")
             print("Params: ", grid_params)
             print("Pipeline:", [name for name, _ in pipeline.steps])
-            rscv = RandomizedSearchCV(pipeline, grid_params, n_jobs=-1, cv=3, n_iter=n_iter)
-
+            rscv = RandomizedSearchCV(pipeline, grid_params, n_jobs=-1, cv=3, n_iter=n_iter, refit=True)
             rscv.fit(x, y)
-            print("Best params:")
-            print(rscv.best_estimator_.get_params())
-
+                
+            print("Best score:")
+            print(rscv.best_score_)
+            return rscv.best_estimator_
 
         except FileNotFoundError as fnfe:
             self.logger.debug("ModelTrainer.grid_search {} not found".format(filepath))
@@ -314,3 +340,5 @@ class ModelTrainer(QThread):
             self.logger.error("ModelTrainer.grid_search {}:".format(model), exc_info=True)
             tb = traceback.format_exc()
             print(tb)
+
+    

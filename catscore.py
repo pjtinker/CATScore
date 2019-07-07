@@ -10,7 +10,7 @@ import logging
 import logging.handlers
 
 # logging.basicConfig(filename='cat.log', format=logFormatter, level=logging.DEBUG)
-from PySide2.QtWidgets import (QApplication, QHBoxLayout, QVBoxLayout, 
+from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QVBoxLayout, 
                                 QMainWindow, QSizePolicy, QWidget, 
                                 QPushButton, QTabWidget, QMenuBar)
 

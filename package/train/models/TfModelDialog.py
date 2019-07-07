@@ -1,8 +1,8 @@
 
 """QDialog for model parameters for sklearn's Support Vector Classifier
 """
-from PySide2.QtCore import Slot
-from PySide2.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
                                QGroupBox, QWidget, QLineEdit, QGridLayout,
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
                                QDoubleSpinBox, QSizePolicy, QLabel)
@@ -139,7 +139,7 @@ class TfModelDialog(QDialog):
                 else:
                     input_field = QLineEdit(objectName=k)
                     input_field.setText(v)
-                    # lambda for connecting signals.  Param two will pass None instead of an empty
+                    # lambda for connecting pyqtSignals.  Param two will pass None instead of an empty
                     # string if no response given by user.
                     input_field.textChanged.connect(
                         lambda state, x=k, y=input_field:
@@ -167,7 +167,7 @@ class TfModelDialog(QDialog):
         if param_type == 'model':
             self.updated_model_params[class_key] = value
 
-    @Slot(str)
+    @pyqtSlot(str)
     def update_version(self, directory):
         print("update_version in {} called with {}".format(self.model_class, directory))
 

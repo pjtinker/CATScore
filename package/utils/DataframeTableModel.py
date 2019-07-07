@@ -1,7 +1,7 @@
-from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            Qt, QTimeZone, Slot)
-from PySide2.QtGui import QColor, QPainter
-from PySide2.QtWidgets import (QAction, QCheckBox, QApplication, QHBoxLayout, QHeaderView,
+from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
+                            Qt, QTimeZone, pyqtSlot)
+from PyQt5.QtGui import QColor, QPainter
+from PyQt5.QtWidgets import (QAction, QCheckBox, QApplication, QHBoxLayout, QHeaderView,
                                QMainWindow, QSizePolicy, QTableView, QWidget, QTabWidget)
 
 import logging

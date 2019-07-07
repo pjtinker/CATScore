@@ -1,6 +1,6 @@
-from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            Qt, Slot, Signal)
-from PySide2.QtWidgets import (QCheckBox, QSizePolicy, QWidget)
+from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
+                            Qt, pyqtSlot, pyqtSignal)
+from PyQt5.QtWidgets import (QCheckBox, QSizePolicy, QWidget)
 
 from package.utils.DataframeTableModel import DataframeTableModel
 import pandas as pd

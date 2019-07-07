@@ -6,7 +6,8 @@
   "version": "experimental",
   "params": {
     "sklearn.svm.SVC": {
-      "C": 1.0
+      "C": 1.0,
+      "class_weight": "balanced"
     },
     "sklearn.feature_extraction.text.TfidfVectorizer": {},
     "sklearn.feature_selection.SelectKBest": {}
