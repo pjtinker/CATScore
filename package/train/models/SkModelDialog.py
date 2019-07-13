@@ -114,9 +114,6 @@ class SkModelDialog(QDialog):
         return model
 
     def apply_changes(self):
-        # print("apply_changes fired...")
-        # print("Updated Params as they hit save_params:")
-        # print(json.dumps(self.updated_params, indent=2))
         version = self.current_version.split('\\')[-1]
         if version == 'default':
             print("Default version selected.  Returning...")
@@ -299,7 +296,7 @@ class SkModelDialog(QDialog):
                 path = os.path.join(self.current_version, val)
                 if os.path.isdir(path):
                     for fname in os.listdir(path):
-                        if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.hdf5':
+                        if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.h5':
                             model_exists = True
                             break
             self.comms.check_for_existing_model.emit(self.main_model_name, model_exists)
@@ -315,7 +312,7 @@ class SkModelDialog(QDialog):
             question_directories = sorted(question_directories, 
                                             key=lambda item:
                                                (int(re.findall('\d+|D+', item)[0])
-                                                if len(re.findall('\d+|D+', item)) > 0
+                                                    if len(re.findall('\d+|D+', item)) > 0
                                                     else float('inf'), item)
                                     )
             model_exists = False
@@ -328,7 +325,7 @@ class SkModelDialog(QDialog):
                     if os.path.isdir(path):
                         for fname in os.listdir(path):
                             # print("Filename in ModelDialog:", fname)
-                            if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.hdf5':
+                            if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.h5':
                                 combo_text = combo_text + "*"
                                 model_exists = True
                 self.question_combobox.addItem(combo_text, d)
@@ -434,12 +431,15 @@ class SkModelDialog(QDialog):
                 "params" : {}
             }
             for model, types in self.model_params.items():
+                print("check_for_defaults data:")
+                print(f"{model}")
+                print(types)
                 for t, params in types.items():
-                    save_data['params'][model] = {}
+                    # True if model spec has more than one category of parameters.  Only TF models at this point.
+                    if not model in save_data['params'].keys():
+                        save_data['params'][model] = {}
                     for param_name, data in params.items():
                         save_data['params'][model][param_name] = data['default']
-                # for param_type, params in self.updated_params.items():
-                #     save_data['params'][param_type] = params
             try:
                 with open(default_path, 'w') as outfile:
                     json.dump(save_data, outfile, indent=2)

@@ -31,7 +31,7 @@ BASE_FS_DIR = "./package/data/feature_selection/SelectKBest.json"
 DEFAULT_MODEL_DIR = ".\\package\\data\\versions\\default"
 
 class Communicate(QObject):
-    version_change = pyqtSignal(str)
+    version_change = pyqtSignal(str)    
     enable_training_btn = pyqtSignal(Qt.CheckState)
 
 class SelectModelWidget(QTabWidget):
@@ -45,8 +45,7 @@ class SelectModelWidget(QTabWidget):
         self.logger = logging.getLogger(__name__)
         self.parent = parent
         self.threadpool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
-
+        # print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
         self.training_data = pd.DataFrame()
 
         self.selected_version = DEFAULT_MODEL_DIR
@@ -271,15 +270,11 @@ class SelectModelWidget(QTabWidget):
         self.cv_radio_btn.toggled.connect(lambda state, x=self.cv_n_fold_input: 
                                         self._update_sklearn_training_type('cv', x.value())
                                     )
-        
-        # self.sklearn_training_inputs.append(self.cv_radio_btn)
-        # self.sklearn_training_inputs.append(self.cv_n_fold_input)
         self.sklearn_training_form.addRow(self.cv_radio_btn, self.cv_n_fold_input)
         
         self.sk_validation_radio_btn = QRadioButton("Validation set")
         self.sk_validation_percent_input = QDoubleSpinBox(objectName='test_split')
         self.sk_validation_percent_input.setRange(0.05, 1)
-        # self.sk_validation_percent_input.setValue(0.2)
         self.sk_validation_percent_input.setSingleStep(0.1)
         self.sk_validation_percent_input.setEnabled(False)
         self.sk_validation_percent_input.valueChanged.connect(
@@ -291,28 +286,24 @@ class SelectModelWidget(QTabWidget):
             lambda state, x=self.sk_validation_percent_input:
                 self._update_sklearn_training_type('validation', x.value())
             )
-        # self.sklearn_training_inputs.append(self.sk_validation_radio_btn)
-        # self.sklearn_training_inputs.append(self.sk_validation_percent_input)
         self.sklearn_training_form.addRow(self.sk_validation_radio_btn, self.sk_validation_percent_input)
     
         self.no_eval_btn = QRadioButton("No evaluation set", objectName='no_eval')
         self.no_eval_btn.toggled.connect(lambda: 
                                         self._update_sklearn_training_type(None, None)
                                    )
-        # self.sklearn_training_inputs.append(self.no_eval_btn)
         self.sklearn_training_form.addRow(self.no_eval_btn)
 
-        tf_val_label = QLabel("Validation split")
-        tf_val_input = QDoubleSpinBox(objectName='validation_split')
-        tf_val_input.setRange(0.05, 1)
-        tf_val_input.setSingleStep(0.1)
-        tf_val_input.valueChanged.connect(
-            lambda state, x=tf_val_input:
+        self.tf_val_label = QLabel("Validation split")
+        self.tf_val_input = QDoubleSpinBox(objectName='validation_split')
+        self.tf_val_input.setRange(0.05, 1)
+        self.tf_val_input.setSingleStep(0.1)
+        self.tf_val_input.valueChanged.connect(
+            lambda state, x=self.tf_val_input:
                 self.update_training_params('tensorflow', 'validation_split', x.value())
             )
-        tf_val_input.setValue(0.2)
-        # self.tensorflow_training_inputs.append([tf_val_input, tf_val_label])
-        self.tensorflow_training_form.addRow(tf_val_label, tf_val_input)
+        self.tf_val_input.setValue(0.2)
+        self.tensorflow_training_form.addRow(self.tf_val_label, self.tf_val_input)
 
         self.tf_patience_label = QLabel("Patience")
         self.tf_patience_input = QSpinBox(objectName='patience')
@@ -323,8 +314,17 @@ class SelectModelWidget(QTabWidget):
                 self.update_training_params('tensorflow', 'patience', x.value())
             )
         self.tf_patience_input.setValue(2)
-        # self.tensorflow_training_inputs.append([self.tf_patience_label, self.tf_patience_input])
         self.tensorflow_training_form.addRow(self.tf_patience_label, self.tf_patience_input)
+
+        # TODO: enable/disable other embedding options based on the state of this checkbox
+        self.tf_use_pretrained_embedding_label = QLabel("Use pretrained embeddings")
+        self.tf_use_pretrained_embedding_chkbox = QCheckBox(objectName='use_pretrained_embedding')
+        self.tf_use_pretrained_embedding_chkbox.stateChanged.connect(
+            lambda state, x=self.tf_use_pretrained_embedding_chkbox:
+                self.update_training_params('tensorflow', 'use_pretrained_embedding', x.isChecked())
+            )
+        self.tf_use_pretrained_embedding_chkbox.setChecked(True)
+        self.tensorflow_training_form.addRow(self.tf_use_pretrained_embedding_label, self.tf_use_pretrained_embedding_chkbox)
 
         self.tf_embedding_type_label = QLabel("Embedding type")
         self.tf_embedding_combobox = QComboBox(objectName='embedding_type')
@@ -337,30 +337,29 @@ class SelectModelWidget(QTabWidget):
                 self.update_training_params('tensorflow', 'embedding_type', x.currentData())
             )
         self.tf_embedding_combobox.setCurrentIndex(0)
-        # self.tensorflow_training_inputs.append([self.tf_embedding_type_label, self.tf_embedding_combobox])
         self.tensorflow_training_form.addRow(self.tf_embedding_type_label, self.tf_embedding_combobox)
 
-        self.tf_embedding_dims_label = QLabel("Embedding dims")
-        self.tf_embedding_dims_input = QSpinBox(objectName='embedding_dims')
-        self.tf_embedding_dims_input.setRange(100, 300)
-        self.tf_embedding_dims_input.setSingleStep(100)
-        self.tf_embedding_dims_input.valueChanged.connect(
-            lambda state, x=self.tf_embedding_dims_input:
-                self.update_training_params('tensorflow', 'embedding_dims', x.value())
-            )
-        self.tf_embedding_dims_input.setValue(100)
-        # self.tensorflow_training_inputs.append([self.tf_embedding_dims_label, self.tf_embedding_dims_input])
-        self.tensorflow_training_form.addRow(self.tf_embedding_dims_label, self.tf_embedding_dims_input)
+        self.tf_embedding_dim_label = QLabel("Embedding dim")
+        self.tf_embedding_dim_combobox = QComboBox(objectName='embedding_dim')
+        self.tf_embedding_dim_combobox.addItem('100', 100)
+        self.tf_embedding_dim_combobox.addItem('200', 200)
+        self.tf_embedding_dim_combobox.addItem('300', 300)
+        self.tf_embedding_dim_combobox.currentIndexChanged.connect(
+            lambda state, x=self.tf_embedding_dim_combobox:
+                self.update_training_params('tensorflow', 'embedding_dim', x.currentData())
+        )
+        self.tf_embedding_dim_combobox.setCurrentIndex(1)
+        self.tensorflow_training_form.addRow(self.tf_embedding_dim_label, self.tf_embedding_dim_combobox)
 
-        self.tf_embedding_trainable_label = QLabel("Train embeddings")
-        self.tf_embedding_trainable_chkbox = QCheckBox(objectName='embedding_trainable')
-        self.tf_embedding_trainable_chkbox.stateChanged.connect(
-            lambda state, x=self.tf_embedding_trainable_chkbox:
-                self.update_training_params('tensorflow', 'embedding_trainable', x.isChecked())
+        self.tf_is_embedding_trainable_label = QLabel("Train embeddings")
+        self.tf_is_embedding_trainable_chkbox = QCheckBox(objectName='is_embedding_trainable')
+        self.tf_is_embedding_trainable_chkbox.stateChanged.connect(
+            lambda state, x=self.tf_is_embedding_trainable_chkbox:
+                self.update_training_params('tensorflow', 'is_embedding_trainable', x.isChecked())
             )
-        self.tf_embedding_trainable_chkbox.setChecked(True)
-        # self.tensorflow_training_inputs.append([self.tf_embedding_trainable_label, self.tf_embedding_trainable_chkbox])
-        self.tensorflow_training_form.addRow(self.tf_embedding_trainable_label, self.tf_embedding_trainable_chkbox)
+        self.tf_is_embedding_trainable_chkbox.setChecked(True)
+        # self.tensorflow_training_inputs.append([self.tf_is_embedding_trainable_label, self.tf_is_embedding_trainable_chkbox])
+        self.tensorflow_training_form.addRow(self.tf_is_embedding_trainable_label, self.tf_is_embedding_trainable_chkbox)
 
         self.cv_radio_btn.toggle()
 
@@ -449,7 +448,14 @@ class SelectModelWidget(QTabWidget):
                                self.training_data,
                                train_models,
                                self.tuning_n_iter_input.value())
+        # self.model_trainer.update_progressbar.connect(self.emit_update_progressbar)
+        # self.model_trainer.training_complete.connect(self.emit_update_progressbar)
         self.threadpool.start(self.model_trainer)
+    
+    
+    @pyqtSlot(int, bool)
+    def emit_update_progressbar(self, int, bool):
+        self.update_progressbar.emit(int, bool)
 
     def _update_version(self, directory):
         """

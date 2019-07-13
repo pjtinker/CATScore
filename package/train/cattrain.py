@@ -51,14 +51,15 @@ class CatTrain(QMainWindow):
         self.statusBar().addPermanentWidget(self.progressBar)
         self.train_widget = TrainWidget(self)
         self.version_widget.version_created.connect(self.train_widget.model_widget.add_new_version)
-        self.train_widget.data_loader.update_progressbar.connect(self.updateStatusbar)
+        self.train_widget.data_loader.update_progressbar.connect(self.update_progress_bar)
+        # self.train_widget.model_widget.update_progressbar.connect(self.update_progress_bar)
         self.setCentralWidget(self.train_widget)
 
     def closeEvent(self, event):
         print("closeEvent fired")
 
     @pyqtSlot(int, bool)
-    def updateStatusbar(self, val, pulse):
+    def update_progress_bar(self, val, pulse):
         if pulse:
             self.progressBar.setRange(0,0)
         else:

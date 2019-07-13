@@ -19,7 +19,7 @@
                 "default" : 64,
                 "min" : 16,
                 "max" : 256,
-                "tunable" : true,
+                "tunable" : false,
                 "step_size" : 2
             },
             "blocks" : {
@@ -27,7 +27,7 @@
                 "default" : 2,
                 "min" : 1,
                 "max" : 4,
-                "tunable" : true,
+                "tunable" : false,
                 "step_size" : 1
             },
             "filters" : {
@@ -58,7 +58,7 @@
                 "type" : "double",
                 "default" : 0.2,
                 "min" : 0.01,
-                "max" : 1.0,
+                "max" : 0.95,
                 "tunable" : true,
                 "step_size" : 0.01,
                 "decimal_len":  2

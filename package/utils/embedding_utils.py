@@ -3,6 +3,7 @@ import io
 import pandas as pd
 import numpy as np
 import operator 
+import os
 from collections import Counter
 from tqdm import tqdm
 tqdm.pandas()
@@ -10,36 +11,39 @@ tqdm.pandas()
 # from preprocess_text import processText
 # from spellcheck import SpellCheck
 
-EMBEDDING_PATH = 'D:/Research/TextClassification/glove6b/glove.6B.100d.txt'
+EMBEDDING_PATH = 'D:/Research/TextClassification/glove6b'
 FT_PATH = 'D:/Research/TextClassification/fasttextv2/crawl-300d-2M.vec'
 TOP_K = 20000
 
 class EmbeddingUtils():
 
-    def __init__(self):
+    def __init__(self, embedding_type = None, embedding_dims = None):
         self.embedding_matrix = None
-        self.embedding_type = None
-        self.embedding_dims = None
+        self.full_embedding_matrix = {}
+        self.embedding_type = embedding_type
+        self.embedding_dims = embedding_dims
+
+        if self.embedding_type == 'glove':
+            filename = f'glove.6B.{self.embedding_dims}d.txt'
+            self.load_glove_embeddings(os.path.join(EMBEDDING_PATH, filename))
+        elif self.embedding_type == 'word2vec':
+            pass
+        else:
+            pass
+
         self.vocab = {}
         self.oov_list = []
 
-    def generate_embedding_matrix(self, word_index, embedding_type='glove', embedding_dims=100):
-        self.embedding_type = embedding_type
-        self.embedding_dims = embedding_dims
-        # self.word_index = word_index
-        if embedding_type == 'glove':
-            embedding_matrix_full = self.get_embedding_matrix()
-        elif embedding_type == 'word2vec':
-            pass
+    def generate_embedding_matrix(self, word_index):
         num_words = min(len(word_index) + 1, TOP_K)
-        self.embedding_matrix = np.zeros((num_words, embedding_dims))
+        self.embedding_matrix = np.zeros((num_words, self.embedding_dims))
         print("Generating word embeddings...")
   
         for word, i in word_index.items():
             if i >= TOP_K:
                 continue
             try:
-                embedding_vector = embedding_matrix_full[word]
+                embedding_vector = self.full_embedding_matrix[word]
             except KeyError:
                 self.oov_list.append(word)
                 embedding_vector = None
@@ -48,29 +52,31 @@ class EmbeddingUtils():
         print("Word embedding matrix generated!")
         print("Out of vocabulary word count: ", len(self.oov_list))
 
-    def get_em(self):
+    def get_embedding_matrix(self):
         return self.embedding_matrix
 
-    def get_embedding_matrix(self, path=EMBEDDING_PATH):
+    def get_oov(self):
+        return self.oov_list
+
+    def load_glove_embeddings(self, path=None):
         print("Loading GloVe embeddings...")
-        embeddings_index = {}
+
         f = open(path, encoding='utf-8')
         for line in tqdm(f):
             values = line.split()
             word = values[0]
             coefs = np.asarray(values[1:], dtype='float32')
-            embeddings_index[word] = coefs
+            self.full_embedding_matrix[word] = coefs
         f.close()
-        return embeddings_index
 
     def get_fasttext_embedding_matrix(self, path=FT_PATH):
         fin = io.open(path, 'r', encoding='utf-8', newline='\n', errors='ignore')
         n, d = map(int, fin.readline().split())
-        data = {}
+        
         for line in tqdm(fin):
             tokens = line.rstrip().split(' ')
-            data[tokens[0]] = map(float, tokens[1:])
-        return data
+            self.full_embedding_matrix[tokens[0]] = map(float, tokens[1:])
+
 
     def build_vocab(self, sentences, verbose =  True):
         """
@@ -122,7 +128,7 @@ if __name__ == '__main__':
     vocab = build_vocab(sentences)
     print({k: vocab[k] for k in list(vocab)[:5]})
 
-    embedding_index = get_embedding_matrix()
+    embedding_index = load_glove_embeddings()
     # embedding_index = get_fasttext_embedding_matrix()
     oov = check_coverage(vocab, embedding_index)
     print("Length of oov: {}".format(len(oov)))

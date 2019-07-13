@@ -171,7 +171,7 @@ class DataLoader(QWidget):
             self.selected_data = self.full_data[self.selected_columns].copy()
             self.text_table_model.loadData(self.selected_data.head())
             self.set_preprocessing_option_state(1, True)
-            #self.data_load.emit(1, True)
+            self.data_load.emit(self.selected_data)
 
     def open_file(self):
         """

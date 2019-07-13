@@ -5,7 +5,10 @@ allow us to create model instances with slightly varying architectures.
 """
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
+from __future__ import print_function\
+
+import logging
+import traceback
 
 from tensorflow.python.keras import models
 from tensorflow.python.keras.models import Model
@@ -20,7 +23,13 @@ from tensorflow.python.keras.layers import MaxPooling1D
 from tensorflow.python.keras.layers import GlobalAveragePooling1D
 from tensorflow.python.keras.optimizers import Adam
 
-def mlp_model(layers, units, dropout_rate, input_shape, num_classes):
+# TODO: Decide if this is a class or just a utility file.  Can I use my logger here w/o it being a class?  
+
+def mlp_model(layers, 
+              input_shape, 
+              units, 
+              dropout_rate, 
+              num_classes):
     """Creates an instance of a multi-layer perceptron model.
     # Arguments
         layers: int, number of `Dense` layers in the model.
@@ -51,12 +60,17 @@ def sepcnn_model(input_shape,
                  dropout_rate=0.2,
                  pool_size=3,
                  optimizer='adam',
-                 learning_rate=1e-3,
+                 lr=1e-3,
+                 beta_1 = 0.9,
+                 beta_2 = 0.999,
+                 epsilon = 0.003,
+                 decay = 0,
                  embedding_dim=100,
                  use_pretrained_embedding=False,
                  is_embedding_trainable=False,
                  embedding_matrix=None):
     """Creates an instance of a separable CNN model.
+   
     # Arguments
         blocks: int, number of pairs of sepCNN and pooling blocks in the model.
         filters: int, output dimension of the layers.
@@ -70,6 +84,7 @@ def sepcnn_model(input_shape,
         use_pretrained_embedding: bool, true if pre-trained embedding is on.
         is_embedding_trainable: bool, true if embedding layer is trainable.
         embedding_matrix: dict, dictionary with embedding coefficients.
+    
     # Returns
         A sepCNN model instance.
     """
@@ -125,10 +140,13 @@ def sepcnn_model(input_shape,
         loss = 'binary_crossentropy'
     else:
         loss = 'sparse_categorical_crossentropy'
-    optimizer = Adam(lr=learning_rate)
+    optimizer = Adam(lr=lr,
+                    beta_1=beta_1,
+                    beta_2=beta_2,
+                    epsilon=epsilon,
+                    decay=decay)
 
     model.compile(optimizer=optimizer, loss=loss, metrics=['acc'])
-
     return model
 
 def _get_last_layer_units_and_activation(num_classes):
