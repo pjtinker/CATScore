@@ -20,6 +20,7 @@ from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.model_selection import cross_val_score, StratifiedKFold, train_test_split, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from sklearn.utils import parallel_backend, register_parallel_backend
+from sklearn.preprocessing import FunctionTransformer
 
 import joblib
 from joblib._parallel_backends import ThreadingBackend
@@ -33,13 +34,14 @@ from tensorflow.python.keras.callbacks import EarlyStopping
 import package.utils.training_utils as tu
 import package.utils.keras_models as keras_models
 import package.utils.embedding_utils as embed_utils
-import package.utils.SequenceTransformer as SequenceTransformer
+import package.utils.SequenceTransformer as seq_trans
 
 RANDOM_SEED = 1337
 TOP_K = 20000
-MAX_SEQUENCE_LENGTH = 1000
+MAX_SEQUENCE_LENGTH = 1500
 BASE_MODEL_DIR = "./package/data/base_models"
 BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
+INPUT_SHAPE = (0, 0)
 
 class ModelTrainer(QRunnable):
     """
@@ -203,20 +205,12 @@ class ModelTrainer(QRunnable):
                                 print(tb)
                     # TENSORFLOW BEGINS
                     if (1 in self.selected_models['tensorflow'].values()):
-                        print("Tokenizing input text for Tensorflow models...")
                         tokenizer = text.Tokenizer(num_words=TOP_K)
                         tokenizer.fit_on_texts([str(word) for word in x])
-                        xdata = tokenizer.texts_to_sequences([str(word) for word in x])
-
-                        max_len = len(max(xdata, key=len))
-                        if max_len > MAX_SEQUENCE_LENGTH:
-                            max_len = MAX_SEQUENCE_LENGTH
-
-                        xdata = sequence.pad_sequences(xdata, maxlen=max_len)
-
-                        num_classes = len(np.unique(y))
+                        
+                        sequence_transformer = seq_trans.SequenceTransformer(tokenizer, TOP_K)
                         num_features = min(len(tokenizer.word_index) + 1, TOP_K)
-
+                        num_classes = len(np.unique(y))
                         
                         if self.training_eval_params['tensorflow']['use_pretrained_embedding']:
                             use_pretrained_embedding = True
@@ -224,38 +218,25 @@ class ModelTrainer(QRunnable):
                         else:
                             use_pretrained_embedding = False
 
-
-
-
                         for model, truth in self.selected_models['tensorflow'].items():
                             print("Current model from os.listdir(col_path)", model)
                             if truth:
                                 try:
                                     if self.tune_models:
-                                        # model_path = os.path.join(".\\package\\data\\default_models\\default",
-                                        #                                 model,
-                                        #                                 model + '.json')
-                                        # print("model_path", model_path)
-                                        # with open(model_path, 'r') as param_file:
-                                        #     model_params = json.load(param_file)
-                                        # print(model_params)
-
-                                        param_dict = dict(  input_shape=xdata.shape[1:],
+                                        param_dict = dict(  
+                                                            input_shape=INPUT_SHAPE,
                                                             num_classes=num_classes,
                                                             num_features=num_features,
-                                                            # validation_split=validation_split,
-                                                            # callbacks=callbacks,
                                                             embedding_dim=embedding_dim,
                                                             use_pretrained_embedding=use_pretrained_embedding,
-                                                            # is_embedding_trainable=is_embedding_trainable,
                                                             embedding_matrix=eu.get_embedding_matrix()
-                                                            )
+                                                        )
 
                                         keras_model = KerasClassifier(build_fn=keras_models.sepcnn_model)
-                                        # *******************NEXT TO DO FIX THIS TRANSFORMER
-                                        pipeline = Pipeline(steps=[('SequenceTransformer', SequenceTransformer(TOP_K) ), 
-                                                             ('SepCNN', keras_model) ] )
-                                        kc = self.grid_search(model, xdata, y, pipeline, self.n_iter, False, param_dict)
+                                        pipeline = Pipeline(steps=[('SequenceTransformer', sequence_transformer),
+                                                                   (model, keras_model)] )
+
+                                        rscv = self.grid_search(model, x, y, pipeline, self.n_iter, False, param_dict)
                                     else:
                                         model_path = os.path.join(col_path, model, model + '.json')
                                         if not os.path.isfile(model_path):
@@ -267,37 +248,59 @@ class ModelTrainer(QRunnable):
                                         with open(model_path, 'r') as param_file:
                                             model_params = json.load(param_file)
 
-                                        param_dict = dict(input_shape=xdata.shape[1:],
-                                                            num_classes=num_classes,
-                                                            num_features=num_features,
-                                                            validation_split=validation_split,
-                                                            callbacks=callbacks,
-                                                            embedding_dim=embedding_dim,
-                                                            use_pretrained_embedding=use_pretrained_embedding,
-                                                            is_embedding_trainable=is_embedding_trainable,
-                                                            embedding_matrix=eu.get_embedding_matrix()
-                                                            )
+                                        param_dict = dict(input_shape=INPUT_SHAPE,
+                                                          num_classes=num_classes,
+                                                          num_features=num_features,
+                                                          validation_split=validation_split,
+                                                          callbacks=callbacks,
+                                                          embedding_dim=embedding_dim,
+                                                          use_pretrained_embedding=use_pretrained_embedding,
+                                                          is_embedding_trainable=is_embedding_trainable,
+                                                          embedding_matrix=eu.get_embedding_matrix()
+                                                        )
                                         param_dict.update(model_params['params'][
                                             ".".join((model_params['model_module'], model_params['model_class']))
                                         ])
                                         print(model + " params:", param_dict)
-                                        kc = KerasClassifier(build_fn=keras_models.sepcnn_model, **param_dict)
-                                        x_train, x_test, y_train, y_test = train_test_split(xdata, y,
+                                        keras_model = KerasClassifier(build_fn=keras_models.sepcnn_model, **param_dict)
+                                        kc = Pipeline(steps=[('SequenceTransformer', sequence_transformer ),
+                                                                   (model, keras_model) ] )
+
+                                        x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                                                             test_size = validation_split,
                                                                                             shuffle=True,
                                                                                             stratify=y)
                                         kc.fit(x_train, y_train)
                                         tf_preds = kc.predict(x_test)
                                         print("Accuracy: ", accuracy_score(y_test, tf_preds))
-                                        history = kc.fit(xdata, y)
+                                        history = kc.fit(x, y)
 
                                     save_path = os.path.join(col_path, model)
                                     if not os.path.exists(save_path):
                                         os.makedirs(save_path)
+ 
                                     save_file = os.path.join(save_path, model + '.h5')
                                     print("Saving model to :", save_path)
-                                    kc.model.save(save_file)
+                                    if self.tune_models:
+                                        best_params = rscv.best_params_
+                                        kc = rscv.best_estimator_
 
+                                        # param_file = os.path.join(model + '.json')
+                                        print(f"Saving {model} params to {param_file}...")
+                                        # If we used pretrained embeddings, they've been saved
+                                        # as a parameter.  Delete them for space and simplicity.  
+
+                                        best_params.pop(model + '__embedding_matrix', None)
+                                        #TODO: Return best params to SelectModelWidget
+                                    # Keras model must be saved separately and removed from pipeline
+                                    kc.named_steps[model].model.save(save_file)
+                                    kc.named_steps[model].model = None
+                                    # Save pipeline with Keras model deleted
+                                    pipeline_save_file = os.path.join(save_path, model + '_pipeline.pkl')
+                                    print(f"Saving tuned {model} model to {pipeline_save_file}...")
+                                    joblib.dump(kc, pipeline_save_file, compress=1)
+                                    
+                                    del kc
                                 except Exception as e:
                                     self.logger.error("ModelTrainer.run (Tensorflow):", exc_info=True)
                                     tb = traceback.format_exc()
@@ -412,7 +415,7 @@ class ModelTrainer(QRunnable):
             print(rscv.best_score_)
             print("Best params:")
             print(rscv.best_params_)
-            return rscv.best_estimator_
+            return rscv
 
         except FileNotFoundError as fnfe:
             self.logger.debug("ModelTrainer.grid_search {} not found".format(filepath))

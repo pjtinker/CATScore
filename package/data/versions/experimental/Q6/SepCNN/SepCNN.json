@@ -12,7 +12,10 @@
       "beta_2": 0.999,
       "epsilon": 0.0,
       "decay": 0,
-      "pool_size": 4
+      "pool_size": 4,
+      "kernel_size": 3,
+      "dropout_rate": 0.2,
+      "epochs": 5
     },
     "sklearn.feature_selection.SelectKBest": {
       "k": 1000,

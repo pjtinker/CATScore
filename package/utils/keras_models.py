@@ -68,7 +68,8 @@ def sepcnn_model(input_shape,
                  embedding_dim=100,
                  use_pretrained_embedding=False,
                  is_embedding_trainable=False,
-                 embedding_matrix=None):
+                 embedding_matrix=None,
+                 verbose=0):
     """Creates an instance of a separable CNN model.
    
     # Arguments
