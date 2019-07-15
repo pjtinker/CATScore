@@ -4,6 +4,8 @@
   "model_class": "MultinomialNB",
   "question_number": "Q1",
   "version": "experimental",
+  "tuned" : false,
+  "last_results" : {},
   "params": {
     "sklearn.naive_bayes.MultinomialNB": {
       "alpha": 1.0,

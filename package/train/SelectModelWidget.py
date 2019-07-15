@@ -452,7 +452,7 @@ class SelectModelWidget(QTabWidget):
         # self.model_trainer.training_complete.connect(self.emit_update_progressbar)
         self.threadpool.start(self.model_trainer)
     
-    
+    # @pyqtSlot()
     @pyqtSlot(int, bool)
     def emit_update_progressbar(self, int, bool):
         self.update_progressbar.emit(int, bool)
@@ -496,6 +496,7 @@ class SelectModelWidget(QTabWidget):
 
 
     def update_tuning_params(self, model_base, param, value):
+        #TODO: Update tuning parameters in ModelWidget
         pass
 
 

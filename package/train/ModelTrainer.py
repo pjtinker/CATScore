@@ -11,7 +11,8 @@ import inspect
 import logging
 import os
 import pickle 
-import threading
+# import threading
+import time
 
 import pandas as pd
 import numpy as np
@@ -48,9 +49,12 @@ class ModelTrainer(QRunnable):
     QThread tasked with running all model training/tuning.  
     This could potentially take days to complete.
     """
-    # training_complete = pyqtSignal(int, bool)
-    # update_progressbar = pyqtSignal(int, bool)
+    training_complete = pyqtSignal(int, bool)
+    tuning_complete = pyqtSignal(bool, dict)
+    update_progressbar = pyqtSignal(int, bool)
 
+    # This allows for multi-threading from a thread.  GUI will not freeze and
+    # multithreading seems functional.
     register_parallel_backend('threading', ThreadingBackend, make_default=True)
 
     def __init__(self, selected_models, version_directory, 
@@ -78,6 +82,7 @@ class ModelTrainer(QRunnable):
         self.n_iter = n_iter
         self.kwargs = kwargs
         self.all_predictions_dict = {}
+        self.grid_search_time = None
     
     def run(self):
         # Run thru enumeration of columns.  The second argument in enumerate
@@ -104,37 +109,15 @@ class ModelTrainer(QRunnable):
                     preds = np.empty(y.shape)
                     probs = np.empty(shape=(y.shape[0], len(np.unique(y))))
 
-                    # Initialize all evaluation parameters
+                    # Initialize sklearn evaluation parameters
                     sk_eval_type = self.training_eval_params['sklearn']['type']
                     sk_eval_value = self.training_eval_params['sklearn']['value']
-
-                    # Init tensorflow eval params
-                    patience = self.training_eval_params['tensorflow']['patience']
-                    if patience > 0:
-                        callbacks = [EarlyStopping(monitor='val_loss', 
-                                                    patience=patience)]
-                    else:
-                        callbacks = None
-                        
-                    validation_split = self.training_eval_params['tensorflow']['validation_split']
-
-                    use_pretrained_embedding = self.training_eval_params['tensorflow']['use_pretrained_embedding']
-
-                    if use_pretrained_embedding:
-                        embedding_type = self.training_eval_params['tensorflow']['embedding_type']
-                        embedding_dim = self.training_eval_params['tensorflow']['embedding_dim']
-                    else:
-                        embedding_type = None
-                        embedding_dim = None
-
-                    eu = embed_utils.EmbeddingUtils(embedding_type, embedding_dim)
-                    is_embedding_trainable = self.training_eval_params['tensorflow']['is_embedding_trainable']
-                    embedding_dim = self.training_eval_params['tensorflow']['embedding_dim']
 
                     for model, truth in self.selected_models['sklearn'].items():
                         print("Current model from os.listdir(col_path)", model)
                         if truth:
                             if model == 'TPOTClassifier':
+                                #TODO: Get TPOTClassifier working
                                 print("TPOTClassifier's turn.  Doing special thing...")
                                 continue
                             try:
@@ -205,6 +188,27 @@ class ModelTrainer(QRunnable):
                                 print(tb)
                     # TENSORFLOW BEGINS
                     if (1 in self.selected_models['tensorflow'].values()):
+                        # Init tensorflow eval params
+                        patience = self.training_eval_params['tensorflow']['patience']
+                        if patience > 0:
+                            callbacks = [EarlyStopping(monitor='val_loss', 
+                                                        patience=patience)]
+                        else:
+                            callbacks = None
+                            
+                        validation_split = self.training_eval_params['tensorflow']['validation_split']
+                        use_pretrained_embedding = self.training_eval_params['tensorflow']['use_pretrained_embedding']
+                        if use_pretrained_embedding:
+                            embedding_type = self.training_eval_params['tensorflow']['embedding_type']
+                            embedding_dim = self.training_eval_params['tensorflow']['embedding_dim']
+                        else:
+                            embedding_type = None
+                            embedding_dim = None
+                        # Embedding utils handles... well, embeddings
+                        eu = embed_utils.EmbeddingUtils(embedding_type, embedding_dim)
+                        is_embedding_trainable = self.training_eval_params['tensorflow']['is_embedding_trainable']
+                        embedding_dim = self.training_eval_params['tensorflow']['embedding_dim']
+                        
                         tokenizer = text.Tokenizer(num_words=TOP_K)
                         tokenizer.fit_on_texts([str(word) for word in x])
                         
@@ -223,13 +227,12 @@ class ModelTrainer(QRunnable):
                             if truth:
                                 try:
                                     if self.tune_models:
-                                        param_dict = dict(  
-                                                            input_shape=INPUT_SHAPE,
-                                                            num_classes=num_classes,
-                                                            num_features=num_features,
-                                                            embedding_dim=embedding_dim,
-                                                            use_pretrained_embedding=use_pretrained_embedding,
-                                                            embedding_matrix=eu.get_embedding_matrix()
+                                        param_dict = dict(input_shape=INPUT_SHAPE,
+                                                          num_classes=num_classes,
+                                                          num_features=num_features,
+                                                          embedding_dim=embedding_dim,
+                                                          use_pretrained_embedding=use_pretrained_embedding,
+                                                          embedding_matrix=eu.get_embedding_matrix()
                                                         )
 
                                         keras_model = KerasClassifier(build_fn=keras_models.sepcnn_model)
@@ -282,8 +285,10 @@ class ModelTrainer(QRunnable):
                                     save_file = os.path.join(save_path, model + '.h5')
                                     print("Saving model to :", save_path)
                                     if self.tune_models:
-                                        best_params = rscv.best_params_
+                                        # kc is a Pipeline object.  To get all step params, get the params
+                                        # from the best estimator.  
                                         kc = rscv.best_estimator_
+                                        best_params = kc.get_params()
 
                                         # param_file = os.path.join(model + '.json')
                                         print(f"Saving {model} params to {param_file}...")
@@ -291,7 +296,7 @@ class ModelTrainer(QRunnable):
                                         # as a parameter.  Delete them for space and simplicity.  
 
                                         best_params.pop(model + '__embedding_matrix', None)
-                                        #TODO: Return best params to SelectModelWidget
+                                        self.save_tuned_params(model, best_params, col_path, rscv.best_score_)
                                     # Keras model must be saved separately and removed from pipeline
                                     kc.named_steps[model].model.save(save_file)
                                     kc.named_steps[model].model = None
@@ -312,7 +317,13 @@ class ModelTrainer(QRunnable):
             print(tb)
         
     def get_pipeline(self, param_dict):
-        
+        """Builds pipeline steps required for sklearn models.  
+            Includes Feature extraction, feature selection, and classifier.
+                # Arguments
+                    param_dict: dict, dictionary of current model parameter values.
+                # Returns
+                    pipeline_steps, list: list of steps with intialized classes.
+        """
         pipeline_steps = [None] * len(param_dict)
         for args, values in param_dict.items():
             full_class = args.split('.')
@@ -341,7 +352,15 @@ class ModelTrainer(QRunnable):
 
         return pipeline_steps
 
-    def grid_search(self, model, x, y, pipeline, n_iter=2, include_tfidf=False, keras_params=None):
+    def grid_search(self, 
+                    model, 
+                    x, 
+                    y, 
+                    pipeline, 
+                    n_iter=20,
+                    scoring=None,
+                    include_tfidf=False, 
+                    keras_params=None):
         """Performs grid search on selected pipeline.
             # Arguments
                 model: string, name of classifier in pipeline
@@ -353,6 +372,7 @@ class ModelTrainer(QRunnable):
                 keras_params: dict, parameters necessary for model training outside of the regular hyperparams.  e.g. input_shape, num_classes, num_features
         """
         try:
+            start_time = time.time()
             filepath = os.path.join(BASE_MODEL_DIR, model + '.json')
             with open(filepath, 'r') as f:
                 print("Loading model:", filepath)
@@ -403,18 +423,24 @@ class ModelTrainer(QRunnable):
                 grid_params.update(updated_key_dict)
 
             if 'SelectKBest' in pipeline.named_steps:
-                grid_params['SelectKBest__k'] = ['all']
+                pipeline.steps.pop(1)
 
             print(f"Beginning RandomizedSearchCV on {model}...")
             print("Params: ", grid_params)
             print("Pipeline:", [name for name, _ in pipeline.steps])
-            rscv = RandomizedSearchCV(pipeline, grid_params, n_jobs=-1, cv=3, n_iter=n_iter, refit=True)
+            rscv = RandomizedSearchCV(pipeline, 
+                                      grid_params, 
+                                      n_jobs=-1, 
+                                      cv=3, 
+                                      n_iter=n_iter, 
+                                      refit=True)
             rscv.fit(x, y)
                 
             print("Best score:")
             print(rscv.best_score_)
             print("Best params:")
-            print(rscv.best_params_)
+            print(rscv.best_estimator_.get_params())
+            self.grid_search_time = time.time() - start_time
             return rscv
 
         except FileNotFoundError as fnfe:
@@ -425,3 +451,31 @@ class ModelTrainer(QRunnable):
             print(tb)
 
     
+    def save_tuned_params(self, model, best_params, model_param_path, best_score):
+        try:
+            #TODO: Get the saved parameters functionality working.
+            # Open current model params.  If file does not exist, create it
+            model_path = os.path.join(model_param_path, model, model + '.json')
+            if not os.path.isfile(model_path):
+                # Get default values
+                model_path = os.path.join(".\\package\\data\\default_models\\default",
+                                            model,
+                                            model + '.json')
+            with open(model_path, 'r') as param_file:
+                model_params = json.load(param_file)
+
+            model_params['training_meta'] = {
+                "train_date" : time.ctime(time.time()),
+                "tuned" : self.tune_models,
+                "tuning_duration" : self.grid_search_time,
+                "model_performance" : best_score
+            }
+
+
+        except FileNotFoundError as fnfe:
+            self.logger.debug("ModelTrainer.save_tuned_params {} not found".format(model_path))
+        except Exception as e:
+            self.logger.error("ModelTrainer.save_tuned_params {}:".format(model), exc_info=True)
+            tb = traceback.format_exc()
+            print(tb)
+        
