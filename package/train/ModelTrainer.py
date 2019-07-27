@@ -14,9 +14,11 @@ import os
 import pickle
 # import threading
 import time
+from queue import PriorityQueue
 
 import pandas as pd
 import numpy as np
+
 
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.model_selection import cross_val_score, StratifiedKFold, train_test_split, RandomizedSearchCV
@@ -34,7 +36,7 @@ from tensorflow.python.keras.wrappers.scikit_learn import KerasClassifier
 from tensorflow.python.keras.callbacks import EarlyStopping
 
 import package.utils.training_utils as tu
-from package.utils.catutils import CATEncoder
+from package.utils.catutils import CATEncoder, cat_decoder
 import package.utils.keras_models as keras_models
 import package.utils.embedding_utils as embed_utils
 import package.utils.SequenceTransformer as seq_trans
@@ -55,9 +57,11 @@ class ModelTrainer(QRunnable):
     training_complete = pyqtSignal(int, bool)
     tuning_complete = pyqtSignal(bool, dict)
     update_progressbar = pyqtSignal(int, bool)
-
+    
     # This allows for multi-threading from a thread.  GUI will not freeze and
     # multithreading seems functional.
+    # NOTE: some models, e.g. RandomForestClassifier, will not train using this backend.
+    # An exception is caught and the log updated if this occurs.  
     register_parallel_backend('threading', ThreadingBackend, make_default=True)
     # parallel_backend('threading')
 
@@ -66,7 +70,6 @@ class ModelTrainer(QRunnable):
                  tune_models, n_iter, **kwargs
                  ):
         super(ModelTrainer, self).__init__()
-        # threading.current_thread().name == 'MainThread'
         self.logger = logging.getLogger(__name__)
         self.allowed_pipeline_types = [
             'feature_extraction',
@@ -78,7 +81,7 @@ class ModelTrainer(QRunnable):
         self.selected_models = selected_models
         print(self.selected_models)
         self.training_eval_params = training_eval_params
-        print(json.dumps(self.training_eval_params, indent=2))
+        print(json.dumps(self.training_eval_params, indent=2, cls=CATEncoder))
         self.training_data = training_data
         print(self.training_data.head())
         print("Tune models?", tune_models)
@@ -129,7 +132,7 @@ class ModelTrainer(QRunnable):
 
                                     print("model_path", model_path)
                                     with open(model_path, 'r') as param_file:
-                                        model_params = json.load(param_file)
+                                        model_params = json.load(param_file, object_hook=cat_decoder)
 
                                     pipeline = Pipeline(
                                         self.get_pipeline(model_params['params']))
@@ -146,8 +149,8 @@ class ModelTrainer(QRunnable):
 
                                     print("model_path", model_path)
                                     with open(model_path, 'r') as param_file:
-                                        model_params = json.load(param_file)
-                                    print("***** ModelTrainer.run model_params:", json.dumps(model_params, indent=2))
+                                        model_params = json.load(param_file, object_hook=cat_decoder)
+                                    print("***** ModelTrainer.run model_params:", model_params)
                                     pipeline = Pipeline(
                                         self.get_pipeline(model_params['params']))
 
@@ -158,14 +161,14 @@ class ModelTrainer(QRunnable):
                                             for train, test in skf.split(x, y):
                                                 preds[test] = pipeline.fit(
                                                     x.iloc[train], y[train]).predict(x.iloc[test])
-                                                # try:
-                                                #     probs[test] = pipeline.predict_proba(
-                                                #         x.iloc[test])
-                                                # except AttributeError:
-                                                #     self.logger.info(
-                                                #         "{} does not support predict_proba".format(model))
-                                                #     print(
-                                                #         model, "does not support predict_proba")
+                                                try:
+                                                    probs[test] = pipeline.predict_proba(
+                                                        x.iloc[test])
+                                                except AttributeError:
+                                                    self.logger.debug(
+                                                        "{} does not support predict_proba".format(model))
+                                                    print(
+                                                        model, "does not support predict_proba")
                                         except Exception:
                                             self.logger.warning(
                                                 "{} threw an exception during fit. \
@@ -174,7 +177,7 @@ class ModelTrainer(QRunnable):
                                             print(tb)
                                     else:
                                         print("Training_eval_params:", json.dumps(
-                                            self.training_eval_params))
+                                            self.training_eval_params, indent=2, cls=CATEncoder))
 
                                     pred_col_name = col_label + '_' + model + '_preds'
                                     prob_col_name = col_label + '_' + model + '_probs'
@@ -219,8 +222,7 @@ class ModelTrainer(QRunnable):
                             callbacks = None
 
                         validation_split = self.training_eval_params['tensorflow']['validation_split']
-                        use_pretrained_embedding = self.training_eval_params[
-                            'tensorflow']['use_pretrained_embedding']
+                        use_pretrained_embedding = self.training_eval_params['tensorflow']['use_pretrained_embedding']
                         if use_pretrained_embedding:
                             embedding_type = self.training_eval_params['tensorflow']['embedding_type']
                             embedding_dim = self.training_eval_params['tensorflow']['embedding_dim']
@@ -280,7 +282,8 @@ class ModelTrainer(QRunnable):
                                         print("model_path", model_path)
                                         with open(model_path, 'r') as param_file:
                                             model_params = json.load(
-                                                param_file)
+                                                param_file,
+                                                object_hook=cat_decoder)
 
                                         param_dict = dict(input_shape=INPUT_SHAPE,
                                                           num_classes=num_classes,
@@ -383,16 +386,6 @@ class ModelTrainer(QRunnable):
             inst_module = importlib.import_module(current_module)
             current_class = getattr(inst_module, full_class[-1])
             if values:
-                # Convert the list on ngram range to a tuple.
-                if 'ngram_range' in values.keys():
-                    values['ngram_range'] = tuple(values['ngram_range'])
-                # This instantiates the Feature Selection score function
-                if 'score_func' in values.keys():
-                    fs_module = importlib.import_module(
-                        "sklearn.feature_selection")
-                    fs_class = getattr(fs_module, values['score_func'])
-                    values['score_func'] = fs_class
-
                 step = (full_class[-1], current_class(**values))
             else:
                 step = (full_class[-1], current_class())
@@ -410,21 +403,23 @@ class ModelTrainer(QRunnable):
                     include_tfidf=False,
                     keras_params=None):
         """Performs grid search on selected pipeline.
+            
             # Arguments
-                model: string, name of classifier in pipeline
-                x: pandas.DataFrame, training data
-                y: numpy.array, training labels
-                pipeline: sklearn.model_selection.Pipeline, pipeline object containing feature extractors, feature selectors and estimator
-                n_iter: int, number of iterations to perform search
-                include_tfidf: bool, flag to indicate tfidf is included in the pipeline
-                keras_params: dict, parameters necessary for model training outside of the regular hyperparams.  e.g. input_shape, num_classes, num_features
+               
+                model, string: name of classifier in pipeline
+                x, pandas: DataFrame, training data
+                y, numpy:array, training labels
+                pipeline, sklearn:model_selection.Pipeline, pipeline object containing feature extractors, feature selectors and estimator
+                n_iter, int: number of iterations to perform search
+                include_tfidf, bool: flag to indicate tfidf is included in the pipeline
+                keras_params, dict: parameters necessary for model training outside of the regular hyperparams.  e.g. input_shape, num_classes, num_features
         """
         try:
             start_time = time.time()
             filepath = os.path.join(BASE_MODEL_DIR, model + '.json')
             with open(filepath, 'r') as f:
                 print("Loading model:", filepath)
-                model_data = json.load(f)
+                model_data = json.load(f, object_hook=cat_decoder)
             grid_params = {}
             default_params = model_data[model]
 
@@ -449,7 +444,7 @@ class ModelTrainer(QRunnable):
             if include_tfidf:
                 with open(BASE_TFIDF_DIR, 'r') as f:
                     print("Loading model:", BASE_TFIDF_DIR)
-                    model_data = json.load(f)
+                    model_data = json.load(f, object_hook=cat_decoder)
                 model_class = model_data['model_class']
                 default_params = model_data[model_class]
 
@@ -476,7 +471,8 @@ class ModelTrainer(QRunnable):
                 updated_key_dict = {f'{model}__{k}': [
                     v] for k, v in keras_params.items()}
                 grid_params.update(updated_key_dict)
-
+            #FIXME: I'm popping this by idx.  This is a serious no-no.  
+            # find a better way to remove feature selection from pipeline.  
             if 'SelectPercentile' in pipeline.named_steps:
                 pipeline.steps.pop(1)
 
@@ -490,11 +486,6 @@ class ModelTrainer(QRunnable):
                                       n_iter=n_iter,
                                       refit=True)
             rscv.fit(x, y)
-
-            # print("Best score:")
-            # print(rscv.best_score_)
-            # print("Best params:")
-            # print(rscv.best_estimator_.get_params())
             self.grid_search_time = time.time() - start_time
             return rscv
 
@@ -543,12 +534,8 @@ class ModelTrainer(QRunnable):
 
             print(
                 f"***** Saving {model} best_params to {model_param_path}....")
-            #TODO: Get the CATEncoder and decoder figured out!
             with open(os.path.join(model_param_path, model + '.json'), 'w') as outfile:
                 json.dump(model_params, outfile, indent=2, cls=CATEncoder)
-
-            # print("***** Updated model_params:",
-            #       json.dumps(model_params['params'], indent=2, cls=CATEncoder))
 
         except FileNotFoundError as fnfe:
             self.logger.debug(

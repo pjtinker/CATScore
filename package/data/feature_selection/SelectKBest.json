@@ -2,6 +2,7 @@
     "model_base" : "sklearn",
     "model_module" : "sklearn.feature_selection",
     "model_class" : "SelectKBest",
+    "priority" : 10,
     "SelectKBest" : {
         "Hyperparameters" : {
             "k" : {

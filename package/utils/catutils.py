@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout
 import os
 import json
 import inspect
+import importlib
 
 """
 Utility classes for CATScore
@@ -32,7 +33,27 @@ def clearLayout(layout):
 class CATEncoder(json.JSONEncoder):
     def default(self, obj):
         if inspect.isclass(obj):
-            return obj.__name__
+            return{
+                "type" : "__class__",
+                "module" : obj.__module__,
+                "name" : obj.__name__
+            }
         if inspect.isfunction(obj):
-            return '.'.join([obj.__module__, obj.__name__])
+            return{
+                "type" : "__function__",
+                "module" : obj.__module__,
+                "name" : obj.__name__
+            }
         return json.JSONEncoder.default(self, obj)
+
+def cat_decoder(obj):
+    if "score_func" in obj:
+        if "options" in obj['score_func']:
+            return obj
+        module = importlib.import_module(obj['score_func']['module'])
+        return {"score_func" : getattr(module, obj['score_func']['name'])}
+
+    if "ngram_range" in obj:
+        return {"ngram_range" : tuple(obj['ngram_range'])}
+
+    return obj

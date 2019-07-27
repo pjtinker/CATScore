@@ -2,6 +2,7 @@
     "model_base" : "sklearn",
     "model_module" : "sklearn.feature_extraction.text",
     "model_class" : "TfidfVectorizer",
+    "priority" : 0,
     "TfidfVectorizer" : {
         "Parameters" : {
             "ngram_range" : {

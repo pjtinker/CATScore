@@ -6,11 +6,14 @@ CATTrain module contains the all functionality associated with the training
 '''
 
 import sys
+import importlib
+import traceback
 import argparse
-import pandas as pd
 import logging
 import json
 import os
+
+import pandas as pd
 
 from PyQt5.QtCore import (Qt, pyqtSlot, pyqtSignal)
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QDialog, QHeaderView, QAction,
@@ -30,6 +33,7 @@ class CatTrain(QMainWindow):
     """
     def __init__(self, parent=None):
         super(CatTrain, self).__init__(parent)
+        self.logger = logging.getLogger(__name__)
         self.title = 'CAT Train'
         self.setWindowTitle(self.title)
         geometry = QApplication.desktop().availableGeometry(self)
@@ -39,13 +43,24 @@ class CatTrain(QMainWindow):
         self.progressBar.setGeometry(30, 40, 200, 25)
         
         self.file_menu = self.menuBar().addMenu('&File')
+        self.reload_all_modules_action = QAction('Reload system modules', self)
+        self.file_menu.addAction(self.reload_all_modules_action)
+        self.reload_all_modules_action.triggered.connect(
+            lambda: self.reload_all_modules()
+        )
+        self.print_all_modules_action = QAction("Print system modules", self)
+        self.file_menu.addAction(self.print_all_modules_action)
+        self.print_all_modules_action.triggered.connect(
+            lambda: self.print_all_modules()
+        )
+
         self.version_menu = self.menuBar().addMenu('&Version')
     
         self.version_widget = CreateVersionWidget(self)
         self.create_version_action = QAction('Create New Version', self)
         self.version_menu.addAction(self.create_version_action)
         self.create_version_action.triggered.connect(
-            lambda : self.open_create_version_dialog(self.version_widget)
+            lambda: self.open_create_version_dialog(self.version_widget)
         )
     
         self.statusBar().addPermanentWidget(self.progressBar)
@@ -69,6 +84,31 @@ class CatTrain(QMainWindow):
 
     def open_create_version_dialog(self, dialog):
         dialog.create_version()
+
+    def reload_all_modules(self):
+        try:
+            for module in sys.modules.values():
+                importlib.reload(module)
+        except NotImplementedError as nie:
+            self.logger.debug(
+                "CatTrain.reload_all_modules:", exc_info=True)
+            tb = traceback.format_exc()
+            print(tb)
+        except Exception as e:
+            self.logger.error(
+                "CatTrain.reload_all_modules:", exc_info=True)
+            tb = traceback.format_exc()
+            print(tb)
+
+    def print_all_modules(self):
+        try:
+            for module in sys.modules.values():
+                print(module)
+        except Exception as e:
+            self.logger.error(
+                "CatTrain.print_all_modules:", exc_info=True)
+            tb = traceback.format_exc()
+            print(tb)
 
 class CreateVersionWidget(QDialog):
     """

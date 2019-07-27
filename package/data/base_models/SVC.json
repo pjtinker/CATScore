@@ -2,6 +2,7 @@
     "model_base": "sklearn",
     "model_module": "sklearn.svm",
     "model_class" : "SVC",
+    "priority" : 100,
     "model_url" : "https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html",
     "SVC" : {
         "Parameters" : {

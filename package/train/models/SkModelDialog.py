@@ -17,6 +17,9 @@ import logging
 import os
 import functools
 
+from package.utils.catutils import CATEncoder
+from package.utils.catutils import cat_decoder
+
 
 class Communicate(QObject):
     check_for_existing_model = pyqtSignal(str, bool)
@@ -154,21 +157,21 @@ class SkModelDialog(QDialog):
                 }
                 save_data['params'] = full_default_params['params']
                 print("save_data['params'] in save_params")
-                print(json.dumps(save_data['params'], indent=2))
+                print(json.dumps(save_data['params'], indent=2, cls=CATEncoder))
             else:
                 with open(save_file_path, 'r') as infile:
                     save_data = json.load(infile)
 
             print("updated_params:")
-            print(json.dumps(self.updated_params, indent=2))
+            print(json.dumps(self.updated_params, cls=CATEncoder, indent=2))
             for param_type, params in self.updated_params.items():
                 if(params):
                     for param, val in params.items():
                         save_data['params'][param_type][param] = val
             try:
                 with open(save_file_path, 'w') as outfile:
-                    json.dump(save_data, outfile, indent=2)
-            except Exception as e:
+                    json.dump(save_data, outfile, cls=CATEncoder, indent=2)
+            except Exception as e: 
                 self.logger.error("Error saving updated model parameters for {}.".format(
                     self.main_model_name), exc_info=True)
                 print("Exception {}".format(e))
@@ -186,8 +189,10 @@ class SkModelDialog(QDialog):
         if (self.exec_() == QDialog.Accepted):
             self.apply_changes()
 
+
     def _split_key(self, key):
         return key.split('__')[1]
+
 
     def _update_param(self, param_type, key, value, callback=None, **cbargs):
         # print("updateParams key, value: {}, {}, {}".format(param_type, key, value))
@@ -199,9 +204,6 @@ class SkModelDialog(QDialog):
             self.updated_params[param_type][key] = value
             self.is_dirty = True
 
-    def _selectkbest_callback(self, key, value):
-        if value == 0:
-            value = 'all'
         
     def setupUI(self, param_type, param_dict, form):
         """
@@ -395,7 +397,7 @@ class SkModelDialog(QDialog):
                 pass
             self.is_dirty = False
         except Exception as e:
-            self.logger.error("Error updating parameters", exc_info=True)
+            self.logger.error(f"Error updating {model} parameters", exc_info=True)
             print("Exception {}".format(e))
             tb = traceback.format_exc()
             print(tb)
@@ -469,7 +471,7 @@ class SkModelDialog(QDialog):
                         save_data['params'][model][param_name] = data['default']
             try:
                 with open(default_path, 'w') as outfile:
-                    json.dump(save_data, outfile, indent=2)
+                    json.dump(save_data, outfile, indent=2, cls=CATEncoder)
             except Exception as e:
                 self.logger.error("Error saving updated model parameters for {}.".format(
                     self.main_model_name), exc_info=True)

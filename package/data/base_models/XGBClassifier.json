@@ -2,6 +2,7 @@
     "model_base": "sklearn",
     "model_module": "xgboost.sklearn",
     "model_class" : "XGBClassifier",
+    "priority" : 100,
     "XGBClassifier" : {
         "Hyperparameters" : {
             "n_estimators" : {

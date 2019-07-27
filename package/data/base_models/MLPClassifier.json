@@ -1,0 +1,92 @@
+{                  
+    "model_base": "sklearn",
+    "model_module": "sklearn.neural_network",
+    "model_class" : "MLPClassifier",
+    "priority" : 100,
+    "model_url" : "https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier",
+    "MLPClassifier" : {
+        "Parameters" : {
+            "hidden_layer_sizes" : {
+                "type" : "int",
+                "min" : 100,
+                "max" : 500,
+                "step_size" : 10,
+                "default" : 100,
+                "tunable" : true,
+                "tooltip" : ""    
+            },
+            "activation" : {
+                "type" : "dropdown",
+                "default" : "relu",
+                "options" : {
+                    "relu" : "relu",
+                    "tanh" : "tanh",
+                    "logistic" : "logistic"
+                },
+                "tunable" : true,
+                "tooltip" : ""
+            },
+            "solver" : {
+                "type" : "dropdown",
+                "default" : "adam",
+                "options" : {
+                    "adam" : "adam",
+                    "sgd" : "sgd",
+                    "lbfgs" : "lbfgs"
+                },
+                "tunable" : false,
+                "tooltip" : "According to the docs, adam performs well on large datasets while \n lbfgs may converge faster on smaller datasets."
+            },
+            "alpha" : {
+                "type" : "double",
+                "default" : 0.0001,
+                "min" : 0.000001,
+                "max" : 1,
+                "step_size" : 0.0001,
+                "decimal_len":  4,
+                "tunable" : true,
+                "tooltip" : ""
+            },
+            "learning_rate" : {
+                "type" : "dropdown",
+                "default" : "constant",
+                "options" : {
+                    "constant" : "constant",
+                    "invscaling" : "invscaling",
+                    "adaptive" : "adaptive"
+                },
+                "tunable" : true,
+                "tooltip" : ""
+            },
+            "learning_rate_init" : {
+                "type" : "double",
+                "default" : 0.001,
+                "min" : 0.0001,
+                "max" : 1,
+                "step_size" : 0.001,
+                "decimal_len":  4,
+                "tunable" : true,
+                "tooltip" : ""
+            },
+            "max_iter" : {
+                "type" : "int",
+                "default" : 200,
+                "min" : 20,
+                "max" : 1000,
+                "step_size" : 10,
+                "tunable" : false,
+                "tooltip" : "Maximum number of iterations to train.  Superceded by early_stopping"
+            },
+            "early_stopping" : {
+                "type" : "dropdown",
+                "default" : true,
+                "options" : {
+                    "False" : false,
+                    "True" : true
+                },
+                "tunable" : true,
+                "tooltip" : "Use 10% of the training data to monitor loss.  Training will stop if no improvement in 10 iterations."
+            }
+        }
+    }
+}

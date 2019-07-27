@@ -3,6 +3,7 @@
     "model_module" : "tensorflow.SepCNN",
     "model_class" : "SepCNN",
     "model_url" : null,
+    "priority" : 100,
     "embedding_data_dir" : ".\\package\\data\\embeddings\\glove6b\\",
     "SepCNN" : {
         "Model" : {

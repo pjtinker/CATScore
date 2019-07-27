@@ -1,0 +1,40 @@
+{                  
+    "model_base": "sklearn",
+    "model_module": "sklearn.ensemble",
+    "model_class" : "AdaBoostClassifier",
+    "priority" : 100,
+    "url" : "https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html#sklearn.ensemble.AdaBoostClassifier",
+    "AdaBoostClassifier" : {
+        "Hyperparameters" : {
+            "n_estimators" : {
+                "type" : "int",
+                "default" : 50,
+                "min" : 10,
+                "max" : 500,
+                "step_size" : 10,
+                "tunable" : true,
+                "tooltip" : ""
+            },
+            "learning_rate" :{
+                "type" : "double",
+                "default" : 1.0,
+                "min" : 0.1,
+                "max" : 10,
+                "step_size" : 0.1,
+                "decimal_len":  2,
+                "tunable" : true,
+                "tooltip" : ""
+            },
+            "algorithm" : {
+                "type" : "dropdown",
+                "default" : "SAMME",
+                "options" : {
+                    "SAMME" : "SAMME",
+                    "SAMME.R" : "SAMME.R"
+                },
+                "tunable" : true,
+                "tooltip" : ""
+            }
+        }
+    }
+}
