@@ -63,8 +63,7 @@ class DataLoader(QWidget):
         self.current_question_avg_word_label = QLabel("Avg. words per sample")
         self.current_question_avg_word = QLabel()
 
-        self.full_text_hbox.addWidget(self.full_text_count_label)
-        self.full_text_hbox.addWidget(self.full_text_count)
+
         self.text_stats_grid.addWidget(self.current_question_count_label, 1, 0)
         self.text_stats_grid.addWidget(self.current_question_count, 1, 1)
         self.text_stats_grid.addWidget(
@@ -132,9 +131,14 @@ class DataLoader(QWidget):
         self.export_dataset_btn.resize(32, 32)
         self.left_column.addWidget(self.export_dataset_btn)
 
+        self.full_text_hbox.addWidget(self.text_stats_groupbox)
+        self.full_text_hbox.addStretch()
+        self.full_text_hbox.addWidget(self.full_text_count_label)
+        self.full_text_hbox.addWidget(self.full_text_count)
+        
         self.right_column.addLayout(self.full_text_hbox)
-        self.right_column.addWidget(self.text_stats_groupbox)
-        self.graph = GraphWidget(self, width=6, height=4, dpi=100)
+        # self.right_column.addWidget(self.text_stats_groupbox)
+        self.graph = GraphWidget(self, width=6, height=6, dpi=100)
         self.right_column.addWidget(self.graph)
 
         # Text DataframeTableModel view for text preview

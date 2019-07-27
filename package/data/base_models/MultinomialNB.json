@@ -11,7 +11,8 @@
                 "max" : 100,
                 "step_size" : 1,
                 "decimal_len" : 2,
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
             },
             "fit_prior" : {
                 "type" : "dropdown",
@@ -20,7 +21,8 @@
                     "False" : false,
                     "True" : true
                 },
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
             }
         }
     }

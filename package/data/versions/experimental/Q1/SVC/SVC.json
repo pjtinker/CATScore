@@ -10,7 +10,12 @@
       "class_weight": "balanced",
       "tol": 0.003
     },
-    "sklearn.feature_extraction.text.TfidfVectorizer": {},
+    "sklearn.feature_extraction.text.TfidfVectorizer": {
+      "ngram_range": [
+        1,
+        3
+      ]
+    },
     "sklearn.feature_selection.SelectKBest": {}
   }
 }

@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
                                QDoubleSpinBox, QSizePolicy, QLabel)
 import os
+import json
+import inspect
 
 """
 Utility classes for CATScore
@@ -26,3 +28,11 @@ def clearLayout(layout):
         if child.widget():
             child.widget().deleteLater()
 
+
+class CATEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if inspect.isclass(obj):
+            return obj.__name__
+        if inspect.isfunction(obj):
+            return '.'.join([obj.__module__, obj.__name__])
+        return json.JSONEncoder.default(self, obj)

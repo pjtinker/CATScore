@@ -2,26 +2,42 @@
   "model_base": "sklearn",
   "model_module": "sklearn.ensemble",
   "model_class": "RandomForestClassifier",
-  "question_number": "Q1",
-  "version": "experimental",
+  "question_number": "default",
+  "version": "default",
+  "meta": {
+    "training_meta": {
+      "last_train_date": "Fri Jul 26 19:17:31 2019",
+      "train_eval_score": 0.8346180798878766
+    },
+    "tuning_meta": {
+      "last_tune_date": "Fri Jul 26 19:17:31 2019",
+      "n_iter": 2,
+      "tuning_duration": 13.498337507247925,
+      "tune_eval_score": 0.8346180798878766
+    }
+  },
   "params": {
     "sklearn.ensemble.RandomForestClassifier": {
-      "n_estimators": 100,
+      "n_estimators": 191,
       "max_features": "auto",
-      "max_depth": 0,
-      "min_samples_split": 0,
-      "bootstrap": true
+      "max_depth": 1000,
+      "min_samples_split": 7,
+      "bootstrap": true,
+      "n_jobs": 1
     },
     "sklearn.feature_extraction.text.TfidfVectorizer": {
-      "ngram_range": 1,
+      "ngram_range": [
+        1,
+        1
+      ],
       "encoding": "utf-8",
-      "strip_accents": 0,
+      "strip_accents": "",
       "max_df": 1.0,
       "min_df": 1,
-      "use_idf": true
+      "use_idf": false
     },
-    "sklearn.feature_selection.SelectKBest": {
-      "k": 1000,
+    "sklearn.feature_selection.SelectPercentile": {
+      "percentile": 10,
       "score_func": "f_classif"
     }
   }

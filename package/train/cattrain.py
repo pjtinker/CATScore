@@ -33,7 +33,7 @@ class CatTrain(QMainWindow):
         self.title = 'CAT Train'
         self.setWindowTitle(self.title)
         geometry = QApplication.desktop().availableGeometry(self)
-        self.setGeometry(20, 60, geometry.width() * 0.45, geometry.height() * 0.5)
+        self.setGeometry(60, 60, geometry.width() * 0.45, geometry.height() * 0.82)
         self.statusBar().showMessage('Cut me, Mick!')
         self.progressBar = QProgressBar()
         self.progressBar.setGeometry(30, 40, 200, 25)

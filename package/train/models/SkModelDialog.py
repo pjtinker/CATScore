@@ -2,22 +2,25 @@
 """QDialog for file defined models.
 """
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject
-from PyQt5.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
-                               QGroupBox, QWidget, QLineEdit, QGridLayout,
-                               QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
-                               QDoubleSpinBox, QSizePolicy, QLabel)
-from PyQt5.QtGui import QColor 
+from PyQt5.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout,
+                             QGroupBox, QWidget, QLineEdit, QGridLayout,
+                             QDialog, QSpinBox, QDialogButtonBox, QComboBox,
+                             QDoubleSpinBox, QSizePolicy, QLabel)
+from PyQt5.QtGui import QColor
 
 import json
 import re
-import importlib 
+import importlib
 import traceback
 import inspect
 import logging
 import os
+import functools
+
 
 class Communicate(QObject):
     check_for_existing_model = pyqtSignal(str, bool)
+
 
 class SkModelDialog(QDialog):
     """
@@ -28,9 +31,10 @@ class SkModelDialog(QDialog):
         tfidf_params: String, path to default TF-IDF param file.
         fs_params: String, path to default feature selection file.
     """
-    def __init__(self, 
-                 parent=None, 
-                *params):
+
+    def __init__(self,
+                 parent=None,
+                 *params):
         super(SkModelDialog, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
         self.comms = Communicate()
@@ -56,12 +60,15 @@ class SkModelDialog(QDialog):
         self.check_for_default()
 
         self.setWindowTitle(self.main_model_name)
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Apply | QDialogButtonBox.Cancel)
+        self.buttonBox = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Apply | QDialogButtonBox.Cancel)
         self.buttonBox.setObjectName("model_buttonbox")
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.buttonBox.rejected.connect(self.reject)
-        self.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(lambda: self.apply_changes())        # self.buttonBox.clicked(QDialogButtonBox.Apply).connect(self.apply_changes())
+        # self.buttonBox.clicked(QDialogButtonBox.Apply).connect(self.apply_changes())
+        self.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(
+            lambda: self.apply_changes())
         self.main_layout = QVBoxLayout()
         self.form_grid = QGridLayout()
         self.question_combobox = QComboBox()
@@ -92,7 +99,6 @@ class SkModelDialog(QDialog):
     @property
     def get_model_name(self):
         return self.main_model_name
-
 
     def get_class(self, params, init_class=None):
         """
@@ -127,22 +133,24 @@ class SkModelDialog(QDialog):
                 os.mkdir(save_dir)
 
             save_file_path = os.path.join(save_dir,
-                                    filename)
+                                          filename)
 
             if not os.path.isfile(save_file_path):
                 # Get default file and load those values
-                default_dir = os.path.join(".\\package\\data\\default_models\\default", self.main_model_name)
-                default_path = os.path.join(default_dir, self.main_model_name + '.json')
+                default_dir = os.path.join(
+                    ".\\package\\data\\default_models\\default", self.main_model_name)
+                default_path = os.path.join(
+                    default_dir, self.main_model_name + '.json')
                 with open(default_path, 'r') as infile:
                     full_default_params = json.load(infile)
                 save_data = {
-                    "model_base" : self.params[0]['model_base'],
+                    "model_base": self.params[0]['model_base'],
                     "model_module": self.params[0]['model_module'],
-                    "model_class" : self.main_model_name,
-                    "question_number" : self.question_combobox.currentData().split('\\')[-1],
-                    "version" : version,
-                    "tuned" : False,
-                    "params" : {}
+                    "model_class": self.main_model_name,
+                    "question_number": self.question_combobox.currentData().split('\\')[-1],
+                    "version": version,
+                    "tuned": False,
+                    "params": {}
                 }
                 save_data['params'] = full_default_params['params']
                 print("save_data['params'] in save_params")
@@ -161,14 +169,14 @@ class SkModelDialog(QDialog):
                 with open(save_file_path, 'w') as outfile:
                     json.dump(save_data, outfile, indent=2)
             except Exception as e:
-                self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
+                self.logger.error("Error saving updated model parameters for {}.".format(
+                    self.main_model_name), exc_info=True)
                 print("Exception {}".format(e))
                 tb = traceback.format_exc()
                 print(tb)
 
         self.is_dirty = False
         return
-
 
     def save_params(self):
         """
@@ -178,21 +186,26 @@ class SkModelDialog(QDialog):
         if (self.exec_() == QDialog.Accepted):
             self.apply_changes()
 
-
     def _split_key(self, key):
         return key.split('__')[1]
 
-
-    def _update_param(self, param_type, key, value):
-        print("updateParams key, value: {}, {}, {}".format(param_type, key, value))
+    def _update_param(self, param_type, key, value, callback=None, **cbargs):
+        # print("updateParams key, value: {}, {}, {}".format(param_type, key, value))
         #class_key = '__' + key + '__'
         if self.current_version != 'default':
+            if callback:
+                functools.partial(callback, key, value)
+
             self.updated_params[param_type][key] = value
             self.is_dirty = True
 
-
+    def _selectkbest_callback(self, key, value):
+        if value == 0:
+            value = 'all'
+        
     def setupUI(self, param_type, param_dict, form):
-        """Build UI elements using parameters dict of scikit models
+        """
+        Build UI elements using parameters dict of scikit models
 
             # Attributes:
                 param_type: String, type of param to update
@@ -201,7 +214,7 @@ class SkModelDialog(QDialog):
         """
         try:
             for k, v in param_dict.items():
-                label_string = k 
+                label_string = k
                 label = QLabel(label_string)
                 val_type = v['type']
                 if val_type == 'dropdown':
@@ -214,11 +227,11 @@ class SkModelDialog(QDialog):
                     input_field.currentIndexChanged.connect(
                         lambda state, x=k, y=input_field: self._update_param(
                             param_type,
-                            x, 
+                            x,
                             y.currentData())
                     )
-                    form.addRow(label, input_field)
-                    self.input_widgets[k] = input_field
+                    # form.addRow(label, input_field)
+                    # self.input_widgets[k] = input_field
 
                 elif val_type == 'double':
                     input_field = QDoubleSpinBox(objectName=k)
@@ -230,7 +243,7 @@ class SkModelDialog(QDialog):
                     input_field.valueChanged.connect(
                         lambda state, x=k, y=input_field: self._update_param(
                             param_type,
-                            x, 
+                            x,
                             y.value())
                     )
 
@@ -243,7 +256,7 @@ class SkModelDialog(QDialog):
                     input_field.valueChanged.connect(
                         lambda state, x=k, y=input_field: self._update_param(
                             param_type,
-                            x, 
+                            x,
                             y.value())
                     )
                 elif val_type == 'range':
@@ -252,14 +265,14 @@ class SkModelDialog(QDialog):
                     input_field = QSpinBox(objectName=k)
                     input_field.setRange(v['min'], v['max'])
                     if v['default'] is not None:
-                        input_field.setValue(v['default'])
+                        input_field.setValue(v['default'][-1])
                     input_field.valueChanged.connect(
                         lambda state, x=k, y=input_field:
                             self._update_param(
                                 param_type,
-                                x, 
-                                y.value())
-                            )
+                                x,
+                                [1, y.value()])
+                    )
                 elif val_type == 'static':
                     label_string = k
                     input_field = QLineEdit(objectName=k)
@@ -267,6 +280,8 @@ class SkModelDialog(QDialog):
                     # input_field.textColor(QColor.red())
                     input_field.setEnabled(False)
                     self._update_param(param_type, k, v['default'])
+                if v['tooltip'] is not None:
+                    input_field.setToolTip(v['tooltip'])
                 form.addRow(label, input_field)
                 self.input_widgets[k] = input_field
         except Exception as e:
@@ -299,22 +314,24 @@ class SkModelDialog(QDialog):
                         if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.h5':
                             model_exists = True
                             break
-            self.comms.check_for_existing_model.emit(self.main_model_name, model_exists)
+            self.comms.check_for_existing_model.emit(
+                self.main_model_name, model_exists)
             return
         else:
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         try:
-            question_directories = [os.path.join(directory, o) for o in os.listdir(directory) if os.path.isdir(os.path.join(directory, o))]
-            # Sort the directories correctly.  
+            question_directories = [os.path.join(directory, o) for o in os.listdir(
+                directory) if os.path.isdir(os.path.join(directory, o))]
+            # Sort the directories correctly.
             # Takes the last digit given as the sort key.
-            # If no numeric values, regex will return an empty list and sorting will be 
+            # If no numeric values, regex will return an empty list and sorting will be
             # alphabetic.
-            question_directories = sorted(question_directories, 
-                                            key=lambda item:
-                                               (int(re.findall('\d+|D+', item)[0])
-                                                    if len(re.findall('\d+|D+', item)) > 0
-                                                    else float('inf'), item)
-                                    )
+            question_directories = sorted(question_directories,
+                                          key=lambda item:
+                                          (int(re.findall('\d+|D+', item)[0])
+                                           if len(re.findall('\d+|D+', item)) > 0
+                                           else float('inf'), item)
+                                          )
             model_exists = False
             for d in question_directories:
                 # self.comms.check_for_existing_model.emit("Test", True)
@@ -330,14 +347,16 @@ class SkModelDialog(QDialog):
                                 model_exists = True
                 self.question_combobox.addItem(combo_text, d)
 
-            self.comms.check_for_existing_model.emit(self.main_model_name, model_exists)
+            self.comms.check_for_existing_model.emit(
+                self.main_model_name, model_exists)
 
             self.form_grid.addWidget(self.question_combobox, 0, 0)
             self.update()
         except FileNotFoundError as fnfe:
             pass
         except Exception as e:
-            self.logger.error("Error loading updated version directories.", exc_info=True)
+            self.logger.error(
+                "Error loading updated version directories.", exc_info=True)
             print("Exception {}".format(e))
             tb = traceback.format_exc()
             print(tb)
@@ -393,11 +412,13 @@ class SkModelDialog(QDialog):
             # Returns
                 None
         """
-        for k,v in param_dict.items():
+        for k, v in param_dict.items():
             # If v is dictionary, function was called using default values.
             # Set v equal to the default value of that parameter.
             if isinstance(v, dict):
                 v = v['default']
+            if isinstance(v, list):
+                v = v[-1]
             if k in self.input_widgets:
                 cla = self.input_widgets[k]
                 if isinstance(cla, QComboBox):
@@ -409,26 +430,32 @@ class SkModelDialog(QDialog):
                 else:
                     cla.setValue(v)
 
-    def check_for_default(self):
+    @pyqtSlot(bool)
+    def check_for_default(self, force_reload=False):
         """
         Checks for the existance of a default value file.  If none found,
         one is created.
         """
-        default_dir = os.path.join(".\\package\\data\\default_models\\default", self.main_model_name)
+        default_dir = os.path.join(
+            ".\\package\\data\\default_models\\default", self.main_model_name)
         if not os.path.exists(default_dir):
-            os.mkdir(default_dir)
+            os.makedirs(default_dir)
 
-        default_path = os.path.join(default_dir, self.main_model_name + '.json')
+        default_path = os.path.join(
+            default_dir, self.main_model_name + '.json')
 
-        if not os.path.isfile(default_path):
+        if not os.path.isfile(default_path) or force_reload:
             save_data = {
-                "model_base" : self.params[0]['model_base'],
+                "model_base": self.params[0]['model_base'],
                 "model_module": self.params[0]['model_module'],
-                "model_class" : self.main_model_name,
-                "question_number" : "default",
-                "version" : "default",
-                "tuned" : False,
-                "params" : {}
+                "model_class": self.main_model_name,
+                "question_number": "default",
+                "version": "default",
+                "meta" :{
+                    "training_meta": {},
+                    "tuning_meta" : {}
+                },
+                "params": {}
             }
             for model, types in self.model_params.items():
                 print("check_for_defaults data:")
@@ -444,83 +471,85 @@ class SkModelDialog(QDialog):
                 with open(default_path, 'w') as outfile:
                     json.dump(save_data, outfile, indent=2)
             except Exception as e:
-                self.logger.error("Error saving updated model parameters for {}.".format(self.main_model_name), exc_info=True)
+                self.logger.error("Error saving updated model parameters for {}.".format(
+                    self.main_model_name), exc_info=True)
                 print("Exception {}".format(e))
                 tb = traceback.format_exc()
                 print(tb)
 
+
 if __name__ == "__main__":
     import sys
     # Qt Application
-    SVC = {                  
-    "model_base": "sklearn",
-    "model_module": "sklearn.svm",
-    "model_class" : "SVC",
-    "SVC" : {
-        "Hyperparameters" : {
-            "C" : {
-                "type" : "double",
-                "default" : 1.0,
-                "min" : 0,
-                "max" : 1000,
-                "step_size" : 1,
-                "decimal_len" : 1
-            },
-            "shrinking" : {
-                "type" : "dropdown",
-                "default" : True,
-                "options" : {
-                    "True" : True,
-                    "False" : False
+    SVC = {
+        "model_base": "sklearn",
+        "model_module": "sklearn.svm",
+        "model_class": "SVC",
+        "SVC": {
+            "Hyperparameters": {
+                "C": {
+                    "type": "double",
+                    "default": 1.0,
+                    "min": 0,
+                    "max": 1000,
+                    "step_size": 1,
+                    "decimal_len": 1
+                },
+                "shrinking": {
+                    "type": "dropdown",
+                    "default": True,
+                    "options": {
+                        "True": True,
+                        "False": False
+                    }
+                },
+                "probability": {
+                    "type": "dropdown",
+                    "default": True,
+                    "options": {
+                        "True": True,
+                        "False": False
+                    }
+                },
+                "tol": {
+                    "type": "double",
+                    "default": 0.001,
+                    "min": 0,
+                    "max": 100,
+                    "step_size": 0.001,
+                    "decimal_len":  5
+                },
+                "cache_size": {
+                    "type": "int",
+                    "default": 200,
+                    "min": 100,
+                    "max": 100000,
+                    "step_size": 100
                 }
-            },
-            "probability" : {
-                "type" : "dropdown",
-                "default" : True,
-                "options" : {
-                    "True" : True,
-                    "False" : False
-                }
-            },
-            "tol" : {
-                "type" : "double",
-                "default" : 0.001,
-                "min" : 0,
-                "max" : 100,
-                "step_size" : 0.001,
-                "decimal_len":  5
-            },
-            "cache_size" : {
-                "type" : "int",
-                "default" : 200,
-                "min" : 100,
-                "max" : 100000,
-                "step_size" : 100
             }
         }
     }
-    }
     tfidf = {
-        "model_base" : "sklearn",
-        "model_module" : "sklearn.feature_extraction.text",
-        "model_class" : "TfidfVectorizer",
-        "TfidfVectorizer" : {
-            "Hyperparameters" : {
-                "ngram_range" : {
-                    "type" : "range",
-                    "min" : 1,
-                    "max" : 9,
-                    "default" : 1
+        "model_base": "sklearn",
+        "model_module": "sklearn.feature_extraction.text",
+        "model_class": "TfidfVectorizer",
+        "TfidfVectorizer": {
+            "Hyperparameters": {
+                "ngram_range": {
+                    "type": "range",
+                    "min": 1,
+                    "max": 9,
+                    "default": 1
                 },
-                "encoding" : {
-                    "type" : "dropdown",
-                    "default" : "utf-8",
-                    "options" : {
-                        "utf-8" : "utf-8",
-                        "latin-1" : "latin-1"
+                "encoding": {
+                    "type": "dropdown",
+                    "default": "utf-8",
+                    "options": {
+                        "utf-8": "utf-8",
+                        "latin-1": "latin-1"
                     }
                 }
-            }   
+            }
         }
     }
     app = QApplication(sys.argv)

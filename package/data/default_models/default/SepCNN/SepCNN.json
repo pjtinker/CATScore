@@ -4,7 +4,10 @@
   "model_class": "SepCNN",
   "question_number": "default",
   "version": "default",
-  "tuned": false,
+  "meta": {
+    "training_meta": {},
+    "tuning_meta": {}
+  },
   "params": {
     "tensorflow.SepCNN.SepCNN": {
       "epochs": 20,

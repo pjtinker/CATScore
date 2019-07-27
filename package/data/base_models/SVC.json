@@ -12,7 +12,8 @@
                 "max" : 1000,
                 "step_size" : 1,
                 "decimal_len" : 1,
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
             },
             "shrinking" : {
                 "type" : "dropdown",
@@ -21,7 +22,8 @@
                     "True" : true,
                     "False" : false
                 },
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
             },
             "probability" : {
                 "type" : "dropdown",
@@ -30,7 +32,8 @@
                     "True" : true,
                     "False" : false
                 },
-                "tunable" : false
+                "tunable" : false,
+                "tooltip" : ""
             },
             "tol" : {
                 "type" : "double",
@@ -39,7 +42,8 @@
                 "max" : 100,
                 "step_size" : 0.001,
                 "decimal_len":  4,
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
             },
             "cache_size" : {
                 "type" : "int",
@@ -47,7 +51,8 @@
                 "min" : 100,
                 "max" : 100000,
                 "step_size" : 100,
-                "tunable" : false
+                "tunable" : false,
+                "tooltip" : ""
             },
             "class_weight" : {
                 "type" : "dropdown",
@@ -56,17 +61,20 @@
                     "None" : null,
                     "Balanced" : "balanced"
                 },
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
             },
             "kernel" : {
                 "type" : "static",
                 "default" : "linear",
-                "tunable" : false
+                "tunable" : false,
+                "tooltip" : ""
             },
             "gamma" : {
                 "type" : "static",
                 "default" : "scale",
-                "tunable" : false
+                "tunable" : false,
+                "tooltip" : ""
             }
         }
     }

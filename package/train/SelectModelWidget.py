@@ -27,7 +27,7 @@ from package.utils.catutils import exceptionWarning
 BASE_MODEL_DIR = "./package/data/base_models"
 BASE_TF_MODEL_DIR = "./package/data/tensorflow_models"
 BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
-BASE_FS_DIR = "./package/data/feature_selection/SelectKBest.json"
+BASE_FS_DIR = "./package/data/feature_selection/SelectPercentile.json"
 DEFAULT_MODEL_DIR = ".\\package\\data\\versions\\default"
 
 class Communicate(QObject):

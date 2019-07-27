@@ -8,9 +8,10 @@
                 "type" : "int",
                 "default" : 100,
                 "min" : 10,
-                "max" : 10000,
+                "max" : 200,
                 "step_size" : 10,
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
             },
             "max_features" : {
                 "type" : "dropdown",
@@ -18,9 +19,10 @@
                 "options" : {
                     "auto" : "auto",
                     "sqrt" : "sqrt",
-                    "None" : ""
+                    "log2" : "log2"
                 },
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
             },
             "max_depth" : {
                 "type" : "int",
@@ -36,7 +38,8 @@
                 "min" : 2,
                 "max" : 10,
                 "step_size" : 1,
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
             },
             "bootstrap" : {
                 "type" : "dropdown",
@@ -45,7 +48,14 @@
                     "False" : false,
                     "True" : true
                 },
-                "tunable" : true
+                "tunable" : true,
+                "tooltip" : ""
+            },
+            "n_jobs" : {
+                "type" : "static",
+                "default" : 1,
+                "tunable" : false,
+                "tooltip" : "For RFC, this must be set to 1 to prevent threading issues."
             }
         }
     }

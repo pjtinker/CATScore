@@ -21,13 +21,12 @@ class GraphWidget(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
     def __init__(self, parent=None, width=5, height=4, dpi=100, graph="main"):
-        fig = Figure(figsize=(width, height), dpi=dpi)
+        fig = Figure(figsize=(width, height), dpi=dpi, tight_layout=True)
         self.axes = fig.add_subplot(111)
 
         # FigureCanvas.__init__(self, fig)
         super(GraphWidget, self).__init__(fig)
         self.setParent(parent)
-
         FigureCanvas.setSizePolicy(self,
                                    QtWidgets.QSizePolicy.Expanding,
                                    QtWidgets.QSizePolicy.Expanding)
@@ -64,12 +63,26 @@ class GraphWidget(FigureCanvas):
         num_classes = getNumClasses(data)
         count_map = Counter(data)
         counts = [count_map[i] for i in range(num_classes)]
+        total_count = sum(counts)
+        majority_class_count = max(counts)
+        majority_acc = round((majority_class_count / total_count), 2)
         idx = np.arange(num_classes)
+        colors = []
+        for count in counts:
+            if count < (total_count * .1):
+                colors.append('r')
+            else:
+                colors.append('b')
         self.axes.cla()
-        self.axes.bar(idx, counts)
+        self.axes.bar(idx, counts, color=colors)
         self.axes.set_xlabel('Class')
         self.axes.set_ylabel('Number of Samples')
         self.axes.set_xticks(idx)
+        self.axes.set_title(f"Majority class accuracy: {majority_acc}")
+        rects = self.axes.patches
+        for rect, label in zip(rects, counts):
+            height = rect.get_height()
+            self.axes.text(rect.get_x() + rect.get_width() / 2, height + 5, label, ha='center', va='bottom')
         self.draw()
 
 

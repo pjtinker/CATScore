@@ -4,22 +4,28 @@
   "model_class": "MultinomialNB",
   "question_number": "default",
   "version": "default",
-  "tuned": false,
+  "meta": {
+    "training_meta": {},
+    "tuning_meta": {}
+  },
   "params": {
     "sklearn.naive_bayes.MultinomialNB": {
       "alpha": 1.0,
       "fit_prior": true
     },
     "sklearn.feature_extraction.text.TfidfVectorizer": {
-      "ngram_range": 1,
+      "ngram_range": [
+        1,
+        2
+      ],
       "encoding": "utf-8",
       "strip_accents": 0,
       "max_df": 1.0,
       "min_df": 1,
       "use_idf": true
     },
-    "sklearn.feature_selection.SelectKBest": {
-      "k": 1000,
+    "sklearn.feature_selection.SelectPercentile": {
+      "percentile": 10,
       "score_func": "f_classif"
     }
   }
