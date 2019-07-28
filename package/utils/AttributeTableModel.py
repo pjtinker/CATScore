@@ -42,16 +42,19 @@ class AttributeTableModel(DataframeTableModel):
 
         return flags
 
-    def loadData(self, data):
+    def loadData(self, data, include_labels=True):
         if data is None:
             return
-        if len(data) % 2 != 0:
-            raise IndexError('Invalid number of parameters for question/label pairs.')
-        it = iter(data)
-        data_tuples = list(zip(it, it))
-        self._df = pd.DataFrame(data_tuples, columns=['Question', 'Label'])
+        if include_labels:
+            if len(data) % 2 != 0:
+                raise IndexError('Invalid number of parameters for question/label pairs.')
+            it = iter(data)
+            data_tuples = list(zip(it, it))
+            self._df = pd.DataFrame(data_tuples, columns=['Text', 'Label'])
+        else:
+            self._df = pd.DataFrame(data, columns=['Text'])
         self.checklist = [False for _ in range(self.rowCount())]
-        print(self._df.head())
+        # print(self._df.head())
         self.layoutChanged.emit()
 
     def setCheckboxes(self, truth=True):

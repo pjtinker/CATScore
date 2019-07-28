@@ -1,0 +1,30 @@
+{                  
+    "model_base": "sklearn",
+    "model_module": "sklearn.tree",
+    "model_class" : "DecisionTreeClassifier",
+    "priority" : 100,
+    "DecisionTreeClassifier" : {
+        "Hyperparameters" : {
+            "criterion" : {
+                "type" : "dropdown",
+                "default" : "gini",
+                "options" : {
+                    "Gini" : "gini",
+                    "Entropy" : "entropy"
+                },
+                "tunable" : true,
+                "tooltip" : ""
+            },
+            "splitter" : {
+                "type" : "dropdown",
+                "default" : "best",
+                "options" : {
+                    "best" : "best",
+                    "random" : "random"
+                },
+                "tunable" : true,
+                "tooltip" : ""
+            }
+        }
+    }
+}

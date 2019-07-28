@@ -37,7 +37,9 @@ class CatTrain(QMainWindow):
         self.title = 'CAT Train'
         self.setWindowTitle(self.title)
         geometry = QApplication.desktop().availableGeometry(self)
-        self.setGeometry(60, 60, geometry.width() * 0.45, geometry.height() * 0.82)
+        parent_left = self.parent().geometry().left()
+        parent_top = self.parent().geometry().top()
+        self.setGeometry(parent_left, parent_top, geometry.width() * 0.45, geometry.height() * 0.82)
         self.statusBar().showMessage('Cut me, Mick!')
         self.progressBar = QProgressBar()
         self.progressBar.setGeometry(30, 40, 200, 25)
@@ -67,7 +69,7 @@ class CatTrain(QMainWindow):
         self.train_widget = TrainWidget(self)
         self.version_widget.version_created.connect(self.train_widget.model_widget.add_new_version)
         self.train_widget.data_loader.update_progressbar.connect(self.update_progress_bar)
-        # self.train_widget.model_widget.update_progressbar.connect(self.update_progress_bar)
+        self.train_widget.model_widget.update_progressbar.connect(self.update_progress_bar)
         self.setCentralWidget(self.train_widget)
 
     def closeEvent(self, event):
@@ -314,8 +316,8 @@ class CreateVersionWidget(QDialog):
 if __name__ == "__main__":
     import sys
     # Qt Application
-    app = QApplication(sys.argv)
-    # app.setStyle('Fusion')
-    window = CatTrain()
-    window.show()
-    sys.exit(app.exec_())
+    # app = QApplication(sys.argv)
+    # # app.setStyle('Fusion')
+    # window = CatTrain()
+    # window.show()
+    # sys.exit(app.exec_())

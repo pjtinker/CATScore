@@ -2,8 +2,10 @@ import json
 import logging
 import os
 import traceback
+import time
 from collections import OrderedDict
 from functools import partial
+import hashlib
 
 import pandas as pd
 import pkg_resources
@@ -13,7 +15,7 @@ from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
                                QGridLayout, QGroupBox, QHBoxLayout, QLabel,
                                QMessageBox, QPushButton, QRadioButton,
                                QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
-                               QVBoxLayout)
+                               QVBoxLayout, QPlainTextEdit)
 
 
 from package.train.models.SkModelDialog import SkModelDialog
@@ -30,9 +32,21 @@ BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
 BASE_FS_DIR = "./package/data/feature_selection/SelectPercentile.json"
 DEFAULT_MODEL_DIR = ".\\package\\data\\versions\\default"
 
+class CatModelTrainLogger(logging.Handler):
+    def __init__(self, parent):
+        super(CatModelTrainLogger, self).__init__()
+        self.widget = QPlainTextEdit(parent)
+        self.widget.setReadOnly(True)
+
+    def emit(self, record):
+        msg = self.format(record)
+        self.widget.appendPlainText(msg)
+
 class Communicate(QObject):
     version_change = pyqtSignal(str)    
     enable_training_btn = pyqtSignal(Qt.CheckState)
+    stop_training = pyqtSignal()
+
 
 class SelectModelWidget(QTabWidget):
     """QTabWidget that holds all of the selectable models and the accompanying ModelDialog for each.
@@ -45,6 +59,8 @@ class SelectModelWidget(QTabWidget):
         self.logger = logging.getLogger(__name__)
         self.parent = parent
         self.threadpool = QThreadPool()
+        self.logger.info(f"Multithreading enabled with a maximum of {self.threadpool.maxThreadCount()} threads.")
+
         # print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
         self.training_data = pd.DataFrame()
 
@@ -156,7 +172,11 @@ class SelectModelWidget(QTabWidget):
         self.setup_model_selection_ui()
         self.setup_training_ui()
         self.setup_tuning_ui()
-        
+        # PlainTextEdit box for training/tuning status
+        self.training_logger = QPlainTextEdit(f"{time.ctime(time.time())} - Idle")
+        self.training_logger.setReadOnly(True)
+        self.main_layout.addWidget(self.training_logger)
+
         self.main_layout.addStretch()
         self.run_btn = QPushButton("Train Models")
         self.run_btn.clicked.connect(lambda: self.train_models())
@@ -212,7 +232,7 @@ class SelectModelWidget(QTabWidget):
             for filename in os.listdir(BASE_MODEL_DIR):
                 if filename.endswith('.json'):
                     with open(os.path.join(BASE_MODEL_DIR, filename), 'r') as f:
-                        print("Loading model:", filename)
+                        # print("Loading model:", filename)
                         model_data = json.load(f)
                         model = model_data['model_class']
                         model_base = model_data['model_base']
@@ -432,9 +452,9 @@ class SelectModelWidget(QTabWidget):
         if btn:
             text = btn.text()
             if text.endswith("*"):
-                text = text[:-1]
+                text = text[:-2]
             if truth:
-                btn.setText(text + "*")
+                btn.setText(text + " *")
             else:
                 btn.setText(text)
         else:
@@ -448,14 +468,28 @@ class SelectModelWidget(QTabWidget):
                                self.training_data,
                                train_models,
                                self.tuning_n_iter_input.value())
-        # self.model_trainer.update_progressbar.connect(self.emit_update_progressbar)
-        # self.model_trainer.training_complete.connect(self.emit_update_progressbar)
+        self.model_trainer.signals.update_training_logger.connect(self.update_training_logger)
+        self.update_progressbar.emit(100, True)
+        self.model_trainer.signals.training_complete.connect(self.training_complete)
+        # self.comms.stop_training.connect(self.model_trainer.stop_thread)
+        self.run_btn.setEnabled(False)
+        # self.model_trainer.start()
+        # self.run_btn.clicked.connect(self._abort_training)
         self.threadpool.start(self.model_trainer)
     
-    # @pyqtSlot()
+    @pyqtSlot(str)
+    def update_training_logger(self, msg):
+        self.training_logger.appendPlainText(msg)
+
     @pyqtSlot(int, bool)
-    def emit_update_progressbar(self, int, bool):
-        self.update_progressbar.emit(int, bool)
+    def training_complete(self, val, pulse):
+        self.update_progressbar.emit(val, pulse)
+        self.run_btn.setEnabled(True)
+        self.run_btn.setText("Train models")
+
+    def _abort_training(self):
+        self.comms.stop_training.emit()
+
 
     def _update_version(self, directory):
         """
@@ -492,6 +526,7 @@ class SelectModelWidget(QTabWidget):
             # Arguments:
                 state(bool): the state of tuning.  False->no tuning, True->tune models
         """
+        self.run_btn.setText("Tune Models" if state else "Train Models")
         self.tuning_groupbox.setEnabled(state)
 
 
@@ -512,7 +547,7 @@ class SelectModelWidget(QTabWidget):
         """
         if model_base is None or param is None:
             return
-        print(model_base, param, value)
+        # print(model_base, param, value)
         try:
             # FIXME: This is super hackish and brittle.  Can it be done more eloquently?
             if model_base == 'sklearn':
@@ -522,7 +557,7 @@ class SelectModelWidget(QTabWidget):
         except KeyError as ke:
             print(ke)
 
-        print(json.dumps(self.training_params, indent=2))
+        # print(json.dumps(self.training_params, indent=2))
 
     def _update_sklearn_training_type(self, eval_type, value):
         """
@@ -550,4 +585,4 @@ class SelectModelWidget(QTabWidget):
 
         self.training_params['sklearn']['type'] = eval_type
         self.training_params['sklearn']['value'] = value
-        print(json.dumps(self.training_params, indent=2))
+        # print(json.dumps(self.training_params, indent=2))

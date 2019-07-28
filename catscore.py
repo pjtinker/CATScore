@@ -9,16 +9,16 @@ import pandas as pd
 import logging
 import logging.handlers
 
-# logging.basicConfig(filename='cat.log', format=logFormatter, level=logging.DEBUG)
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QVBoxLayout, 
-                                QMainWindow, QSizePolicy, QWidget, 
+                                QMainWindow, QSizePolicy, QWidget, QGridLayout,
                                 QPushButton, QTabWidget, QMenuBar)
 
 from package.train.cattrain import CatTrain
+from package.evaluate.catevaluate import CatEvaluate
 
 class MainWindow(QMainWindow):
-    def __init__(self):
-        super(MainWindow, self).__init__()
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.current_file = ''
@@ -30,16 +30,25 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(self.title)
         geometry = app.desktop().availableGeometry(self)
         self.setGeometry(10, 50, geometry.width() * 0.2, geometry.height() * 0.2)
-
-        self.cat_train = CatTrain(self)
-
+        self.catscore = QWidget()
         self.main_layout = QVBoxLayout()
-        self.open_cat_train_btn = QPushButton('CAT Train', self)
+        self.setCentralWidget(self.catscore)
+        self.catscore.setLayout(self.main_layout)
+        self.cat_train = CatTrain(self)
+        self.cat_evaluate = CatEvaluate(self)
+
+        self.button_grid = QGridLayout()
+
+        self.open_cat_train_btn = QPushButton('CAT &Train', self)
         self.open_cat_train_btn.clicked.connect(lambda: self.cat_train.show())
-        self.main_layout.addWidget(self.open_cat_train_btn)
+        self.button_grid.addWidget(self.open_cat_train_btn, 0, 0)
 
+        self.open_cat_evaluate_btn = QPushButton('CAT &Evaluate', self)
+        self.open_cat_evaluate_btn.clicked.connect(lambda: self.cat_evaluate.show())
+        self.button_grid.addWidget(self.open_cat_evaluate_btn, 1, 0)
 
-        self.setLayout(self.main_layout)
+        self.main_layout.addLayout(self.button_grid)
+
 
 if __name__ == "__main__":
     import sys
@@ -54,7 +63,7 @@ if __name__ == "__main__":
 
     # Qt Application
     app = QApplication(sys.argv)
-    # app.processEvents()
+    app.processEvents()
     app.setStyle('Fusion')
     window = MainWindow()
     window.show()

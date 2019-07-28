@@ -2,7 +2,6 @@
     "model_base" : "sklearn",
     "model_module" : "sklearn.feature_extraction.text",
     "model_class" : "TfidfVectorizer",
-    "priority" : 0,
     "TfidfVectorizer" : {
         "Parameters" : {
             "ngram_range" : {
@@ -48,7 +47,7 @@
                 "type" : "int",
                 "default" : 1,
                 "min" : 0,
-                "max" : 1000,
+                "max" : 100,
                 "step_size" : 1,
                 "tunable" : false,
                 "tooltip" : ""

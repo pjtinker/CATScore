@@ -13,22 +13,21 @@ import pkg_resources
 import pandas as pd
 # from addict import Dict
 
-from package.utils.DataLoader import DataLoader
-from package.train.SelectModelWidget import SelectModelWidget
+from package.utils.EvaluationDataLoader import EvaluationDataLoader
 
-class TrainWidget(QTabWidget):
+class EvaluateWidget(QTabWidget):
     def __init__(self, parent=None):
-        super(TrainWidget, self).__init__(parent)
+        super(EvaluateWidget, self).__init__(parent)
         self.parent = parent
         # FIXME: reset statusbar when tabs are changed
         self.currentChanged.connect(lambda: self.update_statusbar('Ready'))
-        self.data_loader = DataLoader(self)
-        self.model_widget = SelectModelWidget(self)
-        self.model_widget.update_statusbar.connect(self.update_statusbar)
-        self.addTab(self.data_loader, 'Load Data')      
-        self.addTab(self.model_widget, 'Model Selection')
+        self.data_loader = EvaluationDataLoader(self)
+        # self.model_widget = SelectModelWidget(self)
+        # self.model_widget.update_statusbar.connect(self.update_statusbar)
+        self.addTab(self.data_loader, 'Evaluate')      
+        # self.addTab(self.model_widget, 'Model Selection')
         self.setTabEnabled(1, True)
-        self.data_loader.data_load.connect(self.model_widget.load_data)
+        # self.data_loader.data_load.connect(self.model_widget.load_data)
         self.data_loader.update_statusbar.connect(self.update_statusbar)
 
     @pyqtSlot(int, bool)

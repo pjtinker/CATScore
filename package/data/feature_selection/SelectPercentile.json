@@ -12,7 +12,7 @@
                 "min" : 0,
                 "max" : 100,
                 "step_size" : 10,
-                "tooltip" : "Percent of features to use for classification.\nTo use all parameters, set to 0"
+                "tooltip" : "Percent of features to use for classification.\nTo use all parameters, set to 100"
             },
             "score_func" : { 
                 "type" : "dropdown",

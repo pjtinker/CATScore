@@ -1,8 +1,10 @@
 from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
                           Qt, QTimeZone, QByteArray, pyqtSignal, pyqtSlot, QThread)
 from PyQt5.QtGui import QMovie, QIcon, QPixmap
-from PyQt5.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, QApplication, QLabel, QFileDialog, QHBoxLayout, QVBoxLayout,
-                             QGridLayout, QHeaderView, QProgressBar, QScrollArea, QSizePolicy, QTableView, QWidget, QPushButton)
+from PyQt5.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, QComboBox,
+                             QApplication, QLabel, QFileDialog, QHBoxLayout, QVBoxLayout,
+                             QGridLayout, QHeaderView, QProgressBar, QScrollArea,
+                             QSizePolicy, QTableView, QWidget, QPushButton)
 import os
 import logging
 import traceback
@@ -18,14 +20,14 @@ from package.utils.spellcheck import SpellCheck
 from package.utils.DataframeTableModel import DataframeTableModel
 from package.utils.AttributeTableModel import AttributeTableModel
 from package.utils.GraphWidget import GraphWidget
-"""DataLoader imports CSV file and returns a dataframe with the appropriate columns.
+"""EvaluationDataLoader imports CSV file and returns a dataframe with the appropriate columns.
 For training data, DI will consider the nth column as a training sample
 and nth+1 as ground truth.
 CSV files must be formatted accordingly.
 """
 
 
-class DataLoader(QWidget):
+class EvaluationDataLoader(QWidget):
     """
     TODO: Refactor this monstrosity into functions to setup UI
     """
@@ -34,7 +36,7 @@ class DataLoader(QWidget):
     update_progressbar = pyqtSignal(int, bool)
 
     def __init__(self, parent=None):
-        super(DataLoader, self).__init__(parent)
+        super(EvaluationDataLoader, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.parent = parent
@@ -44,7 +46,22 @@ class DataLoader(QWidget):
 
         self.full_data = pd.DataFrame()
         self.selected_data = pd.DataFrame()
-        self.open_file_button = QPushButton('Import CSV', self)
+
+        self.version_selection_label = QLabel("Select version: ")
+        self.version_selection = QComboBox(objectName='version_select')
+        # Changed default models to a unique directory.  This
+        # is where default models will be saved.
+        self.version_selection.addItem(
+            'default', '.\\package\\data\\default_models\\default')
+        available_versions = os.listdir(".\\package\\data\\versions")
+        for version in available_versions:
+            v_path = os.path.join('.\\package\\data\\versions', version)
+            if os.path.isdir(v_path):
+                self.version_selection.addItem(version, v_path)
+        # self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection:
+        #                                                     self._update_version(y.currentData())
+        #                                                     )
+        self.open_file_button = QPushButton('Load CSV', self)
         self.open_file_button.clicked.connect(lambda: self.open_file())
 
         self.main_layout = QHBoxLayout()
@@ -84,6 +101,7 @@ class DataLoader(QWidget):
         selection.selectionChanged.connect(
             lambda x: self.display_selected_rows(x))
 
+        self.left_column.addWidget(self.version_selection)
         self.left_column.addWidget(self.open_file_button)
         self.left_column.addWidget(self.available_column_view)
 
@@ -138,8 +156,8 @@ class DataLoader(QWidget):
 
         self.right_column.addLayout(self.full_text_hbox)
         # self.right_column.addWidget(self.text_stats_groupbox)
-        self.graph = GraphWidget(self, width=6, height=6, dpi=100)
-        self.right_column.addWidget(self.graph)
+        # self.graph = GraphWidget(self, width=6, height=6, dpi=100)
+        # self.right_column.addWidget(self.graph)
 
         # Text DataframeTableModel view for text preview
         self.text_table_view = QTableView()
@@ -250,7 +268,7 @@ class DataLoader(QWidget):
         except Exception as e:
             self.logger.error("Error loading dataframe", exc_info=True)
             exceptionWarning(
-                "Exception occured.  DataLoader.load_file.", exception=e)
+                "Exception occured.  EvaluationDataLoader.load_file.", exception=e)
 
     def display_selected_rows(self, selection=None):
         """
@@ -273,9 +291,6 @@ class DataLoader(QWidget):
         avg_num_words = get_avg_words_per_sample(str(question_data.values))
         self.current_question_count.setText(str(question_data.shape[0]))
         self.current_question_avg_word.setText("%.2f" % avg_num_words)
-
-        self.graph.chartSingleClassFrequency(
-            self.full_data[self.full_data.columns[offset + 1]].values)
 
     def save_data(self):
         if self.selected_data.empty:
@@ -388,7 +403,7 @@ class DataLoader(QWidget):
             self.preproc_thread.start()
         except Exception as e:
             self.logger.exception(
-                "Exception occured in DataLoader.applyPreprocessing", exc_info=True)
+                "Exception occured in EvaluationDataLoader.applyPreprocessing", exc_info=True)
             tb = traceback.format_exc()
             print(tb)
 
@@ -415,6 +430,7 @@ class PreprocessingThread(QThread):
     def run(self):
         # sys.stdout = open('nul', 'w')
         # print()
+        print(self.options)
         apply_cols = [
             col for col in self.data.columns if col.endswith('_Text')
         ]

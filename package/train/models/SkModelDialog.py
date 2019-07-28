@@ -52,7 +52,7 @@ class SkModelDialog(QDialog):
         self.current_version = 'default'
         self.params = params
         self.main_model_name = params[0]['model_class']
-        print(self.main_model_name)
+        # print(self.main_model_name)
         for param in self.params:
             cls_name = param['model_class']
             full_name = param['model_module'] + '.' + param['model_class']
@@ -97,7 +97,6 @@ class SkModelDialog(QDialog):
         self.main_layout.addLayout(self.form_grid)
         self.main_layout.addWidget(self.buttonBox)
         self.setLayout(self.main_layout)
-        self.move(20, 10)
 
     @property
     def get_model_name(self):
@@ -125,7 +124,7 @@ class SkModelDialog(QDialog):
     def apply_changes(self):
         version = self.current_version.split('\\')[-1]
         if version == 'default':
-            print("Default version selected.  Returning...")
+            # print("Default version selected.  Returning...")
             return
         if self.is_dirty:
             filename = self.main_model_name + '.json'
@@ -156,14 +155,14 @@ class SkModelDialog(QDialog):
                     "params": {}
                 }
                 save_data['params'] = full_default_params['params']
-                print("save_data['params'] in save_params")
-                print(json.dumps(save_data['params'], indent=2, cls=CATEncoder))
+                # print("save_data['params'] in save_params")
+                # print(json.dumps(save_data['params'], indent=2, cls=CATEncoder))
             else:
                 with open(save_file_path, 'r') as infile:
                     save_data = json.load(infile)
 
-            print("updated_params:")
-            print(json.dumps(self.updated_params, cls=CATEncoder, indent=2))
+            # print("updated_params:")
+            # print(json.dumps(self.updated_params, cls=CATEncoder, indent=2))
             for param_type, params in self.updated_params.items():
                 if(params):
                     for param, val in params.items():
@@ -195,12 +194,9 @@ class SkModelDialog(QDialog):
 
 
     def _update_param(self, param_type, key, value, callback=None, **cbargs):
-        # print("updateParams key, value: {}, {}, {}".format(param_type, key, value))
-        #class_key = '__' + key + '__'
         if self.current_version != 'default':
             if callback:
                 functools.partial(callback, key, value)
-
             self.updated_params[param_type][key] = value
             self.is_dirty = True
 
@@ -301,7 +297,6 @@ class SkModelDialog(QDialog):
                 directory (String): path to top of version directory.  If 'default', 
                 load default values.  
         """
-        print("Directory received by update_version", directory)
         self.is_dirty = False
         self.current_version = directory
         # Clear combobox to be reconstructed or blank if default.
@@ -417,7 +412,8 @@ class SkModelDialog(QDialog):
         for k, v in param_dict.items():
             # If v is dictionary, function was called using default values.
             # Set v equal to the default value of that parameter.
-            if isinstance(v, dict):
+            # Must check if default is in the dict, as other dicts exist that are not default values.
+            if isinstance(v, dict) and 'default' in v:
                 v = v['default']
             if isinstance(v, list):
                 v = v[-1]
@@ -447,6 +443,7 @@ class SkModelDialog(QDialog):
             default_dir, self.main_model_name + '.json')
 
         if not os.path.isfile(default_path) or force_reload:
+            self.logger.info(f"{self.main_model_name} building default parameter spec files.  force_reload = {force_reload}")
             save_data = {
                 "model_base": self.params[0]['model_base'],
                 "model_module": self.params[0]['model_module'],
@@ -460,9 +457,9 @@ class SkModelDialog(QDialog):
                 "params": {}
             }
             for model, types in self.model_params.items():
-                print("check_for_defaults data:")
-                print(f"{model}")
-                print(types)
+                # print("check_for_defaults data:")
+                # print(f"{model}")
+                # print(types)
                 for t, params in types.items():
                     # True if model spec has more than one category of parameters.  Only TF models at this point.
                     if not model in save_data['params'].keys():

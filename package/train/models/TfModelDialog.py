@@ -200,8 +200,8 @@ if __name__ == "__main__":
         "metrics" : ["acc"]
         }
 
-    app = QApplication(sys.argv)
-    app.setStyle('Fusion')
-    window = TfModelDialog(params=SeqCNN)
-    window.show()
-    sys.exit(app.exec_())
+    # app = QApplication(sys.argv)
+    # app.setStyle('Fusion')
+    # window = TfModelDialog(params=SeqCNN)
+    # window.show()
+    # sys.exit(app.exec_())
