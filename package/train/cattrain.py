@@ -73,7 +73,7 @@ class CatTrain(QMainWindow):
         self.setCentralWidget(self.train_widget)
 
     def closeEvent(self, event):
-        print("closeEvent fired")
+        pass
 
     @pyqtSlot(int, bool)
     def update_progress_bar(self, val, pulse):

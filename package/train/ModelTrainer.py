@@ -118,10 +118,10 @@ class ModelTrainer(QRunnable):
 
                     col_label = col.split("_")[0]
                     col_path = os.path.join(self.version_directory, col_label)
-                    # print("col_path:", col_path)
-
-                    # self.all_predictions_dict[col_label] = pd.DataFrame()
-                    self.training_data.fillna(value=0, inplace=True)
+                    # Create dict to fill na samples with "unanswered" and score of 0
+                    label_col_name = self.training_data.columns[col_idx]
+                    fill_dict = pd.DataFrame(data={col : "unanswered", label_col_name : 0}, index=[0])
+                    self.training_data.fillna(value=fill_dict, inplace=True)
                     x = self.training_data[col]
                     y = self.training_data[self.training_data.columns[col_idx]].values
 
@@ -429,10 +429,11 @@ class ModelTrainer(QRunnable):
         self._update_log(f"Stacking hash: {self.model_checksums['Stacker']}")
         # Save particulars to file
         stacker_info = {
+            "column" : col_path.split("\\")[-1],
+            "version_directory" : self.version_directory,
             "last_train_date" : time.ctime(time.time()),
             "train_eval_score" : stack_acc,
-            "model_checksums" : self.model_checksums,
-            "version_directory" : self.version_directory
+            "model_checksums" : self.model_checksums
         }
         stacker_json_save_file = os.path.join(save_path, 'Stacker.json')
         with open(stacker_json_save_file, 'w') as outfile:

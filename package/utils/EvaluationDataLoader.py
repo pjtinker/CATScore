@@ -1,20 +1,22 @@
 from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
                           Qt, QTimeZone, QByteArray, pyqtSignal, pyqtSlot, QThread)
-from PyQt5.QtGui import QMovie, QIcon, QPixmap
+from PyQt5.QtGui import QMovie, QIcon, QPixmap, QFont
 from PyQt5.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, QComboBox,
                              QApplication, QLabel, QFileDialog, QHBoxLayout, QVBoxLayout,
                              QGridLayout, QHeaderView, QProgressBar, QScrollArea,
-                             QSizePolicy, QTableView, QWidget, QPushButton)
+                             QSizePolicy, QTableView, QWidget, QPushButton, QAbstractScrollArea)
 import os
 import logging
 import traceback
 from functools import partial
 import sys
+import json
+import hashlib
 
 import pandas as pd
 from chardet.universaldetector import UniversalDetector
 
-from package.utils.catutils import exceptionWarning, clearLayout
+from package.utils.catutils import exceptionWarning, clearLayout, cat_decoder, CATEncoder
 from package.utils.preprocess_text import processText, get_avg_words_per_sample
 from package.utils.spellcheck import SpellCheck
 from package.utils.DataframeTableModel import DataframeTableModel
@@ -46,11 +48,12 @@ class EvaluationDataLoader(QWidget):
 
         self.full_data = pd.DataFrame()
         self.selected_data = pd.DataFrame()
-
+        self.allowable_columns = []
+        self.trained_model_meta = {}
+        
         self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
-        # Changed default models to a unique directory.  This
-        # is where default models will be saved.
+
         self.version_selection.addItem(
             'default', '.\\package\\data\\default_models\\default')
         available_versions = os.listdir(".\\package\\data\\versions")
@@ -58,9 +61,10 @@ class EvaluationDataLoader(QWidget):
             v_path = os.path.join('.\\package\\data\\versions', version)
             if os.path.isdir(v_path):
                 self.version_selection.addItem(version, v_path)
-        # self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection:
-        #                                                     self._update_version(y.currentData())
-        #                                                     )
+        self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection:
+                                                           self._update_version(
+                                                               y.currentData())
+                                                           )
         self.open_file_button = QPushButton('Load CSV', self)
         self.open_file_button.clicked.connect(lambda: self.open_file())
 
@@ -93,15 +97,18 @@ class EvaluationDataLoader(QWidget):
         self.available_column_view = QTableView()
         self.available_column_view.setMinimumHeight(330)
         self.available_column_view.setMaximumWidth(220)
+        self.available_column_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.available_column_view.setSelectionMode(QTableView.SingleSelection)
         self.available_column_view.setSelectionBehavior(QTableView.SelectRows)
         self.available_column_model = AttributeTableModel()
         self.available_column_view.setModel(self.available_column_model)
+        self.available_column_view.setSpan(0, 0, 1, 2)
         selection = self.available_column_view.selectionModel()
         selection.selectionChanged.connect(
-            lambda x: self.display_selected_rows(x))
+            lambda x: self.display_selected_row(x))
 
         self.left_column.addWidget(self.version_selection)
+        self.left_column.addStretch()
         self.left_column.addWidget(self.open_file_button)
         self.left_column.addWidget(self.available_column_view)
 
@@ -146,7 +153,7 @@ class EvaluationDataLoader(QWidget):
         self.export_dataset_btn.setIcon(icon)
         self.export_dataset_btn.setEnabled(False)
         self.export_dataset_btn.clicked.connect(lambda: self.save_data())
-        self.export_dataset_btn.resize(32, 32)
+        # self.export_dataset_btn.resize(32, 32)
         self.left_column.addWidget(self.export_dataset_btn)
 
         self.full_text_hbox.addWidget(self.text_stats_groupbox)
@@ -155,25 +162,90 @@ class EvaluationDataLoader(QWidget):
         self.full_text_hbox.addWidget(self.full_text_count)
 
         self.right_column.addLayout(self.full_text_hbox)
-        # self.right_column.addWidget(self.text_stats_groupbox)
-        # self.graph = GraphWidget(self, width=6, height=6, dpi=100)
-        # self.right_column.addWidget(self.graph)
 
+        # Training stats and available models
+        self.training_stats_groupbox = QGroupBox('Training Info')
+        self.training_stats_grid = QGridLayout()
+        self.training_stats_groupbox.setLayout(self.training_stats_grid)
+        model_label = QLabel("Model")
+        model_label.setFont(QFont("Times", weight=QFont.Bold))
+        self.training_stats_grid.addWidget(model_label, 0, 0)
+        train_date_label = QLabel("Last Trained")
+        train_date_label.setFont(QFont("Times", weight=QFont.Bold))
+        self.training_stats_grid.addWidget(train_date_label, 0, 1)
+        accuracy_label = QLabel("Accuracy")
+        accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
+        self.training_stats_grid.addWidget(accuracy_label, 0, 2)
+        self.right_column.addWidget(self.training_stats_groupbox)
+        
         # Text DataframeTableModel view for text preview
         self.text_table_view = QTableView()
         self.text_table_view.setSelectionMode(QTableView.SingleSelection)
         self.text_table_view.setSelectionBehavior(QTableView.SelectRows)
         self.text_table_model = DataframeTableModel()
         self.text_table_view.setModel(self.text_table_model)
+        self.text_table_view.setMinimumHeight(170)
         self.right_column.addWidget(self.text_table_view)
-
+        # self.right_column.addStretch()
         self.main_layout.addLayout(self.left_column)
         # self.main_layout.addStretch()
         self.main_layout.addLayout(self.right_column)
 
         self.setup_text_preproc_ui()
+        # Fire update version to set data in TableView
+        self._update_version(self.version_selection.currentData())
 
         self.setLayout(self.main_layout)
+
+    def _update_version(self, current_dir):
+        row = 1
+        column = 0
+        try:
+            for root, dirs, files in os.walk(current_dir):
+                if 'Stacker.json' in files:
+                    with open(os.path.join(root, 'Stacker.json')) as infile:
+                        stacker_data = json.load(infile)
+                        column_name = stacker_data['column'] + '_Text'
+                        self.allowable_columns.append(column_name)
+                        self.trained_model_meta[column_name] = {}
+                        self.trained_model_meta[column_name]['Stacker'] = stacker_data
+                        self._load_trained_models(os.path.split(root)[0], stacker_data['model_checksums'], column_name)
+                   
+            self.available_column_model.setAllowableData(self.allowable_columns)
+        except Exception as e:
+            self.logger.error(
+                "EvaluationDataLoader._update_version", exc_info=True)
+            print("Exception {}".format(e))
+            tb = traceback.format_exc()
+            print(tb)
+    
+    def _load_trained_models(self, model_dir, model_checksums, col_name):
+        try:
+            print(f"Path in _load_trained_models: {model_dir}")
+            for model, checksum in model_checksums.items():
+                if model == 'Stacker':
+                    continue
+                model_path = os.path.join(model_dir, model, model + '.pkl')
+                print(f"model_path: {model_path}")
+                current_chksum = hashlib.md5(open(model_path, 'rb').read()).hexdigest()
+                if(current_chksum != checksum):
+                    self.logger.warning(f"EvaluationDataLoader._load_training_models: \
+                        Checksums for model {model_path} do not match.  \
+                        Model checksum: {current_chksum}, Saved checksum: {checksum}")
+                    exceptionWarning(f"Checksums for {model_path} are invalid.  Skipping... ")
+                    continue
+                model_param_path = os.path.join(model_dir, model, model + '.json')
+                print(f"model_param_path: {model_param_path}")
+                with open(model_param_path, 'r') as infile:
+                    model_data = json.load(infile, object_hook=cat_decoder)
+                self.trained_model_meta[col_name][model] = model_data['meta']['training_meta']
+                
+        except Exception as e:
+            self.logger.error(
+                "EvaluationDataLoader._load_trained_models", exc_info=True)
+            print("Exception {}".format(e))
+            tb = traceback.format_exc()
+            print(tb)
 
     def load_selected_data(self):
         """Return columns selected from dataframe by user.
@@ -221,10 +293,8 @@ class EvaluationDataLoader(QWidget):
         except UnicodeDecodeError as ude:
             self.logger.warning(
                 "UnicodeDecode error opening file", exc_info=True)
-            print("UnicodeDecodeError caught.  File is not UTF-8 encoded. \
-                   Attempting to determine file encoding...")
             self.update_statusbar.emit(
-                "UnicodeDecodeError caught.  File is not UTF-8 encoded. Attempting to determine file encoding...")
+                "Attempting to determine file encoding...")
             detector = UniversalDetector()
             try:
                 for line in open(f_path, 'rb'):
@@ -253,11 +323,13 @@ class EvaluationDataLoader(QWidget):
             for column in columns:
                 if column.endswith("Text"):
                     self.available_columns.append(column)
-                    self.available_columns.append(
-                        columns[columns.get_loc(column) + 1])
-            self.available_column_model.loadData(self.available_columns)
+            self.available_column_model.loadData(
+                self.available_columns, include_labels=False)
+
+            self.available_column_model.setAllowableData(
+                self.allowable_columns)
             self.full_text_count.setText(str(self.full_data.shape[0]))
-            self.display_selected_rows(None)
+            self.display_selected_row(None)
             self.select_all_btn.setEnabled(True)
             self.deselect_all_btn.setEnabled(True)
 
@@ -270,27 +342,63 @@ class EvaluationDataLoader(QWidget):
             exceptionWarning(
                 "Exception occured.  EvaluationDataLoader.load_file.", exception=e)
 
-    def display_selected_rows(self, selection=None):
+    def display_selected_row(self, selection=None):
         """
         Updates the stats and label distro plot when a question is selected.
             # Attributes
                 selection: QItemSelectionModel, item currently selected by user.
         """
-        if selection:
-            idx = selection.indexes()[0]
-        else:
-            # If no question selected, select the first in the list
-            self.available_column_view.selectRow(0)
-            self.available_column_view.setFocus()
-            idx = QModelIndex(self.available_column_model.index(0, 0))
-        offset = idx.row() * 2
-        col_name = self.full_data.columns[offset]
-        self.text_stats_groupbox.setTitle(col_name)
-        question_data = self.full_data[self.full_data.columns[offset]].dropna(
-            how='any')
-        avg_num_words = get_avg_words_per_sample(str(question_data.values))
-        self.current_question_count.setText(str(question_data.shape[0]))
-        self.current_question_avg_word.setText("%.2f" % avg_num_words)
+        try:
+            if selection:
+                idx = selection.indexes()[0]
+            else:
+                # If no question selected, select the first in the list
+                self.available_column_view.selectRow(0)
+                self.available_column_view.setFocus()
+                idx = QModelIndex(self.available_column_model.index(0, 0))
+            row = idx.row()
+            col_name = self.full_data.columns[row]
+            print(f"{row}, {col_name}")
+            self.text_stats_groupbox.setTitle(col_name)
+            question_data = self.full_data[self.full_data.columns[row]].fillna(
+                value="unanswered")
+
+            avg_num_words = get_avg_words_per_sample(str(question_data.values))
+            self.current_question_count.setText(str(question_data.shape[0]))
+            self.current_question_avg_word.setText("%.2f" % avg_num_words)
+            
+            grid_row = 1
+            grid_column = 0
+            print(f"col_name: {col_name}")
+            print(f"from display_selected_rows: \ntrained_model_meta: {json.dumps(self.trained_model_meta, indent=2)}")
+            clearLayout(self.training_stats_grid)
+            model_label = QLabel("Model")
+            model_label.setFont(QFont("Times", weight=QFont.Bold))
+            self.training_stats_grid.addWidget(model_label, 0, 0)
+            train_date_label = QLabel("Last Trained")
+            train_date_label.setFont(QFont("Times", weight=QFont.Bold))
+            self.training_stats_grid.addWidget(train_date_label, 0, 1)
+            accuracy_label = QLabel("Accuracy")
+            accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
+            self.training_stats_grid.addWidget(accuracy_label, 0, 2)
+            for model, meta in self.trained_model_meta[col_name].items():
+
+                print(f"params in meta for {model}: {json.dumps(meta, indent=2)}")
+                self.training_stats_grid.addWidget(QLabel(model), grid_row, grid_column)
+                grid_column += 1
+                self.training_stats_grid.addWidget(QLabel(meta['last_train_date']), grid_row, grid_column)
+                grid_column += 1
+                self.training_stats_grid.addWidget(QLabel("%.2f" % meta['train_eval_score']), grid_row, grid_column)
+                grid_row += 1
+                grid_column = 0
+            self.repaint()
+        except Exception as e:
+            self.logger.error("EvaluationDataLoader.display_selected_row", exc_info=True)
+            exceptionWarning(
+                "Exception occured.  EvaluationDataLoader.load_file.", exception=e)
+            tb = traceback.format_exc()
+            print(tb)
+
 
     def save_data(self):
         if self.selected_data.empty:

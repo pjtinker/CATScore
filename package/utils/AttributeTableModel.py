@@ -1,6 +1,7 @@
 from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
                             Qt, pyqtSlot, pyqtSignal)
 from PyQt5.QtWidgets import (QCheckBox, QSizePolicy, QWidget)
+from PyQt5.QtGui import QColor
 
 from package.utils.DataframeTableModel import DataframeTableModel
 import pandas as pd
@@ -17,6 +18,7 @@ import numpy as np
 class AttributeTableModel(DataframeTableModel):
     def __init__(self, parent=None):
         DataframeTableModel.__init__(self)
+        self.allowed_data = None
         self.checklist = []
 
     def data(self, index, role=Qt.DisplayRole):
@@ -31,14 +33,26 @@ class AttributeTableModel(DataframeTableModel):
                 return Qt.Checked
             else:
                 return Qt.Unchecked
+        elif role == Qt.BackgroundColorRole:
+            if self.allowed_data:
+                if not self._df.iloc[row, column] in self.allowed_data:
+                    return QColor(255, 0, 0, 127)
+                else:
+                    return QColor(0, 173, 67, 127)
+                    
 
     def flags(self, index):
         if not index.isValid():
-            return Qt.ItemIsEnabled
-        if index.column() == 0:
+            return Qt.NoItemFlags
+        if self.allowed_data:
+            if self._df.iloc[index.row()][index.column()] in self.allowed_data:
+                return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable 
+            else:
+                return Qt.NoItemFlags
+        elif index.column() == 0:
             return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable 
         else:
-            return Qt.ItemIsEnabled | Qt.ItemIsSelectable
+            return Qt.ItemIsEnabled 
 
         return flags
 
@@ -50,9 +64,9 @@ class AttributeTableModel(DataframeTableModel):
                 raise IndexError('Invalid number of parameters for question/label pairs.')
             it = iter(data)
             data_tuples = list(zip(it, it))
-            self._df = pd.DataFrame(data_tuples, columns=['Text', 'Label'])
+            self._df = pd.DataFrame(data_tuples, columns=['Text Data', 'Label'])
         else:
-            self._df = pd.DataFrame(data, columns=['Text'])
+            self._df = pd.DataFrame(data, columns=['Text Data'])
         self.checklist = [False for _ in range(self.rowCount())]
         # print(self._df.head())
         self.layoutChanged.emit()
@@ -63,7 +77,10 @@ class AttributeTableModel(DataframeTableModel):
         self.checklist = [truth for _ in range(self.rowCount())]
         self.layoutChanged.emit()
 
-
+    def setAllowableData(self, allowed_data):
+        self.allowed_data = allowed_data
+        self.layoutChanged.emit()
+        
     def setData(self, index, value, role):
         if not index.isValid():
             return None

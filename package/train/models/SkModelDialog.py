@@ -69,7 +69,10 @@ class SkModelDialog(QDialog):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.buttonBox.rejected.connect(self.reject)
-        # self.buttonBox.clicked(QDialogButtonBox.Apply).connect(self.apply_changes())
+        
+        self.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(
+            lambda: self.update_version(self.current_version))
+        
         self.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(
             lambda: self.apply_changes())
         self.main_layout = QVBoxLayout()
@@ -303,6 +306,7 @@ class SkModelDialog(QDialog):
         self.question_combobox.clear()
         if self.current_version.split('\\')[-1] == 'default':
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            self.buttonBox.button(QDialogButtonBox.Apply).setEnabled(False)
             model_exists = False
             for val in os.listdir(self.current_version):
                 path = os.path.join(self.current_version, val)
@@ -316,6 +320,7 @@ class SkModelDialog(QDialog):
             return
         else:
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+            self.buttonBox.button(QDialogButtonBox.Apply).setEnabled(True)
         try:
             question_directories = [os.path.join(directory, o) for o in os.listdir(
                 directory) if os.path.isdir(os.path.join(directory, o))]

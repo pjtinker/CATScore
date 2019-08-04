@@ -268,8 +268,8 @@ class DataLoader(QWidget):
         offset = idx.row() * 2
         col_name = self.full_data.columns[offset]
         self.text_stats_groupbox.setTitle(col_name)
-        question_data = self.full_data[self.full_data.columns[offset]].dropna(
-            how='any')
+        question_data = self.full_data[self.full_data.columns[offset]].fillna(
+            value="unanswered")
         avg_num_words = get_avg_words_per_sample(str(question_data.values))
         self.current_question_count.setText(str(question_data.shape[0]))
         self.current_question_avg_word.setText("%.2f" % avg_num_words)

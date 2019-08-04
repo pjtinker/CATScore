@@ -116,6 +116,6 @@ class DataframeTableModel(QAbstractTableModel):
     def flags(self, index):
         if not index.isValid():
             return Qt.ItemIsEnabled
-        flags = Qt.ItemIsEnabled | Qt.ItemIsSelectable 
+        flags = Qt.ItemIsEnabled 
 
         return flags
