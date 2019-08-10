@@ -1,44 +1,61 @@
-from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            Qt, QTimeZone, QByteArray, pyqtSlot, pyqtSignal)
-from PyQt5.QtGui import QMovie
-from PyQt5.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, 
-                                QTabWidget,
-                                QApplication, QLabel, QFileDialog, QHBoxLayout, 
-                                QVBoxLayout, QGridLayout, QHeaderView, QScrollArea, 
-                                QSizePolicy, QTableView, QWidget, QMenuBar, QPushButton)
-import os
 import json
+import logging
+import os
+import traceback
+import time
 from collections import OrderedDict
-import pkg_resources
+from functools import partial
+import hashlib
+
 import pandas as pd
-# from addict import Dict
+import pkg_resources
+from PyQt5.QtCore import QObject, Qt, QThread, QThreadPool, pyqtSignal, pyqtSlot, QSize
+from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
+                             QDoubleSpinBox, QFileDialog, QFormLayout,
+                             QGridLayout, QGroupBox, QHBoxLayout, QLabel,
+                             QMessageBox, QPushButton, QRadioButton,
+                             QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
+                             QVBoxLayout, QPlainTextEdit, QWidget, QTableView)
 
-from package.utils.EvaluationDataLoader import EvaluationDataLoader
+from package.utils.catutils import exceptionWarning, clearLayout
+from package.utils.DataframeTableModel import DataframeTableModel
+from package.utils.AttributeTableModel import AttributeTableModel
+from package.utils.GraphWidget import GraphWidget
 
-class EvaluateWidget(QTabWidget):
+
+class Communicate(QObject):
+    pass
+
+
+class EvaluateWidget(QWidget):
     def __init__(self, parent=None):
         super(EvaluateWidget, self).__init__(parent)
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
         self.parent = parent
-        # FIXME: reset statusbar when tabs are changed
-        self.currentChanged.connect(lambda: self.update_statusbar('Ready'))
-        self.data_loader = EvaluationDataLoader(self)
-        # self.model_widget = SelectModelWidget(self)
-        # self.model_widget.update_statusbar.connect(self.update_statusbar)
-        self.addTab(self.data_loader, 'Evaluate')      
-        # self.addTab(self.model_widget, 'Model Selection')
-        self.setTabEnabled(1, True)
-        # self.data_loader.data_load.connect(self.model_widget.load_data)
-        self.data_loader.update_statusbar.connect(self.update_statusbar)
+        self.comms = Communicate()
 
-    @pyqtSlot(int, bool)
-    def setTab(self, tab, state):
-        self.setTabEnabled(tab, state)
+        self.prediction_data = pd.DataFrame()
+        self.open_file_button = QPushButton('Load CSV', self)
+        self.open_file_button.clicked.connect(lambda: self.open_file())
 
+        self.main_layout = QHBoxLayout()
+        self.left_column = QVBoxLayout()
+        self.right_column = QVBoxLayout()
 
-    @pyqtSlot(str)
-    def update_statusbar(self, msg):
-        self.parent.statusBar().showMessage(msg)
-        self.parent.repaint()
+        # ~ Available question column view
+        self.available_column_view = QTableView()
+        self.available_column_view.setMinimumHeight(322)
+        self.available_column_view.setMaximumWidth(214)
+        self.available_column_view.setSelectionMode(QTableView.SingleSelection)
+        self.available_column_view.setSelectionBehavior(QTableView.SelectRows)
+        self.available_column_model = AttributeTableModel()
+        self.available_column_view.setModel(self.available_column_model)
+        selection = self.available_column_view.selectionModel()
+        selection.selectionChanged.connect(
+            lambda x: self.display_selected_rows(x))
 
-    def setupTabs(self):
-        pass
+        self.left_column.addWidget(self.open_file_button)
+        self.left_column.addWidget(self.available_column_view)
+
+        self.setLayout(self.main_layout)

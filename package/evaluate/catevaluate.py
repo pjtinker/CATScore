@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QDialog, QHeaderView, QA
                                QLabel, QDialogButtonBox, QMessageBox, QPushButton)
 
 from package.utils.catutils import exceptionWarning
-from package.evaluate.EvaluateWidget import EvaluateWidget
+from package.evaluate.ScoreWidget import ScoreWidget
 
 VERSION_BASE_DIR = "./package/data/versions"
 DEFAULT_QUESTION_LABELS = ['Q1', 'Q2', 'Q3', 'Q4', 'Q6',
@@ -43,16 +43,17 @@ class CatEvaluate(QMainWindow):
         self.statusBar().showMessage('Cut me, Mick!')
         self.progressBar = QProgressBar()
         self.progressBar.setGeometry(30, 40, 200, 25)
-        
+        self.progressBar.setFormat("Idle")
+        self.progressBar.setTextVisible(True)
         self.file_menu = self.menuBar().addMenu('&File')
 
         # self.version_menu = self.menuBar().addMenu('&Version')
         self.statusBar().addPermanentWidget(self.progressBar)
-        self.evaluate_widget = EvaluateWidget(self)
-        # self.version_widget.version_created.connect(self.evaluate_widget.model_widget.add_new_version)
-        self.evaluate_widget.data_loader.update_progressbar.connect(self.update_progress_bar)
-        # self.evaluate_widget.model_widget.update_progressbar.connect(self.update_progress_bar)
-        self.setCentralWidget(self.evaluate_widget)
+        self.score_widget = ScoreWidget(self)
+        # self.version_widget.version_created.connect(self.score_widget.model_widget.add_new_version)
+        self.score_widget.data_predictor.comms.update_progressbar.connect(self.update_progress_bar)
+        # self.score_widget.model_widget.update_progressbar.connect(self.update_progress_bar)
+        self.setCentralWidget(self.score_widget)
 
     @pyqtSlot(int, bool)
     def update_progress_bar(self, val, pulse):

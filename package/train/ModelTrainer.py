@@ -28,7 +28,6 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from sklearn.utils import parallel_backend, register_parallel_backend
 from sklearn.preprocessing import FunctionTransformer
-from sklearn.utils import parallel_backend
 
 import joblib
 from joblib._parallel_backends import ThreadingBackend, SequentialBackend, LokyBackend
@@ -51,11 +50,13 @@ BASE_MODEL_DIR = "./package/data/base_models"
 BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
 INPUT_SHAPE = (0, 0)
 
+
 class ModelTrainerSignals(QObject):
     training_complete = pyqtSignal(int, bool)
     tuning_complete = pyqtSignal(bool, dict)
     update_progressbar = pyqtSignal(int, bool)
     update_training_logger = pyqtSignal(str)
+
 
 class ModelTrainer(QRunnable):
     """
@@ -114,13 +115,14 @@ class ModelTrainer(QRunnable):
                     # print(self.training_data[col].head())
                     # print("training data label head:")
                     # print(
-                        # self.training_data[self.training_data.columns[col_idx]].head())
+                    # self.training_data[self.training_data.columns[col_idx]].head())
 
                     col_label = col.split("_")[0]
                     col_path = os.path.join(self.version_directory, col_label)
                     # Create dict to fill na samples with "unanswered" and score of 0
                     label_col_name = self.training_data.columns[col_idx]
-                    fill_dict = pd.DataFrame(data={col : "unanswered", label_col_name : 0}, index=[0])
+                    fill_dict = pd.DataFrame(
+                        data={col: "unanswered", label_col_name: 0}, index=[0])
                     self.training_data.fillna(value=fill_dict, inplace=True)
                     x = self.training_data[col]
                     y = self.training_data[self.training_data.columns[col_idx]].values
@@ -149,7 +151,8 @@ class ModelTrainer(QRunnable):
 
                                     pipeline = Pipeline(
                                         self.get_pipeline(model_params['params']))
-                                    self._update_log(f"Begin tuning on {model}")
+                                    self._update_log(
+                                        f"Begin tuning on {model}")
                                     rscv = self.grid_search(
                                         model, x, y, pipeline, self.n_iter, include_tfidf=True)
                                     preds = rscv.best_estimator_.predict(x)
@@ -166,7 +169,8 @@ class ModelTrainer(QRunnable):
                                     with open(model_path, 'r') as param_file:
                                         model_params = json.load(
                                             param_file, object_hook=cat_decoder)
-                                    self._update_log(f"Begin training on {model}")
+                                    self._update_log(
+                                        f"Begin training on {model}")
                                     # print(
                                     #     "***** ModelTrainer.run model_params:", model_params)
                                     pipeline = Pipeline(
@@ -204,10 +208,12 @@ class ModelTrainer(QRunnable):
                                         return
 
                                     model_acc = accuracy_score(y, preds)
-                                    
-                                    self._update_log(f"Training completed on {model}.  \nAccuracy: {model_acc}")
+
+                                    self._update_log(
+                                        f"Training completed on {model}.  \nAccuracy: {model_acc}")
                                     self._update_log(f"Accuracy: {model_acc}")
-                                    self._update_log(f"Training {model} on full dataset")
+                                    self._update_log(
+                                        f"Training {model} on full dataset")
                                     pipeline.fit(x, y)
 
                                 pred_col_name = col_label + '_' + model + '_preds'
@@ -223,20 +229,25 @@ class ModelTrainer(QRunnable):
                                     os.makedirs(save_path)
                                 save_file = os.path.join(
                                     save_path, model + '.pkl')
-                                self._update_log(f"Saving {model} to : {save_file}")
+                                self._update_log(
+                                    f"Saving {model} to : {save_file}")
                                 if self.tune_models:
                                     joblib.dump(rscv, save_file, compress=1)
-                                    self.model_checksums[model] = hashlib.md5(open(save_file, 'rb').read()).hexdigest()
-                                    self._update_log(f"{model} checksum: {self.model_checksums[model]}")
+                                    self.model_checksums[model] = hashlib.md5(
+                                        open(save_file, 'rb').read()).hexdigest()
+                                    self._update_log(
+                                        f"{model} checksum: {self.model_checksums[model]}")
                                     self.save_params_to_file(
                                         model, rscv.best_estimator_.get_params(), save_path, rscv.best_score_)
                                 else:
                                     joblib.dump(
                                         pipeline, save_file, compress=1)
-                                    self.model_checksums[model] = hashlib.md5(open(save_file, 'rb').read()).hexdigest()
-                                    self._update_log(f"{model} checksum: {self.model_checksums[model]}")
+                                    self.model_checksums[model] = hashlib.md5(
+                                        open(save_file, 'rb').read()).hexdigest()
+                                    self._update_log(
+                                        f"{model} checksum: {self.model_checksums[model]}")
                                     self.save_params_to_file(
-                                        model, pipeline.get_params(), save_path, model_acc)                                
+                                        model, pipeline.get_params(), save_path, model_acc)
                             except Exception as e:
                                 self.logger.error(
                                     "ModelTrainer.run (Sklearn):", exc_info=True)
@@ -387,12 +398,11 @@ class ModelTrainer(QRunnable):
                                         "ModelTrainer.run (Tensorflow):", exc_info=True)
                                     tb = traceback.format_exc()
                                     print(tb)
-                    
+
                     if self.train_stacking_algorithm:
                         self.train_stacker(results.drop('actual', axis=1),
-                                        results.actual.values,
-                                        col_path)
-
+                                           results.actual.values,
+                                           col_path)
 
                     # training_complete.emit(0, False)
 
@@ -403,11 +413,12 @@ class ModelTrainer(QRunnable):
             self._update_log(tb)
 
     def train_stacker(self, x, y, col_path):
-        self._update_log("Training Stacking algorithm (DecisionTreeClassifier)")
+        self._update_log(
+            "Training Stacking algorithm (DecisionTreeClassifier)")
         final_preds = np.empty(y.shape)
         encv = DecisionTreeClassifier()
         skf = StratifiedKFold(n_splits=5,
-                                random_state=RANDOM_SEED)
+                              random_state=RANDOM_SEED)
 
         for train, test in skf.split(x, y):
             encv.fit(x.iloc[train], y[train])
@@ -425,15 +436,16 @@ class ModelTrainer(QRunnable):
             save_path, 'Stacker.pkl')
         self._update_log(f"Saving Stacking algorithm to : {save_file}")
         joblib.dump(encv, save_file, compress=1)
-        self.model_checksums['Stacker'] = hashlib.md5(open(save_file, 'rb').read()).hexdigest()
+        self.model_checksums['Stacker'] = hashlib.md5(
+            open(save_file, 'rb').read()).hexdigest()
         self._update_log(f"Stacking hash: {self.model_checksums['Stacker']}")
         # Save particulars to file
         stacker_info = {
-            "column" : col_path.split("\\")[-1],
-            "version_directory" : self.version_directory,
-            "last_train_date" : time.ctime(time.time()),
-            "train_eval_score" : stack_acc,
-            "model_checksums" : self.model_checksums
+            "column": col_path.split("\\")[-1],
+            "version_directory": self.version_directory,
+            "last_train_date": time.ctime(time.time()),
+            "train_eval_score": stack_acc,
+            "model_checksums": self.model_checksums
         }
         stacker_json_save_file = os.path.join(save_path, 'Stacker.json')
         with open(stacker_json_save_file, 'w') as outfile:
@@ -443,6 +455,7 @@ class ModelTrainer(QRunnable):
         self._update_log("********************************************\n")
         self._update_log(f"{time.ctime(time.time())} - Idle")
         self.signals.training_complete.emit(0, False)
+
     def get_pipeline(self, param_dict):
         # FIXME: This really needs reworked.  It is hackish and brittle.
         """Builds pipeline steps required for sklearn models.  
@@ -555,8 +568,8 @@ class ModelTrainer(QRunnable):
                         else:
                             continue
             if keras_params:
-                updated_key_dict = {f'{model}__{k}': [
-                    v] for k, v in keras_params.items()}
+                updated_key_dict = {f'{model}__{k}': 
+                    [v] for k, v in keras_params.items()}
                 grid_params.update(updated_key_dict)
             # FIXME: I'm popping this by idx.  This is a serious no-no.
             # find a better way to remove feature selection from pipeline.
@@ -576,7 +589,8 @@ class ModelTrainer(QRunnable):
                                       refit=True)
             rscv.fit(x, y)
             self.grid_search_time = time.time() - start_time
-            self._update_log(f"RandomizedSearchCV on {model} completed in {self.grid_search_time}")
+            self._update_log(
+                f"RandomizedSearchCV on {model} completed in {self.grid_search_time}")
             self._update_log(f"Best score for {model}: {rscv.best_score_}")
             return rscv
 
@@ -605,7 +619,7 @@ class ModelTrainer(QRunnable):
                 "training_meta": {
                     "last_train_date": time.ctime(time.time()),
                     "train_eval_score": best_score,
-                    "checksum" : self.model_checksums[model]
+                    "checksum": self.model_checksums[model]
                 },
 
             }
@@ -657,7 +671,7 @@ class ModelTrainer(QRunnable):
     def _update_log(self, msg):
         outbound = f"{time.ctime(time.time())} - {msg}"
         self.signals.update_training_logger.emit(outbound)
-    
+
     @pyqtSlot()
     def stop_thread(self):
         self._update_log("Stopping ModelTrainer...")

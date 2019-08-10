@@ -39,28 +39,9 @@ class GraphWidget(FigureCanvas):
                 data: list, List of integer values corresponding to the actual
                 question score.
         """
-        def getNumClasses(labels):
-            """Helper function to return the number of available labels
-                # Throws
-                    ValueError: if less than 2 classes or there are no samples with 
-                    a given class.
-            """
-            num_classes = max(labels) + 1
-            missing_classes = [i for i in range(num_classes) if i not in labels]
-            if len(missing_classes):
-                raise ValueError('Missing samples with label value(s) '
-                                '{missing_classes}. Please make sure you have '
-                                'at least one sample for every label value '
-                                'in the range(0, {max_class})'.format(
-                                    missing_classes=missing_classes,
-                                    max_class=num_classes - 1))
 
-            if num_classes <= 1:
-                raise ValueError('Invalid number of labels: {num_classes}.'
-                                'Please make sure there are at least two classes '
-                                'of samples'.format(num_classes=num_classes))
-            return num_classes
-        num_classes = getNumClasses(data)
+            
+        num_classes = self.getNumClasses(data)
         count_map = Counter(data)
         counts = [count_map[i] for i in range(num_classes)]
         total_count = sum(counts)
@@ -85,7 +66,27 @@ class GraphWidget(FigureCanvas):
             self.axes.text(rect.get_x() + rect.get_width() / 2, height + 5, label, ha='center', va='bottom')
         self.draw()
 
+    def getNumClasses(self, labels):
+        """Helper function to return the number of available labels
+            # Throws
+                ValueError: if less than 2 classes or there are no samples with 
+                a given class.
+        """
+        num_classes = max(labels) + 1
+        missing_classes = [i for i in range(num_classes) if i not in labels]
+        if len(missing_classes):
+            raise ValueError('Missing samples with label value(s) '
+                            '{missing_classes}. Please make sure you have '
+                            'at least one sample for every label value '
+                            'in the range(0, {max_class})'.format(
+                                missing_classes=missing_classes,
+                                max_class=num_classes - 1))
 
+        if num_classes <= 1:
+            raise ValueError('Invalid number of labels: {num_classes}.'
+                            'Please make sure there are at least two classes '
+                            'of samples'.format(num_classes=num_classes))
+        return num_classes
 
 # class MyDynamicMplCanvas(MyMplCanvas):
 #     """A canvas that updates itself every second with a new plot."""

@@ -34,7 +34,7 @@ class AttributeTableModel(DataframeTableModel):
             else:
                 return Qt.Unchecked
         elif role == Qt.BackgroundColorRole:
-            if self.allowed_data:
+            if self.allowed_data is not None:
                 if not self._df.iloc[row, column] in self.allowed_data:
                     return QColor(255, 0, 0, 127)
                 else:
@@ -44,7 +44,7 @@ class AttributeTableModel(DataframeTableModel):
     def flags(self, index):
         if not index.isValid():
             return Qt.NoItemFlags
-        if self.allowed_data:
+        if self.allowed_data is not None:
             if self._df.iloc[index.row()][index.column()] in self.allowed_data:
                 return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable 
             else:
@@ -74,7 +74,17 @@ class AttributeTableModel(DataframeTableModel):
     def setCheckboxes(self, truth=True):
         """Select/deselect all questions
         """
-        self.checklist = [truth for _ in range(self.rowCount())]
+        self.checklist = []
+        valid_rows = self.rowCount()
+        if self.allowed_data is not None:
+            for i in range(self.rowCount()):
+                if self._df.iloc[i][0] in self.allowed_data:
+                    self.checklist.append(truth)
+                else:
+                    self.checklist.append(False)
+        else:
+            self.checklist = [truth for _ in range(self.rowCount())]
+            
         self.layoutChanged.emit()
 
     def setAllowableData(self, allowed_data):

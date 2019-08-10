@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
                                QGridLayout, QGroupBox, QHBoxLayout, QLabel,
                                QMessageBox, QPushButton, QRadioButton,
                                QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
-                               QVBoxLayout, QPlainTextEdit)
+                               QVBoxLayout, QPlainTextEdit, QWidget)
 
 
 from package.train.models.SkModelDialog import SkModelDialog
@@ -26,21 +26,21 @@ from package.utils.catutils import exceptionWarning
 # from addict import Dict
 
 
-BASE_MODEL_DIR = "./package/data/base_models"
-BASE_TF_MODEL_DIR = "./package/data/tensorflow_models"
-BASE_TFIDF_DIR = "./package/data/feature_extractors/TfidfVectorizer.json"
-BASE_FS_DIR = "./package/data/feature_selection/SelectPercentile.json"
+BASE_MODEL_DIR = ".\\package\\data\\base_models"
+BASE_TF_MODEL_DIR = ".\\package\\data\\tensorflow_models"
+BASE_TFIDF_DIR = ".\\package\\data\\feature_extractors\\TfidfVectorizer.json"
+BASE_FS_DIR = ".\\package\\data\\feature_selection\\SelectPercentile.json"
 DEFAULT_MODEL_DIR = ".\\package\\data\\versions\\default"
 
-class CatModelTrainLogger(logging.Handler):
-    def __init__(self, parent):
-        super(CatModelTrainLogger, self).__init__()
-        self.widget = QPlainTextEdit(parent)
-        self.widget.setReadOnly(True)
+# class CatModelTrainLogger(logging.Handler):
+#     def __init__(self, parent):
+#         super(CatModelTrainLogger, self).__init__()
+#         self.widget = QPlainTextEdit(parent)
+#         self.widget.setReadOnly(True)
 
-    def emit(self, record):
-        msg = self.format(record)
-        self.widget.appendPlainText(msg)
+#     def emit(self, record):
+#         msg = self.format(record)
+#         self.widget.appendPlainText(msg)
 
 class Communicate(QObject):
     version_change = pyqtSignal(str)    
@@ -48,7 +48,7 @@ class Communicate(QObject):
     stop_training = pyqtSignal()
 
 
-class SelectModelWidget(QTabWidget):
+class SelectModelWidget(QWidget):
     """QTabWidget that holds all of the selectable models and the accompanying ModelDialog for each.
     """
     update_statusbar = pyqtSignal(str)

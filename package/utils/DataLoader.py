@@ -44,7 +44,7 @@ class DataLoader(QWidget):
 
         self.full_data = pd.DataFrame()
         self.selected_data = pd.DataFrame()
-        self.open_file_button = QPushButton('Import CSV', self)
+        self.open_file_button = QPushButton('Load CSV', self)
         self.open_file_button.clicked.connect(lambda: self.open_file())
 
         self.main_layout = QHBoxLayout()
@@ -74,8 +74,8 @@ class DataLoader(QWidget):
 
         # ~ Available question column view
         self.available_column_view = QTableView()
-        self.available_column_view.setMinimumHeight(330)
-        self.available_column_view.setMaximumWidth(220)
+        self.available_column_view.setMinimumHeight(322)
+        self.available_column_view.setMaximumWidth(214)
         self.available_column_view.setSelectionMode(QTableView.SingleSelection)
         self.available_column_view.setSelectionBehavior(QTableView.SelectRows)
         self.available_column_model = AttributeTableModel()
