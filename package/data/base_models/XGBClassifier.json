@@ -9,7 +9,7 @@
                 "type" : "int",
                 "default" : 100,
                 "min" : 10,
-                "max" : 10000,
+                "max" : 500,
                 "step_size" : 10,
                 "tunable" : true,
                 "tooltip" : ""

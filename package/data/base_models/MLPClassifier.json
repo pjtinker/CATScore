@@ -84,7 +84,7 @@
                     "False" : false,
                     "True" : true
                 },
-                "tunable" : true,
+                "tunable" : false,
                 "tooltip" : "Use 10% of the training data to monitor loss.  Training will stop if no improvement in 10 iterations."
             }
         }

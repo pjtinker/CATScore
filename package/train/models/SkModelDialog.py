@@ -77,12 +77,12 @@ class SkModelDialog(QDialog):
             lambda: self.apply_changes())
         self.main_layout = QVBoxLayout()
         self.form_grid = QGridLayout()
-        self.question_combobox = QComboBox()
-        self.question_combobox.currentIndexChanged.connect(
-            lambda state, y=self.question_combobox: self.load_version_params(
+        self.version_item_combobox = QComboBox()
+        self.version_item_combobox.currentIndexChanged.connect(
+            lambda state, y=self.version_item_combobox: self.load_version_params(
                 y.currentData())
         )
-        self.form_grid.addWidget(self.question_combobox, 0, 0)
+        self.form_grid.addWidget(self.version_item_combobox, 0, 0)
         row = 1
         col = 0
         for model, types in self.model_params.items():
@@ -131,7 +131,7 @@ class SkModelDialog(QDialog):
             return
         if self.is_dirty:
             filename = self.main_model_name + '.json'
-            save_dir = os.path.join(self.question_combobox.currentData(),
+            save_dir = os.path.join(self.version_item_combobox.currentData(),
                                     self.main_model_name)
 
             if not os.path.isdir(save_dir):
@@ -152,7 +152,7 @@ class SkModelDialog(QDialog):
                     "model_base": self.params[0]['model_base'],
                     "model_module": self.params[0]['model_module'],
                     "model_class": self.main_model_name,
-                    "question_number": self.question_combobox.currentData().split('\\')[-1],
+                    "question_number": self.version_item_combobox.currentData().split('\\')[-1],
                     "version": version,
                     "tuned": False,
                     "params": {}
@@ -303,7 +303,7 @@ class SkModelDialog(QDialog):
         self.is_dirty = False
         self.current_version = directory
         # Clear combobox to be reconstructed or blank if default.
-        self.question_combobox.clear()
+        self.version_item_combobox.clear()
         if self.current_version.split('\\')[-1] == 'default':
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
             self.buttonBox.button(QDialogButtonBox.Apply).setEnabled(False)
@@ -347,12 +347,12 @@ class SkModelDialog(QDialog):
                             if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.h5':
                                 combo_text = combo_text + "*"
                                 model_exists = True
-                self.question_combobox.addItem(combo_text, d)
+                self.version_item_combobox.addItem(combo_text, d)
 
             self.comms.check_for_existing_model.emit(
                 self.main_model_name, model_exists)
 
-            self.form_grid.addWidget(self.question_combobox, 0, 0)
+            self.form_grid.addWidget(self.version_item_combobox, 0, 0)
             self.update()
         except FileNotFoundError as fnfe:
             pass
@@ -362,7 +362,7 @@ class SkModelDialog(QDialog):
             print("Exception {}".format(e))
             tb = traceback.format_exc()
             print(tb)
-        # self.question_combobox.show()
+        # self.version_item_combobox.show()
 
     def load_version_params(self, path):
         """

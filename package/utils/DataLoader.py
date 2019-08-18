@@ -199,6 +199,9 @@ class DataLoader(QWidget):
         """
         # FIXME: Reset status bar when new data is loaded.
         try:
+            self.available_column_model.loadData([])
+            self.select_all_btn.setEnabled(False)
+            self.deselect_all_btn.setEnabled(False)
             self.full_data = pd.read_csv(f_path, encoding='utf-8', index_col=0)
         except UnicodeDecodeError as ude:
             self.logger.warning(
@@ -206,7 +209,7 @@ class DataLoader(QWidget):
             print("UnicodeDecodeError caught.  File is not UTF-8 encoded. \
                    Attempting to determine file encoding...")
             self.update_statusbar.emit(
-                "UnicodeDecodeError caught.  File is not UTF-8 encoded. Attempting to determine file encoding...")
+                "File is not UTF-8 encoded. Attempting to determine file encoding...")
             detector = UniversalDetector()
             try:
                 for line in open(f_path, 'rb'):
@@ -214,12 +217,14 @@ class DataLoader(QWidget):
                     if detector.done:
                         break
                 detector.close()
-                print("chardet determined encoding type to be {}".format(
+                self.update_statusbar.emit("Chardet determined encoding type to be {}".format(
+                    detector.result['encoding']))
+                self.logger.info("Chardet determined encoding type to be {}".format(
                     detector.result['encoding']))
                 self.full_data = pd.read_csv(
                     f_path, encoding=detector.result['encoding'], index_col=0)
             except Exception as e:
-                self.logger.error("Error detecing encoding", exc_info=True)
+                self.logger.error("Error detecting encoding", exc_info=True)
                 exceptionWarning("Exception has occured.", exception=e)
         except IOError as ioe:
             self.logger.error("IOError detecting encoding", exc_info=True)
@@ -233,17 +238,23 @@ class DataLoader(QWidget):
             columns = self.full_data.columns
             self.available_columns = []
             for column in columns:
-                if column.endswith("Text"):
-                    self.available_columns.append(column)
-                    self.available_columns.append(
-                        columns[columns.get_loc(column) + 1])
-            self.available_column_model.loadData(self.available_columns)
-            self.full_text_count.setText(str(self.full_data.shape[0]))
-            self.display_selected_rows(None)
-            self.select_all_btn.setEnabled(True)
-            self.deselect_all_btn.setEnabled(True)
-
-            self.update_statusbar.emit("CSV loaded.")
+                if column.endswith("__text"):
+                    label_col = column.split('__')[0] + "__actual" 
+                    if label_col in columns:
+                        self.available_columns.append(column)
+                        self.available_columns.append(label_col)
+            # If no data found, the model will be reset.
+            if(self.available_columns):
+                self.available_column_model.loadData(self.available_columns)
+                self.full_text_count.setText(str(self.full_data.shape[0]))
+                self.display_selected_rows(None)
+                self.update_statusbar.emit("CSV loaded.")
+                self.select_all_btn.setEnabled(True)
+                self.deselect_all_btn.setEnabled(True)
+            else:
+                exceptionWarning(f"No usable data found in {f_path}")
+                self.logger.info(f"No usable data found in {f_path}")
+                self.update_statusbar.emit("No usable data found in file")
         except pd.errors.EmptyDataError as ede:
             exceptionWarning(
                 exceptionTitle='Empty Data Error.\n', exception=ede)
@@ -251,6 +262,8 @@ class DataLoader(QWidget):
             self.logger.error("Error loading dataframe", exc_info=True)
             exceptionWarning(
                 "Exception occured.  DataLoader.load_file.", exception=e)
+            tb = traceback.format_exc()
+            print(tb)
 
     def display_selected_rows(self, selection=None):
         """
@@ -266,16 +279,17 @@ class DataLoader(QWidget):
             self.available_column_view.setFocus()
             idx = QModelIndex(self.available_column_model.index(0, 0))
         offset = idx.row() * 2
-        col_name = self.full_data.columns[offset]
+        col_name = self.available_column_model.data(idx)
+        label_col_name = col_name.split('__')[0] + '__actual'
         self.text_stats_groupbox.setTitle(col_name)
-        question_data = self.full_data[self.full_data.columns[offset]].fillna(
+        question_data = self.full_data[col_name].fillna(
             value="unanswered")
         avg_num_words = get_avg_words_per_sample(str(question_data.values))
         self.current_question_count.setText(str(question_data.shape[0]))
         self.current_question_avg_word.setText("%.2f" % avg_num_words)
 
         self.graph.chartSingleClassFrequency(
-            self.full_data[self.full_data.columns[offset + 1]].values)
+            self.full_data[label_col_name].values.astype(int))
 
     def save_data(self):
         if self.selected_data.empty:
@@ -416,7 +430,7 @@ class PreprocessingThread(QThread):
         # sys.stdout = open('nul', 'w')
         # print()
         apply_cols = [
-            col for col in self.data.columns if col.endswith('_Text')
+            col for col in self.data.columns if col.endswith('_text')
         ]
         self.data[apply_cols] = self.data[apply_cols].applymap(
             lambda x: processText(str(x), **self.options)

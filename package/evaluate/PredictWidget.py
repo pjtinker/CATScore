@@ -3,7 +3,7 @@ from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex, QObject,
 from PyQt5.QtGui import QMovie, QIcon, QPixmap, QFont
 from PyQt5.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, QComboBox,
                              QApplication, QLabel, QFileDialog, QHBoxLayout, QVBoxLayout,
-                             QGridLayout, QHeaderView, QProgressBar, QScrollArea, QPlainTextEdit,
+                             QGridLayout, QHeaderView, QProgressBar, QScrollArea, QTextEdit,
                              QSizePolicy, QTableView, QWidget, QPushButton, QAbstractScrollArea)
 import os
 import logging
@@ -205,8 +205,8 @@ class PredictWidget(QWidget):
         
         self.right_column.addWidget(self.text_table_view)
         
-        # PlainTextEdit box for evaluation status
-        self.eval_logger = QPlainTextEdit(f"{time.ctime(time.time())} - Idle")
+        # TextEdit box for evaluation status
+        self.eval_logger = QTextEdit()
         self.right_column.addWidget(self.eval_logger)
         # self.right_column.addStretch()
         
@@ -249,7 +249,7 @@ class PredictWidget(QWidget):
                 if 'Stacker.json' in files:
                     with open(os.path.join(root, 'Stacker.json')) as infile:
                         stacker_data = json.load(infile)
-                        column_name = stacker_data['column'] + '_Text'
+                        column_name = stacker_data['column'] + '__text'
                         self.allowable_columns.append(column_name)
                         self.trained_model_meta[column_name] = {}
                         self.trained_model_meta[column_name]['Stacker'] = stacker_data
@@ -265,10 +265,8 @@ class PredictWidget(QWidget):
     
     def load_trained_models(self, model_dir, model_checksums, col_name):
         try:
-            # print(f"Path in load_trained_models: {model_dir}")
             for model, checksum in model_checksums.items():
                 model_path = os.path.join(model_dir, model, model + '.pkl')
-                # print(f"model_path: {model_path}")
                 current_chksum = hashlib.md5(open(model_path, 'rb').read()).hexdigest()
                 if(current_chksum != checksum):
                     self.logger.warning(f"PredictWidget._load_training_models: \
@@ -281,12 +279,10 @@ class PredictWidget(QWidget):
                     self.trained_model_meta[col_name][model].update({'model_path' : model_path})
                     continue
                 model_param_path = os.path.join(model_dir, model, model + '.json')
-                # print(f"model_param_path: {model_param_path}")
                 with open(model_param_path, 'r') as infile:
                     model_data = json.load(infile, object_hook=cat_decoder)
                 self.trained_model_meta[col_name][model] = model_data['meta']['training_meta']
                 self.trained_model_meta[col_name][model].update({'model_path' : model_path})
-                
         except Exception as e:
             self.logger.error(
                 "PredictWidget.load_trained_models", exc_info=True)
@@ -319,7 +315,7 @@ class PredictWidget(QWidget):
     
     @pyqtSlot(str)
     def update_eval_logger(self, msg):
-        self.eval_logger.appendPlainText(msg)
+        self.eval_logger.insertHtml(msg)
         
     @pyqtSlot(pd.DataFrame)
     def prediction_complete(self, predictions):
@@ -405,7 +401,7 @@ class PredictWidget(QWidget):
             self.available_columns = []
             
             for column in columns:
-                if column.endswith("Text"):
+                if column.endswith("text"):
                     self.available_columns.append(column)
             if self.available_columns:
                 self.available_column_model.loadData(
@@ -413,6 +409,9 @@ class PredictWidget(QWidget):
 
                 self.available_column_model.setAllowableData(
                     self.allowable_columns)
+                drop_cols = [col for col in self.full_data.columns if col not in self.available_columns]
+                self.full_data.drop(drop_cols, axis=1, inplace=True)
+                print("full_data columns: ", self.full_data.columns)
                 self.full_text_count.setText(str(self.full_data.shape[0]))
                 self.display_selected_row(None)
                 self.select_all_btn.setEnabled(True)
@@ -443,7 +442,8 @@ class PredictWidget(QWidget):
                 self.available_column_view.setFocus()
                 idx = QModelIndex(self.available_column_model.index(0, 0))
             row = idx.row()
-            col_name = self.full_data.columns[row]
+            # col_name = self.full_data.columns[row]
+            col_name = self.available_column_model.data(idx)
             self.text_stats_groupbox.setTitle(col_name)
             question_data = self.full_data[self.full_data.columns[row]].fillna(
                 value="unanswered")
@@ -479,7 +479,7 @@ class PredictWidget(QWidget):
         except Exception as e:
             self.logger.error("PredictWidget.display_selected_row", exc_info=True)
             exceptionWarning(
-                "Exception occured.  PredictWidget.load_file.", exception=e)
+                "Exception occured.  PredictWidget.display_selected_row.", exception=e)
             tb = traceback.format_exc()
             print(tb)
 
@@ -545,8 +545,10 @@ class PredictWidget(QWidget):
         self.predictions = pd.DataFrame()
         # Clear checkboxes
         self.selected_data = pd.DataFrame()
-        self.full_data = pd.DataFrame()
+        # self.full_data = pd.DataFrame()
         self.available_column_model.setCheckboxes(False)
+        self.available_column_view.selectRow(0)
+        self.available_column_view.setFocus()
         self.set_eval_btn_state(False)
     
     
@@ -649,7 +651,7 @@ class PreprocessingThread(QThread):
         # print()
         print(self.options)
         apply_cols = [
-            col for col in self.data.columns if col.endswith('_Text')
+            col for col in self.data.columns if col.endswith('_text')
         ]
         self.data[apply_cols] = self.data[apply_cols].applymap(
             lambda x: processText(str(x), **self.options)

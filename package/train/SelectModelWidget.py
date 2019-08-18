@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
                                QGridLayout, QGroupBox, QHBoxLayout, QLabel,
                                QMessageBox, QPushButton, QRadioButton,
                                QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
-                               QVBoxLayout, QPlainTextEdit, QWidget)
+                               QVBoxLayout, QTextEdit, QWidget)
 
 
 from package.train.models.SkModelDialog import SkModelDialog
@@ -35,12 +35,12 @@ DEFAULT_MODEL_DIR = ".\\package\\data\\versions\\default"
 # class CatModelTrainLogger(logging.Handler):
 #     def __init__(self, parent):
 #         super(CatModelTrainLogger, self).__init__()
-#         self.widget = QPlainTextEdit(parent)
+#         self.widget = QTextEdit(parent)
 #         self.widget.setReadOnly(True)
 
 #     def emit(self, record):
 #         msg = self.format(record)
-#         self.widget.appendPlainText(msg)
+#         self.widget.insertHtml(msg)
 
 class Communicate(QObject):
     version_change = pyqtSignal(str)    
@@ -61,7 +61,7 @@ class SelectModelWidget(QWidget):
         self.threadpool = QThreadPool()
         self.logger.info(f"Multithreading enabled with a maximum of {self.threadpool.maxThreadCount()} threads.")
 
-        # print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
         self.training_data = pd.DataFrame()
 
         self.selected_version = DEFAULT_MODEL_DIR
@@ -156,11 +156,8 @@ class SelectModelWidget(QWidget):
         self.tensorflow_training_groupbox.setLayout(self.tensorflow_training_form)
         self.tensorflow_hbox.addWidget(self.tensorflow_training_groupbox)
 
-        # self.tensorflow_tuning_groupbox = QGroupBox("Tuning")
-        # self.tensorflow_hbox.addWidget(self.tensorflow_tuning_groupbox)
-
-        # self.main_layout.addWidget(self.tensorflow_groupbox)
-        self.model_vbox.addWidget(self.tensorflow_groupbox)
+        # This is the tensorflow groupbox for models and training params.
+        # self.model_vbox.addWidget(self.tensorflow_groupbox)
 
         self.tuning_groupbox = QGroupBox("Tuning")
         self.tuning_form = QFormLayout()
@@ -172,9 +169,11 @@ class SelectModelWidget(QWidget):
         self.setup_model_selection_ui()
         self.setup_training_ui()
         self.setup_tuning_ui()
-        # PlainTextEdit box for training/tuning status
-        self.training_logger = QPlainTextEdit(f"{time.ctime(time.time())} - Idle")
+        # QTextEdit box for training/tuning status
+        self.training_logger = QTextEdit()
         self.training_logger.setReadOnly(True)
+        self.training_logger.setAcceptRichText(True)
+        self.training_logger.insertHtml("<i>Multithreading with maximum %d threads</i><br>" % self.threadpool.maxThreadCount())
         self.main_layout.addWidget(self.training_logger)
 
         self.main_layout.addStretch()
@@ -239,7 +238,8 @@ class SelectModelWidget(QWidget):
                         
                         # The order of the arguments matters!  model_data must come first. 
                         if model_base == 'tensorflow':
-                            model_dialog = SkModelDialog(self, model_data)
+                            continue
+                            # model_dialog = SkModelDialog(self, model_data)
                         else:
                             model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
                         self.comms.version_change.connect(model_dialog.update_version)
@@ -461,25 +461,31 @@ class SelectModelWidget(QWidget):
             return
 
     def train_models(self):
-        train_models = self.tune_models_chkbox.isChecked()
-        self.model_trainer = ModelTrainer(self.selected_models,
-                               self.selected_version,
-                               self.training_params,
-                               self.training_data,
-                               train_models,
-                               self.tuning_n_iter_input.value())
-        self.model_trainer.signals.update_training_logger.connect(self.update_training_logger)
-        self.update_progressbar.emit(100, True)
-        self.model_trainer.signals.training_complete.connect(self.training_complete)
-        # self.comms.stop_training.connect(self.model_trainer.stop_thread)
-        self.run_btn.setEnabled(False)
-        # self.model_trainer.start()
-        # self.run_btn.clicked.connect(self._abort_training)
-        self.threadpool.start(self.model_trainer)
-    
+        try:
+            tune_models = self.tune_models_chkbox.isChecked()
+            self.model_trainer = ModelTrainer(self.selected_models,
+                                self.selected_version,
+                                self.training_params,
+                                self.training_data,
+                                tune_models,
+                                self.tuning_n_iter_input.value())
+            self.model_trainer.signals.update_training_logger.connect(self.update_training_logger)
+            self.update_progressbar.emit(1, True)
+            self.model_trainer.signals.training_complete.connect(self.training_complete)
+            # self.comms.stop_training.connect(self.model_trainer.stop_thread)
+            self.run_btn.setEnabled(False)
+            # self.model_trainer.start()
+            # self.run_btn.clicked.connect(self._abort_training)
+            self.threadpool.start(self.model_trainer)
+        except Exception as e:
+            self.logger.error("SelectModelWidget.train_models", exc_info=True)
+            exceptionWarning('Exception occured when training models.', e)
+            tb = traceback.format_exc()
+            print(tb)
+
     @pyqtSlot(str)
     def update_training_logger(self, msg):
-        self.training_logger.appendPlainText(msg)
+        self.training_logger.insertHtml(msg)
 
     @pyqtSlot(int, bool)
     def training_complete(self, val, pulse):

@@ -8,10 +8,13 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 from PyQt5 import QtCore, QtWidgets
 
+from sklearn.metrics import confusion_matrix
+
 from numpy import arange, sin, pi
 import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+import seaborn as sns
 
 progname = os.path.basename(sys.argv[0])
 progversion = "0.1"
@@ -21,11 +24,11 @@ class GraphWidget(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
     def __init__(self, parent=None, width=5, height=4, dpi=100, graph="main"):
-        fig = Figure(figsize=(width, height), dpi=dpi, tight_layout=True)
-        self.axes = fig.add_subplot(111)
+        self.fig = Figure(figsize=(width, height), dpi=dpi, tight_layout=True)
+        self.axes = self.fig.add_subplot(111)
 
         # FigureCanvas.__init__(self, fig)
-        super(GraphWidget, self).__init__(fig)
+        super(GraphWidget, self).__init__(self.fig)
         self.setParent(parent)
         FigureCanvas.setSizePolicy(self,
                                    QtWidgets.QSizePolicy.Expanding,
@@ -50,6 +53,7 @@ class GraphWidget(FigureCanvas):
         idx = np.arange(num_classes)
         colors = []
         for count in counts:
+            # FIXME: Put threshold percent in init file
             if count < (total_count * .1):
                 colors.append('r')
             else:
@@ -87,7 +91,34 @@ class GraphWidget(FigureCanvas):
                             'Please make sure there are at least two classes '
                             'of samples'.format(num_classes=num_classes))
         return num_classes
+    
+    def plotROC(self, data):
+        num_classes = self.getNumClasses(data['Stacker'])
+        fpr = dict()
+        tpr = dict()
+        roc_auc = dict()
+        
+        for i in range(num_classes):
+            fpr[i], tpr[i], _ = roc_curve()
 
+    
+    def plot_confusion_matrix(self, actual, predictions):
+        c_mat = confusion_matrix(actual, predictions)
+        # sns.heatmap(c_mat, annot=True, fmt='d', xticklabels=np.unique(actual))
+        self.axes.cla()
+        self.axes.matshow(c_mat)
+        for i, cas in enumerate(c_mat):
+            for j, c in enumerate(cas):
+                self.axes.text(j-.1, i+.1, c, fontsize=14)
+        # self.axes.colorbar()
+        self.axes.set_xlabel('Predicted')
+        self.axes.set_ylabel('Actual')
+        self.axes.set_xticks(np.unique(actual))
+        self.draw()
+        
+    def clear_graph(self):
+        self.axes.clear()
+        self.draw()
 # class MyDynamicMplCanvas(MyMplCanvas):
 #     """A canvas that updates itself every second with a new plot."""
 
