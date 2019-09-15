@@ -14,7 +14,7 @@ class SequenceTransformer(BaseEstimator, TransformerMixin):
         self.max_sequence_len = max_sequence_len
 
     def fit(self, X, y=None):
-        self.tokenizer.fit_on_texts([str(word) for word in X])
+        # self.tokenizer.fit_on_texts([str(word) for word in X])
         return self
 
     def transform(self, X):
@@ -25,6 +25,11 @@ class SequenceTransformer(BaseEstimator, TransformerMixin):
 
         res = sequence.pad_sequences(res, maxlen=max_len)
         global INPUT_SHAPE 
+        self.input_length = res.shape[1:]
         INPUT_SHAPE = res.shape[1:]
-
-        return res
+        print(f"********** INPUT_SHAPE assigned by SequenceTransformer: {INPUT_SHAPE}")
+        return {'transformed' : res, 'input_shape' : res.shape[1:]}
+        # return res
+    
+    # def get_input_shape(self):
+    #     return self.input_length

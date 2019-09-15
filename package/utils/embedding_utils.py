@@ -6,12 +6,14 @@ import operator
 import os
 from collections import Counter
 from tqdm import tqdm
+from gensim.models import KeyedVectors
 tqdm.pandas()
 
 # from preprocess_text import processText
 # from spellcheck import SpellCheck
 
-EMBEDDING_PATH = 'D:/Research/TextClassification/glove6b'
+GLOVE_EMBEDDING_PATH = 'D:/Research/TextClassification/glove6b'
+WORD2VEC_PATH = 'D:/Research/TextClassification/word2vec/GoogleNews-vectors-negative300.bin'
 FT_PATH = 'D:/Research/TextClassification/fasttextv2/crawl-300d-2M.vec'
 TOP_K = 20000
 
@@ -25,9 +27,13 @@ class EmbeddingUtils():
 
         if self.embedding_type == 'glove':
             filename = f'glove.6B.{self.embedding_dims}d.txt'
-            self.load_glove_embeddings(os.path.join(EMBEDDING_PATH, filename))
+            self.load_glove_embeddings(os.path.join(GLOVE_EMBEDDING_PATH, filename))
         elif self.embedding_type == 'word2vec':
-            pass
+            self.full_embedding_matrix = KeyedVectors.load_word2vec_format(WORD2VEC_PATH, binary=True)
+            self.embedding_matrix = np.vstack([
+                np.zeros(self.full_embedding_matrix.vectors.shape[1]),
+                self.full_embedding_matrix.vectors
+            ])
         else:
             pass
 
@@ -120,6 +126,16 @@ class EmbeddingUtils():
         sorted_x = sorted(oov.items(), key=operator.itemgetter(1))[::-1]
 
         return sorted_x
+    
+    def get_embedding_len(self):
+        if self.embedding_matrix is not None:
+            return self.embedding_matrix.size
+        else:
+            return 0
+        
+    def get_corpus_len(self):
+        return len(self.full_embedding_matrix.wv.vocab) + 1
+
 
 if __name__ == '__main__':
     data = pd.read_csv('D:/Utilities/testbed/flair/q6/train.csv', sep='\t', quoting=1, header=None)

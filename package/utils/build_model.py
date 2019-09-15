@@ -5,10 +5,7 @@ allow us to create model instances with slightly varying architectures.
 """
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function\
-
-import logging
-import traceback
+from __future__ import print_function
 
 from tensorflow.python.keras import models
 from tensorflow.python.keras.models import Model
@@ -21,15 +18,9 @@ from tensorflow.python.keras.layers import Embedding
 from tensorflow.python.keras.layers import SeparableConv1D
 from tensorflow.python.keras.layers import MaxPooling1D
 from tensorflow.python.keras.layers import GlobalAveragePooling1D
-from tensorflow.python.keras.optimizers import Adam
 
-# TODO: Decide if this is a class or just a utility file.  Can I use my logger here w/o it being a class?  
 
-def mlp_model(layers, 
-              input_shape, 
-              units, 
-              dropout_rate, 
-              num_classes):
+def mlp_model(layers, units, dropout_rate, input_shape, num_classes):
     """Creates an instance of a multi-layer perceptron model.
     # Arguments
         layers: int, number of `Dense` layers in the model.
@@ -49,45 +40,21 @@ def mlp_model(layers,
         model.add(Dropout(rate=dropout_rate))
 
     model.add(Dense(units=op_units, activation=op_activation))
-    if num_classes == 2:
-        loss = 'binary_crossentropy'
-    else:
-        loss = 'sparse_categorical_crossentropy'
-    optimizer = Adam(lr=lr,
-                    beta_1=beta_1,
-                    beta_2=beta_2,
-                    epsilon=epsilon,
-                    decay=decay)
-
-    model.compile(optimizer=optimizer, loss=loss, metrics=['acc'])
-    print("MLP model summary: ")
-    print(model.summary())
-    print(f"Optimizer: {optimizer}")
-    print(f"loss: {loss}")
-    print(f"Input shape: {input_shape}")
     return model
 
-def sepcnn_model(input_shape,
+def sepcnn_model(blocks,
+                 filters,
+                 kernel_size,
+                 embedding_dim,
+                 dropout_rate,
+                 pool_size,
+                 input_shape,
                  num_classes,
                  num_features,
-                 blocks=2,
-                 filters=64,
-                 kernel_size=3,
-                 dropout_rate=0.2,
-                 pool_size=3,
-                 optimizer='adam',
-                 lr=1e-3,
-                 beta_1 = 0.9,
-                 beta_2 = 0.999,
-                 epsilon = 0.003,
-                 decay = 0,
-                 embedding_dim=100,
                  use_pretrained_embedding=False,
                  is_embedding_trainable=False,
-                 embedding_matrix=None,
-                 verbose=0):
+                 embedding_matrix=None):
     """Creates an instance of a separable CNN model.
-   
     # Arguments
         blocks: int, number of pairs of sepCNN and pooling blocks in the model.
         filters: int, output dimension of the layers.
@@ -101,7 +68,6 @@ def sepcnn_model(input_shape,
         use_pretrained_embedding: bool, true if pre-trained embedding is on.
         is_embedding_trainable: bool, true if embedding layer is trainable.
         embedding_matrix: dict, dictionary with embedding coefficients.
-    
     # Returns
         A sepCNN model instance.
     """
@@ -113,15 +79,13 @@ def sepcnn_model(input_shape,
     if use_pretrained_embedding:
         model.add(Embedding(input_dim=num_features,
                             output_dim=embedding_dim,
-                            input_length=input_shape,
+                            input_length=input_shape[0],
                             weights=[embedding_matrix],
-                            trainable=is_embedding_trainable,
-                            name='embedding_layer'))
+                            trainable=is_embedding_trainable))
     else:
         model.add(Embedding(input_dim=num_features,
                             output_dim=embedding_dim,
-                            input_length=input_shape,
-                            name='embedding_layer'))
+                            input_length=input_shape[0]))
 
     for _ in range(blocks-1):
         model.add(Dropout(rate=dropout_rate))
@@ -154,24 +118,6 @@ def sepcnn_model(input_shape,
     model.add(GlobalAveragePooling1D())
     model.add(Dropout(rate=dropout_rate))
     model.add(Dense(op_units, activation=op_activation))
-
-    if num_classes == 2:
-        loss = 'binary_crossentropy'
-    else:
-        loss = 'sparse_categorical_crossentropy'
-    # optimizer = Adam(lr=lr,
-    #                 beta_1=beta_1,
-    #                 beta_2=beta_2,
-    #                 decay=decay)
-    optimizer = Adam()
-    model.compile(optimizer=optimizer, loss=loss, metrics=['acc'])
-    print("SepCNN model summary: ")
-    print(model.summary())
-    print(f"Optimizer: {optimizer}")
-    print(f"loss: {loss}")
-    print(f"Input shape: {input_shape}")
-    print(f"num_features: {num_features}")
-    print(f"embedding_layer input: {model.get_layer('embedding_layer').input_shape} ")
     return model
 
 def _get_last_layer_units_and_activation(num_classes):

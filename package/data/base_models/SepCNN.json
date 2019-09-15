@@ -103,16 +103,6 @@
                 "tooltip" : "",
                 "decimal_len" : 4 
             },
-            "epsilon" : {
-                "type" : "double",
-                "default" : 0.0,
-                "min" : 0.0,
-                "max" : 2.0,
-                "step_size" : 0.001,
-                "tunable" : false,
-                "tooltip" : "",
-                "decimal_len" : 3
-            },
             "decay" : {
                 "type" : "double",
                 "default" : 0,

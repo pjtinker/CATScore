@@ -157,7 +157,7 @@ class SelectModelWidget(QWidget):
         self.tensorflow_hbox.addWidget(self.tensorflow_training_groupbox)
 
         # This is the tensorflow groupbox for models and training params.
-        # self.model_vbox.addWidget(self.tensorflow_groupbox)
+        self.model_vbox.addWidget(self.tensorflow_groupbox)
 
         self.tuning_groupbox = QGroupBox("Tuning")
         self.tuning_form = QFormLayout()
@@ -238,8 +238,8 @@ class SelectModelWidget(QWidget):
                         
                         # The order of the arguments matters!  model_data must come first. 
                         if model_base == 'tensorflow':
-                            continue
-                            # model_dialog = SkModelDialog(self, model_data)
+                            # continue
+                            model_dialog = SkModelDialog(self, model_data)
                         else:
                             model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
                         self.comms.version_change.connect(model_dialog.update_version)
