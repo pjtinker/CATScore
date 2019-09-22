@@ -16,6 +16,8 @@ import hashlib
 # import threading
 import time
 from queue import PriorityQueue
+from tpot import TPOTClassifier
+
 
 import pandas as pd
 import numpy as np
@@ -29,6 +31,7 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from sklearn.utils import parallel_backend, register_parallel_backend
 from sklearn.preprocessing import FunctionTransformer
 
+from dask.distributed import Client
 import joblib
 from joblib._parallel_backends import ThreadingBackend, SequentialBackend, LokyBackend
 import scipy
@@ -67,7 +70,7 @@ class ModelTrainer(QRunnable):
     # multithreading seems functional.
     # NOTE: some models, e.g. RandomForestClassifier, will not train using this backend.
     # An exception is caught and the log updated if this occurs.
-    register_parallel_backend('threading', ThreadingBackend, make_default=True)
+    # register_parallel_backend('threading', ThreadingBackend, make_default=True)
     # parallel_backend('threading')
 
     def __init__(self, selected_models, version_directory,
@@ -110,13 +113,6 @@ class ModelTrainer(QRunnable):
             for col_idx, col in enumerate(self.training_data.columns, 1):
                 if col.endswith('_text'):
                     self._update_log(f"Current classification task: {col}")
-                    # print("Training col: ", col, " Label col idx: ", col_idx)
-                    # print("training data head:")
-                    # print(self.training_data[col].head())
-                    # print("training data label head:")
-                    # print(
-                    # self.training_data[self.training_data.columns[col_idx]].head())
-
                     col_label = col.split("_")[0]
                     col_path = os.path.join(self.version_directory, col_label)
                     # Create dict to fill na samples with "unanswered" and score of 0
@@ -136,15 +132,14 @@ class ModelTrainer(QRunnable):
                     sk_eval_type = self.training_eval_params['sklearn']['type']
                     sk_eval_value = self.training_eval_params['sklearn']['value']
 
-                    for model, truth in self.selected_models['sklearn'].items():
+                    for model, selected in self.selected_models['sklearn'].items():
                         # print("Current model from os.listdir(col_path)", model)
-                        if truth:
+                        if selected:
                             try:
                                 if self.tune_models:
                                     model_path = os.path.join(".\\package\\data\\default_models\\default",
                                                               model,
                                                               model + '.json')
-                                    # print("model_path", model_path)
                                     with open(model_path, 'r') as param_file:
                                         model_params = json.load(
                                             param_file, object_hook=cat_decoder)
@@ -174,9 +169,8 @@ class ModelTrainer(QRunnable):
                                         model_params = json.load(
                                             param_file, object_hook=cat_decoder)
                                     self._update_log(
-                                        f"Begin training on {model}")
-                                    # print(
-                                    #     "***** ModelTrainer.run model_params:", model_params)
+                                        f"Begin training {model}")
+
                                     pipeline = Pipeline(
                                         self.get_pipeline(model_params['params']))
 
@@ -185,9 +179,10 @@ class ModelTrainer(QRunnable):
                                                               random_state=RANDOM_SEED)
                                         try:
                                             for train, test in skf.split(x, y):
-                                                preds[test] = pipeline.fit(
-                                                    x.iloc[train], y[train]).predict(x.iloc[test])
-                                                if self.use_proba and hasattr(pipelin, 'predict_proba'):
+                                                with joblib.parallel_backend('dask'):
+                                                    preds[test] = pipeline.fit(
+                                                        x.iloc[train], y[train]).predict(x.iloc[test])
+                                                if self.use_proba and hasattr(pipeline, 'predict_proba'):
                                                     try:
                                                         probs[test] = pipeline.predict_proba(
                                                             x.iloc[test])
@@ -218,12 +213,14 @@ class ModelTrainer(QRunnable):
                                     self._update_log(f"Accuracy: {model_acc}")
                                     self._update_log(
                                         f"Training {model} on full dataset")
-                                    pipeline.fit(x, y)
+                                    with joblib.parallel_backend('dask'):
+                                        pipeline.fit(x, y)
 
                                 pred_col_name = col_label + '_' + model + '_preds'
                                 prob_col_name = col_label + '_' + model + '_probs'
                                 results[pred_col_name] = preds.astype(int)
-
+                                # If predicting probabilities and the probability array has values,
+                                # use those values for the results.  
                                 if self.use_proba and probs.size:
                                     results[prob_col_name] = np.amax(
                                         probs, axis=1)
@@ -235,6 +232,7 @@ class ModelTrainer(QRunnable):
                                     save_path, model + '.pkl')
                                 self._update_log(
                                     f"Saving {model} to : {save_file}")
+                                
                                 if self.tune_models:
                                     joblib.dump(rscv, save_file, compress=1)
                                     self.model_checksums[model] = hashlib.md5(
@@ -258,150 +256,7 @@ class ModelTrainer(QRunnable):
                                 tb = traceback.format_exc()
                                 print(tb)
                                 self._update_log(tb)
-                    # TENSORFLOW BEGINS
-                    # if (1 in self.selected_models['tensorflow'].values()):
-                    #     # Init tensorflow eval params
-                    #     patience = self.training_eval_params['tensorflow']['patience']
-                    #     if patience > 0:
-                    #         callbacks = [EarlyStopping(monitor='val_loss',
-                    #                                    patience=patience)]
-                    #     else:
-                    #         callbacks = None
-
-                    #     validation_split = self.training_eval_params['tensorflow']['validation_split']
-                    #     use_pretrained_embedding = self.training_eval_params[
-                    #         'tensorflow']['use_pretrained_embedding']
-                    #     if use_pretrained_embedding:
-                    #         embedding_type = self.training_eval_params['tensorflow']['embedding_type']
-                    #         embedding_dim = self.training_eval_params['tensorflow']['embedding_dim']
-                    #     else:
-                    #         embedding_type = None
-                    #         embedding_dim = None
-                    #     # Embedding utils handles... well, embeddings
-                    #     eu = embed_utils.EmbeddingUtils(
-                    #         embedding_type, embedding_dim)
-                    #     is_embedding_trainable = self.training_eval_params[
-                    #         'tensorflow']['is_embedding_trainable']
-                    #     embedding_dim = self.training_eval_params['tensorflow']['embedding_dim']
-
-                    #     tokenizer = text.Tokenizer(num_words=TOP_K)
-                    #     tokenizer.fit_on_texts([str(word) for word in x])
-
-                    #     sequence_transformer = seq_trans.SequenceTransformer(
-                    #         tokenizer, TOP_K)
-                    #     num_features = min(
-                    #         len(tokenizer.word_index) + 1, TOP_K)
-                    #     num_classes = len(np.unique(y))
-
-                    #     if self.training_eval_params['tensorflow']['use_pretrained_embedding']:
-                    #         use_pretrained_embedding = True
-                    #         eu.generate_embedding_matrix(tokenizer.word_index)
-                    #     else:
-                    #         use_pretrained_embedding = False
-
-                    #     for model, truth in self.selected_models['tensorflow'].items():
-                    #         print("Current model from os.listdir(col_path)", model)
-                    #         if truth:
-                    #             try:
-                    #                 if self.tune_models:
-                    #                     param_dict = dict(input_shape=INPUT_SHAPE,
-                    #                                       num_classes=num_classes,
-                    #                                       num_features=num_features,
-                    #                                       embedding_dim=embedding_dim,
-                    #                                       use_pretrained_embedding=use_pretrained_embedding,
-                    #                                       embedding_matrix=eu.get_embedding_matrix()
-                    #                                       )
-
-                    #                     keras_model = KerasClassifier(
-                    #                         build_fn=keras_models.sepcnn_model)
-                    #                     pipeline = Pipeline(steps=[('SequenceTransformer', sequence_transformer),
-                    #                                                (model, keras_model)])
-
-                    #                     rscv = self.grid_search(
-                    #                         model, x, y, pipeline, self.n_iter, include_tfidf=False, keras_params=param_dict)
-                    #                 else:
-                    #                     model_path = os.path.join(
-                    #                         col_path, model, model + '.json')
-                    #                     if not os.path.isfile(model_path):
-                    #                         # Get default values
-                    #                         model_path = os.path.join(".\\package\\data\\default_models\\default",
-                    #                                                   model,
-                    #                                                   model + '.json')
-                    #                     print("model_path", model_path)
-                    #                     with open(model_path, 'r') as param_file:
-                    #                         model_params = json.load(
-                    #                             param_file,
-                    #                             object_hook=cat_decoder)
-
-                    #                     param_dict = dict(input_shape=INPUT_SHAPE,
-                    #                                       num_classes=num_classes,
-                    #                                       num_features=num_features,
-                    #                                       validation_split=validation_split,
-                    #                                       callbacks=callbacks,
-                    #                                       embedding_dim=embedding_dim,
-                    #                                       use_pretrained_embedding=use_pretrained_embedding,
-                    #                                       is_embedding_trainable=is_embedding_trainable,
-                    #                                       embedding_matrix=eu.get_embedding_matrix()
-                    #                                       )
-                    #                     param_dict.update(model_params['params'][
-                    #                         ".".join(
-                    #                             (model_params['model_module'], model_params['model_class']))
-                    #                     ])
-                    #                     print(model + " params:", param_dict)
-                    #                     keras_model = KerasClassifier(
-                    #                         build_fn=keras_models.sepcnn_model, **param_dict)
-                    #                     kc = Pipeline(steps=[('SequenceTransformer', sequence_transformer),
-                    #                                          (model, keras_model)])
-
-                    #                     x_train, x_test, y_train, y_test = train_test_split(x, y,
-                    #                                                                         test_size=validation_split,
-                    #                                                                         shuffle=True,
-                    #                                                                         stratify=y)
-                    #                     kc.fit(x_train, y_train)
-                    #                     tf_preds = kc.predict(x_test)
-                    #                     print("Accuracy: ", accuracy_score(
-                    #                         y_test, tf_preds))
-                    #                     history = kc.fit(x, y)
-
-                    #                 save_path = os.path.join(col_path, model)
-                    #                 if not os.path.exists(save_path):
-                    #                     os.makedirs(save_path)
-
-                    #                 save_file = os.path.join(
-                    #                     save_path, model + '.h5')
-                    #                 print("Saving model to :", save_file)
-                    #                 if self.tune_models:
-                    #                     # kc is a Pipeline object containing RSCV.  To get all step params, get the params
-                    #                     # from the best estimator.
-                    #                     kc = rscv.best_estimator_
-                    #                     best_params = kc.get_params()
-
-                    #                     # param_file = os.path.join(model + '.json')
-                    #                     print(
-                    #                         f"Saving {model} params to {save_file}...")
-                    #                     # If we used pretrained embeddings, they've been saved
-                    #                     # as a parameter.  Delete them for space and simplicity.
-                    #                     best_params.pop(
-                    #                         model + '__embedding_matrix', None)
-                    #                     self.save_params_to_file(
-                    #                         model, best_params, save_path, rscv.best_score_)
-                    #                 # Keras model must be saved separately and removed from pipeline
-                    #                 kc.named_steps[model].model.save(save_file)
-                    #                 kc.named_steps[model].model = None
-                    #                 # Save pipeline with Keras model deleted
-                    #                 pipeline_save_file = os.path.join(
-                    #                     save_path, model + '_pipeline.pkl')
-                    #                 print(
-                    #                     f"Saving tuned {model} model to {pipeline_save_file}...")
-                    #                 joblib.dump(
-                    #                     kc, pipeline_save_file, compress=1)
-
-                    #                 del kc
-                    #             except Exception as e:
-                    #                 self.logger.error(
-                    #                     "ModelTrainer.run (Tensorflow):", exc_info=True)
-                    #                 tb = traceback.format_exc()
-                    #                 print(tb)
+                  # Tensorflow used to reside here
 
                     if self.train_stacking_algorithm:
                         self.train_stacker(results.drop('actual', axis=1),
@@ -425,7 +280,8 @@ class ModelTrainer(QRunnable):
                               random_state=RANDOM_SEED)
 
         for train, test in skf.split(x, y):
-            encv.fit(x.iloc[train], y[train])
+            with joblib.parallel_backend('dask'):
+                encv.fit(x.iloc[train], y[train])
             final_preds[test] = encv.predict(x.iloc[test])
         # stack_preds = [1 if x > .5 else 0 for x in np.nditer(final_preds)]
         self._update_log("Stacking training complete")
@@ -455,7 +311,7 @@ class ModelTrainer(QRunnable):
         with open(stacker_json_save_file, 'w') as outfile:
             json.dump(stacker_info, outfile, indent=2)
 
-        self._update_log(f"Run complete")
+        self._update_log("Run complete")
         self._update_log("********************************************\n")
         # self._update_log(f"<font color='blue'>Idle</font><br>")
         self.signals.training_complete.emit(0, False)
@@ -478,10 +334,9 @@ class ModelTrainer(QRunnable):
             if current_type == 'feature_extraction':
                 priority = 0
             elif current_type == 'feature_selection':
-                priority = 10
+                priority = 50
             else:
-                priority = 20
-            # print("Loading module ", current_module, "Class: ", full_class[-1])
+                priority = 100
             inst_module = importlib.import_module(current_module)
             current_class = getattr(inst_module, full_class[-1])
             if values:
@@ -501,7 +356,7 @@ class ModelTrainer(QRunnable):
                     x,
                     y,
                     pipeline,
-                    n_jobs=None,
+                    n_jobs=-1,
                     n_iter=20,
                     scoring=None,
                     include_tfidf=False,
@@ -593,7 +448,8 @@ class ModelTrainer(QRunnable):
                                       pre_dispatch='3*n_jobs',
                                       verbose=10,
                                       refit=True)
-            rscv.fit(x, y)
+            with joblib.parallel_backend('dask'):
+                rscv.fit(x, y)
             self.grid_search_time = time.time() - start_time
             self._update_log(
                 f"RandomizedSearchCV on {model} completed in {self.grid_search_time}")
@@ -670,7 +526,7 @@ class ModelTrainer(QRunnable):
             return result_dict
         except Exception as e:
             self.logger.error(
-                "ModelTrainer._generate_best_param_dict {}:".format(model), exc_info=True)
+                "ModelTrainer._generate_best_param_dict {}:".format(e), exc_info=True)
             tb = traceback.format_exc()
             print(tb)
 

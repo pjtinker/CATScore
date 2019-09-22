@@ -8,6 +8,7 @@ import argparse
 import pandas as pd
 import logging
 import logging.handlers
+from dask.distributed import Client
 
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QVBoxLayout, 
                                 QMainWindow, QSizePolicy, QWidget, QGridLayout,
@@ -60,7 +61,8 @@ if __name__ == "__main__":
     logFormatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(logFormatter)
     logging.basicConfig( handlers=[handler], format=logFormatter, level=logging.DEBUG)
-
+    # dask client for paralellization
+    client = Client()
     # Qt Application
     app = QApplication(sys.argv)
     app.processEvents()

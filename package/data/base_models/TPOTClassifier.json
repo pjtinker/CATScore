@@ -1,0 +1,43 @@
+{                  
+    "model_base": "sklearn",
+    "model_module": "tpot",
+    "model_class" : "TPOTClassifier",
+    "priority" : 100,
+    "TPOTClassifier" : {
+        "Hyperparameters" : {
+            "generations" : {
+                "type" : "int",
+                "default" : 5,
+                "min" : 2,
+                "max" : 200,
+                "step_size" : 2,
+                "tunable" : false,
+                "tooltip" : ""
+            },
+            "population_size" : {
+                "type" : "int",
+                "default" : 20,
+                "min" : 2,
+                "max" : 200,
+                "step_size" : 2,
+                "tunable" : false,
+                "tooltip" : ""
+            },
+            "cv" : {
+                "type" : "int",
+                "default" : 5,
+                "min" : 1,
+                "max" : 10,
+                "step_size" : 1,
+                "tunable" : false,
+                "tooltip" : ""
+            },
+            "config_dict" : {
+                "type" : "static",
+                "default" :"TPOT sparse",
+                "tunable" : false,
+                "tooltip" : ""
+            }
+        }
+    }
+}

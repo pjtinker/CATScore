@@ -80,7 +80,7 @@ class EmbeddingUtils():
 
     def build_vocab(self, sentences, verbose =  True):
         """
-        :param sentences: list of list of words
+        :param sentences: list of lists of words
         :return: dictionary of words and their count
         """
         vocab = {}
