@@ -11,7 +11,7 @@
                 "min" : 0,
                 "max" : 100,
                 "step_size" : 1,
-                "decimal_len" : 2,
+                "decimal_len" : 4,
                 "tunable" : true,
                 "tooltip" : ""
             },

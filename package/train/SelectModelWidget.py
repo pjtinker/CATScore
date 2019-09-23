@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
 
 
 from package.train.models.SkModelDialog import SkModelDialog
-from package.train.models.TfModelDialog import TfModelDialog
+from package.train.models.TPOTModelDialog import TPOTModelDialog
 from package.train.ModelTrainer import ModelTrainer
 from package.utils.catutils import exceptionWarning
 
@@ -235,11 +235,13 @@ class SelectModelWidget(QWidget):
                         model_data = json.load(f)
                         model = model_data['model_class']
                         model_base = model_data['model_base']
-                        
+                        model_module = model_data['model_module']
                         # The order of the arguments matters!  model_data must come first. 
                         if model_base == 'tensorflow':
                             continue
                             # model_dialog = SkModelDialog(self, model_data)
+                        if model_module == 'tpot':
+                            model_dialog = TPOTModelDialog(self, model_data, tfidf_data)
                         else:
                             model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
                         self.comms.version_change.connect(model_dialog.update_version)

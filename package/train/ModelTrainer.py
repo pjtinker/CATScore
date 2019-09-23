@@ -131,9 +131,8 @@ class ModelTrainer(QRunnable):
                     # Initialize sklearn evaluation parameters
                     sk_eval_type = self.training_eval_params['sklearn']['type']
                     sk_eval_value = self.training_eval_params['sklearn']['value']
-
+                    # SKLEARN
                     for model, selected in self.selected_models['sklearn'].items():
-                        # print("Current model from os.listdir(col_path)", model)
                         if selected:
                             try:
                                 if self.tune_models:
@@ -143,7 +142,7 @@ class ModelTrainer(QRunnable):
                                     with open(model_path, 'r') as param_file:
                                         model_params = json.load(
                                             param_file, object_hook=cat_decoder)
-
+                                    #TODO: call pipeline for TPOT using Hyperparameters as key and skip grid_search
                                     pipeline = Pipeline(
                                         self.get_pipeline(model_params['params']))
                                     self._update_log(
@@ -317,7 +316,6 @@ class ModelTrainer(QRunnable):
         self.signals.training_complete.emit(0, False)
 
     def get_pipeline(self, param_dict):
-        # FIXME: This really needs reworked.  It is hackish and brittle.
         """Builds pipeline steps required for sklearn models.  
             Includes Feature extraction, feature selection, and classifier.
                 # Arguments
@@ -379,6 +377,8 @@ class ModelTrainer(QRunnable):
             with open(filepath, 'r') as f:
                 # print("Loading model:", filepath)
                 model_data = json.load(f, object_hook=cat_decoder)
+            print("model_data:")
+            print(json.dumps(model_data, indent=2))
             grid_params = {}
             default_params = model_data[model]
 
@@ -402,7 +402,6 @@ class ModelTrainer(QRunnable):
 
             if include_tfidf:
                 with open(BASE_TFIDF_DIR, 'r') as f:
-                    # print("Loading model:", BASE_TFIDF_DIR)
                     model_data = json.load(f, object_hook=cat_decoder)
                 model_class = model_data['model_class']
                 default_params = model_data[model_class]
@@ -423,20 +422,21 @@ class ModelTrainer(QRunnable):
                             elif params['type'] == 'range':
                                 param_options = [
                                     (1, 1), (1, 2), (1, 3), (1, 4)]
+                            else:
+                                param_options = None
                             grid_params.update({param_name: param_options})
                         else:
                             continue
-            if keras_params:
-                updated_key_dict = {f'{model}__{k}': 
-                    [v] for k, v in keras_params.items()}
-                grid_params.update(updated_key_dict)
+            # Remnant from __TENSORFLOW work.  
+            # if keras_params:
+            #     updated_key_dict = {f'{model}__{k}': 
+            #         [v] for k, v in keras_params.items()}
+            #     grid_params.update(updated_key_dict)
             # FIXME: I'm popping this by idx.  This is a serious no-no.
             # find a better way to remove feature selection from pipeline.
             if 'SelectPercentile' in pipeline.named_steps:
                 pipeline.steps.pop(1)
 
-            # if 'RandomForestClassifier' in pipeline.named_steps:
-            #     n_jobs = 1
             self._update_log(f"Beginning RandomizedSearchCV on {model}...")
             # print("Params: ", grid_params)
             # print("Pipeline:", [name for name, _ in pipeline.steps])

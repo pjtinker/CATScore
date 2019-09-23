@@ -38,6 +38,13 @@
                 "tunable" : false,
                 "tooltip" : ""
             }
+        },
+        "Model": {
+            "model_name" : "sklearn.naive_bayes.MultinomialNB",
+            "model_params" : {
+                "alpha": 1.0,
+                "fit_prior": true
+            }
         }
     }
 }
