@@ -1,0 +1,37 @@
+{'memory': None, 'steps': [('TfidfVectorizer', TfidfVectorizer(analyzer='word', binary=False, decode_error='strict',
+        dtype=<class 'numpy.float64'>, encoding='utf-8', input='content',
+        lowercase=True, max_df=1.0, max_features=None, min_df=1,
+        ngram_range=[
+            1,
+            2
+        ], norm='l2', preprocessor=None, smooth_idf=True,
+        stop_words=None, strip_accents=None, sublinear_tf=False,
+        token_pattern='(?u)\\b\\w\\w+\\b', tokenizer=None, use_idf=True,
+        vocabulary=None)), ('selectfwe', SelectFwe(alpha=0.024, score_func=<function f_classif at 0x000002C8C294AA60>)), ('bernoullinb', BernoulliNB(alpha=0.01, binarize=0.0, class_prior=None, fit_prior=True))
+    ], 'TfidfVectorizer': TfidfVectorizer(analyzer='word', binary=False, decode_error='strict',
+        dtype=<class 'numpy.float64'>, encoding='utf-8', input='content',
+        lowercase=True, max_df=1.0, max_features=None, min_df=1,
+        ngram_range=[
+        1,
+        2
+    ], norm='l2', preprocessor=None, smooth_idf=True,
+        stop_words=None, strip_accents=None, sublinear_tf=False,
+        token_pattern='(?u)\\b\\w\\w+\\b', tokenizer=None, use_idf=True,
+        vocabulary=None), 'selectfwe': SelectFwe(alpha=0.024, score_func=<function f_classif at 0x000002C8C294AA60>), 'bernoullinb': BernoulliNB(alpha=0.01, binarize=0.0, class_prior=None, fit_prior=True), 'TfidfVectorizer__analyzer': 'word', 'TfidfVectorizer__binary': False, 'TfidfVectorizer__decode_error': 'strict', 'TfidfVectorizer__dtype': <class 'numpy.float64'>, 'TfidfVectorizer__encoding': 'utf-8', 'TfidfVectorizer__input': 'content', 'TfidfVectorizer__lowercase': True, 'TfidfVectorizer__max_df': 1.0, 'TfidfVectorizer__max_features': None, 'TfidfVectorizer__min_df': 1, 'TfidfVectorizer__ngram_range': [
+        1,
+        2
+    ], 'TfidfVectorizer__norm': 'l2', 'TfidfVectorizer__preprocessor': None, 'TfidfVectorizer__smooth_idf': True, 'TfidfVectorizer__stop_words': None, 'TfidfVectorizer__strip_accents': None, 'TfidfVectorizer__sublinear_tf': False, 'TfidfVectorizer__token_pattern': '(?u)\\b\\w\\w+\\b', 'TfidfVectorizer__tokenizer': None, 'TfidfVectorizer__use_idf': True, 'TfidfVectorizer__vocabulary': None, 'selectfwe__alpha': 0.024, 'selectfwe__score_func': <function f_classif at 0x000002C8C294AA60>, 'bernoullinb__alpha': 0.01, 'bernoullinb__binarize': 0.0, 'bernoullinb__class_prior': None, 'bernoullinb__fit_prior': True
+}
+model_params: {'model_base': 'sklearn', 'model_module': 'tpot', 'model_class': 'TPOTClassifier', 'question_number': 'default', 'version': 'default', 'meta': {'training_meta': {'last_train_date': 'Sat Sep 28 14: 23: 21 2019', 'train_eval_score': 0.8381219341275403, 'checksum': '7d81924f12ac513f7a0e77407fbb524d'
+        }, 'tuning_meta': {'last_tune_date': 'Sat Sep 28 14: 23: 21 2019', 'n_iter': 10, 'tuning_duration': None, 'tune_eval_score': 0.8381219341275403
+        }
+    }, 'params': {'sklearn.naive_bayes.MultinomialNB': {'alpha': 1.0, 'fit_prior': True
+        }, 'sklearn.feature_extraction.text.TfidfVectorizer': {'ngram_range': [
+                1,
+                2
+            ], 'encoding': 'utf-8', 'strip_accents': 0, 'max_df': 1.0, 'min_df': 1, 'use_idf': True
+        }
+    }, 'tpot_params': {'tpot.TPOTClassifier': {'generations': 2, 'population_size': 2, 'cv': 5, 'config_dict': 'TPOT sparse', 'verbosity': 2
+        }
+    }
+}

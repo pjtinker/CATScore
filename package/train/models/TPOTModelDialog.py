@@ -58,7 +58,10 @@ class TPOTModelDialog(QDialog):
             full_name = param['model_module'] + '.' + param['model_class']
             self.model_params[full_name] = param[cls_name]
             self.updated_params[full_name] = {}
-
+        # print("self.model_params:")
+        # print(json.dumps(self.model_params, indent=2))
+        # print("self.updated_params:")
+        # print(json.dumps(self.updated_params, indent=2))
         self.is_dirty = False
         self.check_for_default()
 
@@ -69,10 +72,10 @@ class TPOTModelDialog(QDialog):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.buttonBox.rejected.connect(self.reject)
-        
+
         self.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(
             lambda: self.update_version(self.current_version))
-        
+
         self.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(
             lambda: self.apply_changes())
         self.main_layout = QVBoxLayout()
@@ -158,11 +161,15 @@ class TPOTModelDialog(QDialog):
                     "question_number": self.version_item_combobox.currentData().split('\\')[-1],
                     "version": version,
                     "tuned": False,
-                    "params": {}
+                    "params": {},
+                    "tpot_params": {}
                 }
                 save_data['params'] = full_default_params['params']
-                # print("save_data['params'] in save_params")
-                # print(json.dumps(save_data['params'], indent=2, cls=CATEncoder))
+                save_data['tpot_params'] = full_default_params['tpot_params']
+                # print("save_data['tpot_params'] in save_params")
+                # print("save_data['tpot_params'] in apply_changes:")
+                # print(json.dumps(
+                #     save_data['tpot_params'], indent=2, cls=CATEncoder))
             else:
                 with open(save_file_path, 'r') as infile:
                     save_data = json.load(infile)
@@ -171,12 +178,17 @@ class TPOTModelDialog(QDialog):
             # print(json.dumps(self.updated_params, cls=CATEncoder, indent=2))
             for param_type, params in self.updated_params.items():
                 if(params):
+                    # Check for key existence to specify which parameter we're saving
+                    if(param_type in save_data['params'].keys()):
+                        root = 'params'
+                    else:
+                        root = 'tpot_params'
                     for param, val in params.items():
-                        save_data['params'][param_type][param] = val
+                        save_data[root][param_type][param] = val
             try:
                 with open(save_file_path, 'w') as outfile:
                     json.dump(save_data, outfile, cls=CATEncoder, indent=2)
-            except Exception as e: 
+            except Exception as e:
                 self.logger.error("Error saving updated model parameters for {}.".format(
                     self.main_model_name), exc_info=True)
                 print("Exception {}".format(e))
@@ -194,10 +206,8 @@ class TPOTModelDialog(QDialog):
         if (self.exec_() == QDialog.Accepted):
             self.apply_changes()
 
-
     def _split_key(self, key):
         return key.split('__')[1]
-
 
     def _update_param(self, param_type, key, value, callback=None, **cbargs):
         if self.current_version != 'default':
@@ -209,7 +219,7 @@ class TPOTModelDialog(QDialog):
     def setupTPOTModelDetailUI(self, form):
         '''
         Build TPOT classifier chosen model UI.
-        
+
             # Attributes:
                 form: QtWidget.Groupbox, container to hold UI structs
         '''
@@ -219,7 +229,7 @@ class TPOTModelDialog(QDialog):
         form.addRow(model_name_label, self.model_name_display)
         self.model_param_display = QLabel('Test: \ttester\nBest: \tbester')
         form.addRow(model_param_label, self.model_param_display)
-        
+
     def setupUI(self, param_type, param_dict, form):
         """
         Build UI elements using parameters dict of scikit models
@@ -414,7 +424,8 @@ class TPOTModelDialog(QDialog):
                 pass
             self.is_dirty = False
         except Exception as e:
-            self.logger.error(f"Error updating {model} parameters", exc_info=True)
+            self.logger.error(
+                f"Error updating {model} parameters", exc_info=True)
             print("Exception {}".format(e))
             tb = traceback.format_exc()
             print(tb)
@@ -462,36 +473,40 @@ class TPOTModelDialog(QDialog):
             os.makedirs(default_dir)
 
         default_path = os.path.join(
-                default_dir, self.main_model_name + '.json')
+            default_dir, self.main_model_name + '.json')
 
         if not os.path.isfile(default_path) or force_reload:
-            self.logger.info(f"{self.main_model_name} building default parameter spec files.  force_reload = {force_reload}")
+            self.logger.debug(
+                f"{self.main_model_name} building default parameter spec files.  force_reload = {force_reload}")
             save_data = {
                 "model_base": self.params[0]['model_base'],
                 "model_module": self.params[0]['model_module'],
                 "model_class": self.main_model_name,
                 "question_number": "default",
                 "version": "default",
-                "meta" :{
+                "meta": {
                     "training_meta": {},
-                    "tuning_meta" : {}
+                    "tuning_meta": {}
                 },
                 "params": {},
-                "tpot_params" : {}
+                "tpot_params": {
+                    "tpot.TPOTClassifier": {}
+                }
             }
 
             for model, types in self.model_params.items():
-                print("check_for_defaults data:")
-                print(f"{model}")
-                print(types)
+                # print("check_for_defaults data:")
+                # print(f"{model}")
+                # print(types)
                 if model == 'tpot.TPOTClassifier':
                     for type, params in types.items():
                         if type == 'Model':
-                            save_data['params'][params['model_name']] = params['model_params']
+                            save_data['params'][params['model_name']
+                                                ] = params['model_params']
                         if type == 'Hyperparameters':
                             for param_name, param_data in params.items():
-                                save_data['tpot_params'][param_name] = param_data['default']
-                else:    
+                                save_data['tpot_params'][model][param_name] = param_data['default']
+                else:
                     for t, params in types.items():
                         # True if model spec has more than one category of parameters.
                         if not model in save_data['params'].keys():

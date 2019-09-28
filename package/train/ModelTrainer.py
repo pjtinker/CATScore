@@ -111,6 +111,7 @@ class ModelTrainer(QRunnable):
         self._update_log("Beginning ModelTrain run")
         try:
             for col_idx, col in enumerate(self.training_data.columns, 1):
+                # TODO: Replace with user defined suffix
                 if col.endswith('_text'):
                     self._update_log(f"Current classification task: {col}")
                     col_label = col.split("_")[0]
@@ -135,41 +136,35 @@ class ModelTrainer(QRunnable):
                     for model, selected in self.selected_models['sklearn'].items():
                         if selected:
                             try:
+                                model_params = self.get_params_from_file(model, col_path)
                                 if self.tune_models:
-                                    model_path = os.path.join(".\\package\\data\\default_models\\default",
-                                                              model,
-                                                              model + '.json')
-                                    with open(model_path, 'r') as param_file:
-                                        model_params = json.load(
-                                            param_file, object_hook=cat_decoder)
-                                    #TODO: call pipeline for TPOT using Hyperparameters as key and skip grid_search
-                                    pipeline = Pipeline(
-                                        self.get_pipeline(model_params['params']))
-                                    self._update_log(
-                                        f"Begin tuning on {model}")
-                                    rscv = self.grid_search(
-                                        model, x, y, pipeline, self.n_iter, include_tfidf=True)
-                                    if rscv is None:
+                                    if(model.lower() == 'tpotclassifier' ):
+                                        self._update_log("Begin TPOT Optimization")
+                                        tpot_pipeline = Pipeline(self.get_tpot_pipeline(model_params['params'], model_params['tpot_params']))
+                                        tpot_pipeline.fit(x, y)
+                                        new_steps = []
+                                        new_steps.append(('TfidfVectorizer', tpot_pipeline.named_steps['TfidfVectorizer']))
+                                        fitted_pipeline = tpot_pipeline.named_steps['TPOTClassifier'].fitted_pipeline_
+                                        for n, p in fitted_pipeline.named_steps.items():
+                                            new_steps.append((n, p))
+
+                                        pipeline = Pipeline(new_steps)
+                                    else:
+                                        gs_pipeline = Pipeline(
+                                            self.get_pipeline(model_params['params']))
+                                        self._update_log(
+                                            f"Begin tuning on {model}")
+                                        pipeline = self.grid_search(
+                                            model, x, y, gs_pipeline, self.n_iter, include_tfidf=True).best_estimator_
+                                    if pipeline is None:
                                         self._update_log(f"Grid search failed for {model} on task {col}.  Skipping...")
                                         break
                                     else:
-                                        preds = rscv.best_estimator_.predict(x)
+                                        preds = pipeline.predict(x)
                                 else:
-                                    model_path = os.path.join(
-                                        col_path, model, model + '.json')
-                                    if not os.path.isfile(model_path):
-                                        # Get default values
-                                        model_path = os.path.join(".\\package\\data\\default_models\\default",
-                                                                  model,
-                                                                  model + '.json')
-
-                                    # print("model_path", model_path)
-                                    with open(model_path, 'r') as param_file:
-                                        model_params = json.load(
-                                            param_file, object_hook=cat_decoder)
+                                    # model_params = self.get_params_from_file(model, col_path)
                                     self._update_log(
                                         f"Begin training {model}")
-
                                     pipeline = Pipeline(
                                         self.get_pipeline(model_params['params']))
 
@@ -205,15 +200,15 @@ class ModelTrainer(QRunnable):
                                             self.training_eval_params, indent=2, cls=CATEncoder))
                                         return
 
-                                    model_acc = accuracy_score(y, preds)
 
-                                    self._update_log(
-                                        f"Training completed on <b>{model}</b>.")
-                                    self._update_log(f"Accuracy: {model_acc}")
-                                    self._update_log(
-                                        f"Training {model} on full dataset")
-                                    with joblib.parallel_backend('dask'):
-                                        pipeline.fit(x, y)
+                                model_acc = accuracy_score(y, preds)
+                                self._update_log(
+                                    f"Task completed on <b>{model}</b>.")
+                                self._update_log(f"Accuracy: {model_acc}")
+                                self._update_log(
+                                    f"Training {model} on full dataset")
+                                with joblib.parallel_backend('dask'):
+                                    pipeline.fit(x, y)
 
                                 pred_col_name = col_label + '_' + model + '_preds'
                                 prob_col_name = col_label + '_' + model + '_probs'
@@ -227,28 +222,29 @@ class ModelTrainer(QRunnable):
                                 save_path = os.path.join(col_path, model)
                                 if not os.path.exists(save_path):
                                     os.makedirs(save_path)
-                                save_file = os.path.join(
-                                    save_path, model + '.pkl')
-                                self._update_log(
-                                    f"Saving {model} to : {save_file}")
+                                self.save_model(model, pipeline, save_path, model_acc)
+                                # save_file = os.path.join(
+                                #     save_path, model + '.pkl')
+                                # self._update_log(
+                                #     f"Saving {model} to : {save_file}")
                                 
-                                if self.tune_models:
-                                    joblib.dump(rscv, save_file, compress=1)
-                                    self.model_checksums[model] = hashlib.md5(
-                                        open(save_file, 'rb').read()).hexdigest()
-                                    self._update_log(
-                                        f"{model} checksum: {self.model_checksums[model]}")
-                                    self.save_params_to_file(
-                                        model, rscv.best_estimator_.get_params(), save_path, rscv.best_score_)
-                                else:
-                                    joblib.dump(
-                                        pipeline, save_file, compress=1)
-                                    self.model_checksums[model] = hashlib.md5(
-                                        open(save_file, 'rb').read()).hexdigest()
-                                    self._update_log(
-                                        f"{model} checksum: {self.model_checksums[model]}")
-                                    self.save_params_to_file(
-                                        model, pipeline.get_params(), save_path, model_acc)
+                                # if self.tune_models:
+                                #     joblib.dump(rscv.best_estimator_, save_file, compress=1)
+                                #     self.model_checksums[model] = hashlib.md5(
+                                #         open(save_file, 'rb').read()).hexdigest()
+                                #     self._update_log(
+                                #         f"{model} checksum: {self.model_checksums[model]}")
+                                #     self.save_params_to_file(
+                                #         model, rscv.best_estimator_.get_params(), save_path, rscv.best_score_)
+                                # else:
+                                #     joblib.dump(
+                                #         pipeline, save_file, compress=1)
+                                #     self.model_checksums[model] = hashlib.md5(
+                                #         open(save_file, 'rb').read()).hexdigest()
+                                #     self._update_log(
+                                #         f"{model} checksum: {self.model_checksums[model]}")
+                                #     self.save_params_to_file(
+                                #         model, pipeline.get_params(), save_path, model_acc)
                             except Exception as e:
                                 self.logger.error(
                                     "ModelTrainer.run (Sklearn):", exc_info=True)
@@ -270,50 +266,37 @@ class ModelTrainer(QRunnable):
             print(tb)
             self._update_log(tb)
 
-    def train_stacker(self, x, y, col_path):
-        self._update_log(
-            "Training Stacking algorithm (DecisionTreeClassifier)")
-        final_preds = np.empty(y.shape)
-        encv = DecisionTreeClassifier()
-        skf = StratifiedKFold(n_splits=5,
-                              random_state=RANDOM_SEED)
+    def get_params_from_file(self, model_name, base_path=None):
+        """
+            Loads model parameters either from file (if version has been saved), or grabs the defaults
+                # Arguments
+                    model_name: string, model name used to specify path
+                    base_path: string, optional pathing used for loading custom model parameters
+                # Returns
+                    model_params: dict, parameters from file or defaults
+        """
+        try:
+            if not self.tune_models and base_path is not None:
+                model_path = os.path.join(base_path, model_name, model_name + '.json')
+                if not os.path.isfile(model_path):
+                    model_path = os.path.join(".\\package\\data\\default_models\\default",
+                                                model_name,
+                                                model_name + '.json')
+            else:
+                model_path = os.path.join(".\\package\\data\\default_models\\default",
+                                model_name,
+                                model_name + '.json')
 
-        for train, test in skf.split(x, y):
-            with joblib.parallel_backend('dask'):
-                encv.fit(x.iloc[train], y[train])
-            final_preds[test] = encv.predict(x.iloc[test])
-        # stack_preds = [1 if x > .5 else 0 for x in np.nditer(final_preds)]
-        self._update_log("Stacking training complete")
-        stack_acc = accuracy_score(y, final_preds)
-        self._update_log(
-            f"Stacker score: {stack_acc}")
+            with open(model_path, 'r') as param_file:
+                model_params = json.load(param_file, object_hook=cat_decoder)
+            return model_params
+        except Exception as e:
+            self.logger.error(
+                "ModelTrainer.get_params_from_file:", exc_info=True)
+            tb = traceback.format_exc()
+            print(tb)
+            self._update_log(tb)
 
-        save_path = os.path.join(col_path, 'Stacker')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        save_file = os.path.join(
-            save_path, 'Stacker.pkl')
-        self._update_log(f"Saving Stacking algorithm to : {save_file}")
-        joblib.dump(encv, save_file, compress=1)
-        self.model_checksums['Stacker'] = hashlib.md5(
-            open(save_file, 'rb').read()).hexdigest()
-        self._update_log(f"Stacking hash: {self.model_checksums['Stacker']}")
-        # Save particulars to file
-        stacker_info = {
-            "column": col_path.split("\\")[-1],
-            "version_directory": self.version_directory,
-            "last_train_date": time.ctime(time.time()),
-            "train_eval_score": stack_acc,
-            "model_checksums": self.model_checksums
-        }
-        stacker_json_save_file = os.path.join(save_path, 'Stacker.json')
-        with open(stacker_json_save_file, 'w') as outfile:
-            json.dump(stacker_info, outfile, indent=2)
-
-        self._update_log("Run complete")
-        self._update_log("********************************************\n")
-        # self._update_log(f"<font color='blue'>Idle</font><br>")
-        self.signals.training_complete.emit(0, False)
 
     def get_pipeline(self, param_dict):
         """Builds pipeline steps required for sklearn models.  
@@ -321,7 +304,7 @@ class ModelTrainer(QRunnable):
                 # Arguments
                     param_dict: dict, dictionary of current model parameter values.
                 # Returns
-                    pipeline_steps, list: list of steps with intialized classes.
+                    pipeline_steps: list, list of steps with intialized classes.
         """
         pipeline_queue = PriorityQueue()
         for args, values in param_dict.items():
@@ -349,6 +332,38 @@ class ModelTrainer(QRunnable):
             pipeline.append(pipeline_queue.get()[-1])
         return pipeline
 
+
+    def get_tpot_pipeline(self, param_dict, tpot_params):
+        # print("tpot_params:")
+        # print(json.dumps(tpot_params, indent=2))
+        pipeline_queue = PriorityQueue()
+        for args, values in param_dict.items():
+            full_class = args.split('.')
+            current_module = ".".join(full_class[0:-1])
+            current_type = full_class[1]
+
+            if current_type == 'feature_extraction':
+                priority = 0
+            elif current_type == 'feature_selection':
+                priority = 50
+            else:
+                continue
+            inst_module = importlib.import_module(current_module)
+            current_class = getattr(inst_module, full_class[-1])
+            if values:
+                pipeline_queue.put(
+                    (priority, (full_class[-1], current_class(**values))))
+            else:
+                pipeline_queue.put(
+                    (priority, (full_class[-1], current_class())))
+        
+        pipeline_queue.put((100, ('TPOTClassifier', TPOTClassifier(**tpot_params['tpot.TPOTClassifier']))))
+
+        pipeline = []
+        while not pipeline_queue.empty():
+            pipeline.append(pipeline_queue.get()[-1])
+        return pipeline
+
     def grid_search(self,
                     model,
                     x,
@@ -363,13 +378,13 @@ class ModelTrainer(QRunnable):
 
             # Arguments
 
-                model, string: name of classifier in pipeline
-                x, pandas: DataFrame, training data
-                y, numpy:array, training labels
-                pipeline, sklearn:model_selection.Pipeline, pipeline object containing feature extractors, feature selectors and estimator
-                n_iter, int: number of iterations to perform search
-                include_tfidf, bool: flag to indicate tfidf is included in the pipeline
-                keras_params, dict: parameters necessary for model training outside of the regular hyperparams.  e.g. input_shape, num_classes, num_features
+                model: string, name of classifier in pipeline
+                x: pandas.DataFrame, training data
+                y: numpy.array, training labels
+                pipeline: sklearn.model_selection.Pipeline, pipeline object containing feature extractors, feature selectors and estimator
+                n_iter: int, number of iterations to perform search
+                include_tfidf: bool:, flag to indicate tfidf is included in the pipeline
+                keras_params: dict, parameters necessary for model training outside of the regular hyperparams.  e.g. input_shape, num_classes, num_features
         """
         try:
             start_time = time.time()
@@ -377,8 +392,8 @@ class ModelTrainer(QRunnable):
             with open(filepath, 'r') as f:
                 # print("Loading model:", filepath)
                 model_data = json.load(f, object_hook=cat_decoder)
-            print("model_data:")
-            print(json.dumps(model_data, indent=2))
+            # print("model_data:")
+            # print(json.dumps(model_data, indent=2))
             grid_params = {}
             default_params = model_data[model]
 
@@ -466,8 +481,31 @@ class ModelTrainer(QRunnable):
             print(tb)
             self._update_log(tb)
 
+
+    def save_model(self, model_name, pipeline, save_path, score):
+        # if self.tune_models:
+        #     pipeline = pipeline.best_estimator_
+        save_file = os.path.join(
+            save_path, model_name + '.pkl')
+        self._update_log(
+            f"Saving {model_name} to : {save_file}")
+        joblib.dump(
+            pipeline, save_file, compress=1)
+        self.model_checksums[model_name] = hashlib.md5(
+            open(save_file, 'rb').read()).hexdigest()
+        self._update_log(
+            f"{model_name} checksum: {self.model_checksums[model_name]}")
+        if model_name == 'TPOTClassifier':
+            self.save_tpot_params_to_file(pipeline, save_path, score)
+        else:
+            self.save_params_to_file(model_name, pipeline.get_params(), save_path, score)
+
+
     def save_params_to_file(self, model, best_params, model_param_path, best_score):
         try:
+            print("best_params:")
+            print(best_params)
+            
             model_path = os.path.join(model_param_path, model, model + '.json')
             if not os.path.isfile(model_path):
                 # Get default values
@@ -493,6 +531,8 @@ class ModelTrainer(QRunnable):
                     "tune_eval_score": best_score
                 }
 
+            print("model_params:")
+            print(model_params)
             # Update model params to the best
             for param_type, parameters in model_params['params'].items():
                 param_key = param_type.split('.')[-1]
@@ -514,6 +554,135 @@ class ModelTrainer(QRunnable):
                 "ModelTrainer.save_params_to_file {}:".format(model), exc_info=True)
             tb = traceback.format_exc()
             print(tb)
+    # TODO: Get TPOT parameter save working
+    def save_tpot_params_to_file(self, pipeline, model_param_path, best_score):
+        try:
+            model = 'TPOTClassifier'
+            model_path = os.path.join(model_param_path, model, model + '.json')
+            if not os.path.isfile(model_path):
+                # Get default values
+                model_path = os.path.join(".\\package\\data\\default_models\\default",
+                                          model,
+                                          model + '.json')
+            with open(model_path, 'r') as param_file:
+                model_params = json.load(param_file)
+
+            best_params = pipeline.named_steps['TfidfVectorizer'].get_params()
+            print("best_params:")
+            print(best_params)
+
+
+            tfidf_params = {}
+            tpot_model_params = {}
+            tpot_params = model_params['tpot_params']
+            # Update tfidf params to the best
+            for param_type, parameters in model_params['params'].items():
+                param_key = param_type.split('.')[-1]
+                for k, v in best_params.items():
+                    best_param_key = k.split('__')[-1]
+                    if k.startswith(param_key) and best_param_key in parameters.keys():
+                        tfidf_params[best_param_key] = v
+            
+            model_params = {}
+
+            model_params['meta'] = {
+                "training_meta": {
+                    "last_train_date": time.ctime(time.time()),
+                    "train_eval_score": best_score,
+                    "checksum": self.model_checksums[model]
+                },
+            }
+            if self.tune_models:
+                model_params['meta']["tuning_meta"] = {
+                    "last_tune_date": time.ctime(time.time()),
+                    "n_iter": self.n_iter,
+                    "tuning_duration": self.grid_search_time,
+                    "tune_eval_score": best_score
+                }
+            model_params['params'] = {}
+            # Now to get the 
+            for name, obj in pipeline.named_steps.items():
+                if name == 'TfidfVectorizer':
+                    continue
+                module_name = str(obj.__class__).split("'")[1]
+                module_params = obj.get_params()
+                model_params['params'].update({module_name : module_params})
+                # tpot_model_params[module_name] = module_params
+            
+            model_params['params'].update(tpot_model_params)
+            model_params['params'].update(tfidf_params)
+            model_params['tpot_params'] = tpot_params
+            print("model_params after all updates:")
+            print(model_params)
+            # print(
+            #     f"***** Saving {model} best_params to {model_param_path}....")
+            with open(os.path.join(model_param_path, model + '.json'), 'w') as outfile:
+                json.dump(model_params, outfile, indent=2, cls=CATEncoder)
+
+        except FileNotFoundError as fnfe:
+            self.logger.debug(
+                "ModelTrainer.save_params_to_file {} not found".format(model_path))
+        except Exception as e:
+            self.logger.error(
+                "ModelTrainer.save_params_to_file {}:".format(model), exc_info=True)
+            tb = traceback.format_exc()
+            print(tb)
+
+
+    @pyqtSlot()
+    def stop_thread(self):
+        self._update_log("Stopping ModelTrainer...")
+        # TODO: Add funtionality to stop the thread
+        self.__abort = True
+        self.quit()
+        self.wait()
+
+
+    def train_stacker(self, x, y, col_path):
+        self._update_log(
+            "Training Stacking algorithm (DecisionTreeClassifier)")
+        final_preds = np.empty(y.shape)
+        encv = DecisionTreeClassifier()
+        skf = StratifiedKFold(n_splits=5,
+                              random_state=RANDOM_SEED)
+
+        for train, test in skf.split(x, y):
+            with joblib.parallel_backend('dask'):
+                encv.fit(x.iloc[train], y[train])
+            final_preds[test] = encv.predict(x.iloc[test])
+        # stack_preds = [1 if x > .5 else 0 for x in np.nditer(final_preds)]
+        self._update_log("Stacking training complete")
+        stack_acc = accuracy_score(y, final_preds)
+        self._update_log(
+            f"Stacker score: {stack_acc}")
+
+        save_path = os.path.join(col_path, 'Stacker')
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        save_file = os.path.join(
+            save_path, 'Stacker.pkl')
+        self._update_log(f"Saving Stacking algorithm to : {save_file}")
+        joblib.dump(encv, save_file, compress=1)
+        self.model_checksums['Stacker'] = hashlib.md5(
+            open(save_file, 'rb').read()).hexdigest()
+        self._update_log(f"Stacking hash: {self.model_checksums['Stacker']}")
+        # Save particulars to file
+        stacker_info = {
+            "column": col_path.split("\\")[-1],
+            "version_directory": self.version_directory,
+            "last_train_date": time.ctime(time.time()),
+            "train_eval_score": stack_acc,
+            "model_checksums": self.model_checksums
+        }
+        stacker_json_save_file = os.path.join(save_path, 'Stacker.json')
+        with open(stacker_json_save_file, 'w') as outfile:
+            json.dump(stacker_info, outfile, indent=2)
+
+        self._update_log("Run complete")
+        self._update_log("********************************************\n")
+        # self._update_log(f"<font color='blue'>Idle</font><br>")
+        self.signals.training_complete.emit(0, False)
+
 
     def _generate_best_param_dict(self, model_param_keys, best_params):
         try:
@@ -534,10 +703,4 @@ class ModelTrainer(QRunnable):
         outbound = f"{time.ctime(time.time())} - {msg}<br>"
         self.signals.update_training_logger.emit(outbound)
 
-    @pyqtSlot()
-    def stop_thread(self):
-        self._update_log("Stopping ModelTrainer...")
-        # TODO: Add funtionality to stop the thread
-        self.__abort = True
-        self.quit()
-        self.wait()
+

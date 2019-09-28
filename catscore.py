@@ -57,7 +57,8 @@ if __name__ == "__main__":
     import logging.handlers 
     """Setup logger for logging"""
     # handler = logging.handlers.TimedRotatingFileHandler('cat.log', when='d', interval=1)
-    handler = logging.FileHandler('cat.log')
+    # handler = logging.FileHandler('cat.log')
+    handler = logging.handlers.RotatingFileHandler('cat.log', mode='a', maxBytes=1000)
     logFormatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(logFormatter)
     logging.basicConfig( handlers=[handler], format=logFormatter, level=logging.DEBUG)
