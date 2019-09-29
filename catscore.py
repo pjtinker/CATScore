@@ -8,6 +8,7 @@ import argparse
 import pandas as pd
 import logging
 import logging.handlers
+from dask.distributed import Client
 
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QVBoxLayout, 
                                 QMainWindow, QSizePolicy, QWidget, QGridLayout,
@@ -37,6 +38,7 @@ class MainWindow(QMainWindow):
         self.cat_train = CatTrain(self)
         self.cat_evaluate = CatEvaluate(self)
 
+        self.cat_train.version_widget.version_created.connect(self.cat_evaluate.score_widget.data_predictor.add_new_version)
         self.button_grid = QGridLayout()
 
         self.open_cat_train_btn = QPushButton('CAT &Train', self)
@@ -56,11 +58,13 @@ if __name__ == "__main__":
     import logging.handlers 
     """Setup logger for logging"""
     # handler = logging.handlers.TimedRotatingFileHandler('cat.log', when='d', interval=1)
-    handler = logging.FileHandler('cat.log')
+    # handler = logging.FileHandler('cat.log')
+    handler = logging.handlers.RotatingFileHandler('cat.log', mode='a', maxBytes=1000)
     logFormatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(logFormatter)
     logging.basicConfig( handlers=[handler], format=logFormatter, level=logging.DEBUG)
-
+    # dask client for paralellization
+    client = Client()
     # Qt Application
     app = QApplication(sys.argv)
     app.processEvents()

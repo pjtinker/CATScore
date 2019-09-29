@@ -51,8 +51,6 @@ def clearLayout(layout):
 
 def cat_decoder(obj):
     if "score_func" in obj:
-        # if "options" in obj['score_func']:
-        #     return obj
         module = importlib.import_module(obj['score_func']['module'])
         return {"score_func" : getattr(module, obj['score_func']['name'])}
 

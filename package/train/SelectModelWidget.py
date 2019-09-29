@@ -17,9 +17,9 @@ from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
                                QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
                                QVBoxLayout, QTextEdit, QWidget)
 
-
+from PyQt5.QtGui import QTextCursor
 from package.train.models.SkModelDialog import SkModelDialog
-from package.train.models.TfModelDialog import TfModelDialog
+from package.train.models.TPOTModelDialog import TPOTModelDialog
 from package.train.ModelTrainer import ModelTrainer
 from package.utils.catutils import exceptionWarning
 
@@ -174,6 +174,7 @@ class SelectModelWidget(QWidget):
         self.training_logger.setReadOnly(True)
         self.training_logger.setAcceptRichText(True)
         self.training_logger.insertHtml("<i>Multithreading with maximum %d threads</i><br>" % self.threadpool.maxThreadCount())
+        # self.training_logger.setHeight(400)
         self.main_layout.addWidget(self.training_logger)
 
         self.main_layout.addStretch()
@@ -181,8 +182,15 @@ class SelectModelWidget(QWidget):
         self.run_btn.clicked.connect(lambda: self.train_models())
         self.run_btn.setEnabled(False)
 
+        self.stop_btn = QPushButton('S&top')
+        self.stop_btn.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+
         self.comms.enable_training_btn.connect(self.set_training_btn_state)
-        self.main_layout.addWidget(self.run_btn)
+        self.button_hbox = QHBoxLayout()
+
+        self.button_hbox.addWidget(self.run_btn)
+        self.button_hbox.addWidget(self.stop_btn)
+        self.main_layout.addLayout(self.button_hbox)
         self.setLayout(self.main_layout)
         
         # Trigger update to load model parameters
@@ -196,6 +204,7 @@ class SelectModelWidget(QWidget):
         """
         self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
+        # self.version_selection.InsertPolicy = QComboBox.InsertAlphabetically
         # Changed default models to a unique directory.  This
         # is where default models will be saved.  
         self.version_selection.addItem('default', '.\\package\\data\\default_models\\default')
@@ -207,11 +216,10 @@ class SelectModelWidget(QWidget):
         self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection: 
                                                             self._update_version(y.currentData())
                                                             )
-        # idx = self.version_selection.findData(".\\package\\data\\versions\\default")
-        # self.version_selection.setCurrentIndex(idx)
         self.version_form.addRow(self.version_selection_label, self.version_selection)
         
-        # Load base TF-IDF and feature selection data
+        # Load base TF-I
+        # DF and feature selection data
         try:
             with open(BASE_TFIDF_DIR, 'r') as f:
                 tfidf_data = json.load(f)
@@ -235,11 +243,13 @@ class SelectModelWidget(QWidget):
                         model_data = json.load(f)
                         model = model_data['model_class']
                         model_base = model_data['model_base']
-                        
+                        model_module = model_data['model_module']
                         # The order of the arguments matters!  model_data must come first. 
                         if model_base == 'tensorflow':
                             continue
                             # model_dialog = SkModelDialog(self, model_data)
+                        if model_module == 'tpot':
+                            model_dialog = TPOTModelDialog(self, model_data, tfidf_data)
                         else:
                             model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
                         self.comms.version_change.connect(model_dialog.update_version)
@@ -402,7 +412,7 @@ class SelectModelWidget(QWidget):
         to specify hyperparameters for each available version field.  
 
             # Arguments
-                dialog(ModelDialog): Specified model dialog.
+                dialog: ModelDialog, Specified model dialog.
         """
         dialog.save_params()
 
@@ -413,10 +423,11 @@ class SelectModelWidget(QWidget):
         pyqtSlot to receive new version created pyqtSignal.
 
             # Arguments
-                v_dir(String): directory of newly created version.
+                v_dir: string, directory of newly created version.
         """
         version = v_dir.split('\\')[-1]
         self.version_selection.addItem(version, v_dir)
+        self.version_selection.model().sort(0)
 
     @pyqtSlot(pd.DataFrame)
     def load_data(self, data):
@@ -424,18 +435,18 @@ class SelectModelWidget(QWidget):
         pyqtSlot to receive pandas DataFrame after DataLoader has completed it's work
 
             # Arguments
-                data(pandas.DataFrame): DataFrame of training data
+                data: pandas.DataFrame, training data
         """
         self.training_data = data
         self.comms.enable_training_btn.emit(True)
-        # if(data.empty):
-        #     self.run_btn.setEnabled(False)
-        # else:
-        #     # self.training_data = data
-        #     self.run_btn.setEnabled(True)
+
 
     @pyqtSlot(Qt.CheckState)
-    def set_training_btn_state(self, state):
+    def set_training_btn_state(self):
+        """
+        Sets the run button enabled state.
+        Checks that there are models selected in sklearn or tensorflow 
+        """
         if (not self.training_data.empty 
             and 
                 (1 in self.selected_models['sklearn'].values() 
@@ -472,8 +483,10 @@ class SelectModelWidget(QWidget):
             self.model_trainer.signals.update_training_logger.connect(self.update_training_logger)
             self.update_progressbar.emit(1, True)
             self.model_trainer.signals.training_complete.connect(self.training_complete)
-            # self.comms.stop_training.connect(self.model_trainer.stop_thread)
+            self.comms.stop_training.connect(self.model_trainer.stop_thread)
             self.run_btn.setEnabled(False)
+            self.stop_btn.clicked.connect(lambda: self._abort_training())
+
             # self.model_trainer.start()
             # self.run_btn.clicked.connect(self._abort_training)
             self.threadpool.start(self.model_trainer)
@@ -486,12 +499,24 @@ class SelectModelWidget(QWidget):
     @pyqtSlot(str)
     def update_training_logger(self, msg):
         self.training_logger.insertHtml(msg)
+        self.training_logger.moveCursor(QTextCursor.End)
 
     @pyqtSlot(int, bool)
     def training_complete(self, val, pulse):
+        """
+        Resets progressbar, unchecks 'Train models', and emits signal to refresh the parameter
+        values in each ModelDialog
+
+            # Arguments
+                val: int or float, value used to set progressbar
+                pulse: bool, used to toggle progressbar pulse
+        """
         self.update_progressbar.emit(val, pulse)
         self.run_btn.setEnabled(True)
         self.run_btn.setText("Train models")
+        self.tune_models_chkbox.setChecked(False)
+        self.comms.version_change.emit(self.selected_version)
+
 
     def _abort_training(self):
         self.comms.stop_training.emit()
@@ -502,7 +527,7 @@ class SelectModelWidget(QWidget):
         Parses selected version directory and emits pyqtSignal to update each ModelDialog
 
             # Arguments
-                directory(String): directory selected by user.
+                directory: string, directory selected by user.
         """
         self.selected_version = directory
         # Emit pyqtSignal
@@ -515,8 +540,8 @@ class SelectModelWidget(QWidget):
         checkboxes associated with each model.
 
             # Arguments:
-                model(String): name of the selected model
-                state(bool): the truth of the selection.  True->selected, False->unselected
+                model: string, name of the selected model
+                state: bool, the truth of the selection.  True->selected, False->unselected
         """
         truth = False
         if state == Qt.Checked:
@@ -530,7 +555,7 @@ class SelectModelWidget(QWidget):
         by the user.
 
             # Arguments:
-                state(bool): the state of tuning.  False->no tuning, True->tune models
+                state: bool, the state of tuning.  False->no tuning, True->tune models
         """
         self.run_btn.setText("Tune Models" if state else "Train Models")
         self.tuning_groupbox.setEnabled(state)
@@ -547,9 +572,9 @@ class SelectModelWidget(QWidget):
         Needs work as the sklearn training parameters are mutually exclusive.
 
             # Arguments
-                model_base(String): model base for specified training params
-                param(String): parameter name
-                value(String, int, or double): value of specified parameter
+                model_base: string, model base for specified training params
+                param: string, parameter name
+                value: string, int, or double, value of specified parameter
         """
         if model_base is None or param is None:
             return
@@ -563,7 +588,6 @@ class SelectModelWidget(QWidget):
         except KeyError as ke:
             print(ke)
 
-        # print(json.dumps(self.training_params, indent=2))
 
     def _update_sklearn_training_type(self, eval_type, value):
         """
@@ -575,8 +599,8 @@ class SelectModelWidget(QWidget):
         (validation) or None are model evaluation options.  
 
             # Arguments
-                eval_type(String): The type of model evaluation specified by the user.
-                value(int or double): value corresponding to selected type
+                eval_type: string, The type of model evaluation specified by the user.
+                value: int or double, value corresponding to selected type
         """
         truth = False
         if eval_type == 'cv':
@@ -591,4 +615,3 @@ class SelectModelWidget(QWidget):
 
         self.training_params['sklearn']['type'] = eval_type
         self.training_params['sklearn']['value'] = value
-        # print(json.dumps(self.training_params, indent=2))
