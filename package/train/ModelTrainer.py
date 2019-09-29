@@ -31,7 +31,7 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from sklearn.utils import parallel_backend, register_parallel_backend
 from sklearn.preprocessing import FunctionTransformer
 
-from dask.distributed import Client
+# from dask.distributed import Client
 import joblib
 from joblib._parallel_backends import ThreadingBackend, SequentialBackend, LokyBackend
 import scipy
@@ -66,8 +66,9 @@ class ModelTrainer(QRunnable):
     QThread tasked with running all model training/tuning.  
     This could potentially take days to complete.
     """
-    # This allows for multi-threading from a thread.  GUI will not freeze and
+    # Setting paralell_backend to threading allows for multi-threading from a thread.  GUI will not freeze and
     # multithreading seems functional.
+    # However, program now uses dask for the backend.  This code is left in for posterity
     # NOTE: some models, e.g. RandomForestClassifier, will not train using this backend.
     # An exception is caught and the log updated if this occurs.
     # register_parallel_backend('threading', ThreadingBackend, make_default=True)
@@ -86,14 +87,9 @@ class ModelTrainer(QRunnable):
             'feature_selection'
         ]
         self.version_directory = version_directory
-        # print(self.version_directory)
         self.selected_models = selected_models
-        # print(self.selected_models)
         self.training_eval_params = training_eval_params
-        # print(json.dumps(self.training_eval_params, indent=2, cls=CATEncoder))
         self.training_data = training_data
-        # print(self.training_data.head())
-        # print("Tune models?", tune_models)
         self.tune_models = tune_models
         self.n_iter = n_iter
         self.use_proba = use_proba
@@ -102,7 +98,7 @@ class ModelTrainer(QRunnable):
         self.all_predictions_dict = {}
         self.grid_search_time = None
         self.model_checksums = {}
-
+        self._is_running = True
     @pyqtSlot()
     def run(self):
         # Run thru enumeration of columns.  The second argument in enumerate
@@ -134,6 +130,8 @@ class ModelTrainer(QRunnable):
                     sk_eval_value = self.training_eval_params['sklearn']['value']
                     # SKLEARN
                     for model, selected in self.selected_models['sklearn'].items():
+                        if self._is_running == False:
+                            break
                         if selected:
                             try:
                                 model_params = self.get_params_from_file(model, col_path)
@@ -156,11 +154,11 @@ class ModelTrainer(QRunnable):
                                             f"Begin tuning on {model}")
                                         pipeline = self.grid_search(
                                             model, x, y, gs_pipeline, self.n_iter, include_tfidf=True).best_estimator_
+                                    
                                     if pipeline is None:
                                         self._update_log(f"Grid search failed for {model} on task {col}.  Skipping...")
                                         break
-                                    else:
-                                        preds = pipeline.predict(x)
+                                    preds = pipeline.predict(x)
                                 else:
                                     # model_params = self.get_params_from_file(model, col_path)
                                     self._update_log(
@@ -170,7 +168,7 @@ class ModelTrainer(QRunnable):
 
                                     if sk_eval_type == 'cv':
                                         skf = StratifiedKFold(n_splits=sk_eval_value,
-                                                              random_state=RANDOM_SEED)
+                                                            random_state=RANDOM_SEED)
                                         try:
                                             for train, test in skf.split(x, y):
                                                 with joblib.parallel_backend('dask'):
@@ -200,7 +198,6 @@ class ModelTrainer(QRunnable):
                                             self.training_eval_params, indent=2, cls=CATEncoder))
                                         return
 
-
                                 model_acc = accuracy_score(y, preds)
                                 self._update_log(
                                     f"Task completed on <b>{model}</b>.")
@@ -223,42 +220,19 @@ class ModelTrainer(QRunnable):
                                 if not os.path.exists(save_path):
                                     os.makedirs(save_path)
                                 self.save_model(model, pipeline, save_path, model_acc)
-                                # save_file = os.path.join(
-                                #     save_path, model + '.pkl')
-                                # self._update_log(
-                                #     f"Saving {model} to : {save_file}")
-                                
-                                # if self.tune_models:
-                                #     joblib.dump(rscv.best_estimator_, save_file, compress=1)
-                                #     self.model_checksums[model] = hashlib.md5(
-                                #         open(save_file, 'rb').read()).hexdigest()
-                                #     self._update_log(
-                                #         f"{model} checksum: {self.model_checksums[model]}")
-                                #     self.save_params_to_file(
-                                #         model, rscv.best_estimator_.get_params(), save_path, rscv.best_score_)
-                                # else:
-                                #     joblib.dump(
-                                #         pipeline, save_file, compress=1)
-                                #     self.model_checksums[model] = hashlib.md5(
-                                #         open(save_file, 'rb').read()).hexdigest()
-                                #     self._update_log(
-                                #         f"{model} checksum: {self.model_checksums[model]}")
-                                #     self.save_params_to_file(
-                                #         model, pipeline.get_params(), save_path, model_acc)
                             except Exception as e:
                                 self.logger.error(
                                     "ModelTrainer.run (Sklearn):", exc_info=True)
                                 tb = traceback.format_exc()
                                 print(tb)
                                 self._update_log(tb)
-                  # Tensorflow used to reside here
-
+                # Tensorflow used to reside here
+                    print("Results:", results.head())
                     if self.train_stacking_algorithm:
                         self.train_stacker(results.drop('actual', axis=1),
-                                           results.actual.values,
-                                           col_path)
-
-                    # training_complete.emit(0, False)
+                                        results.actual.values,
+                                        col_path)
+                    self._is_running = False
 
         except Exception as e:
             self.logger.error("ModelTrainer.run (General):", exc_info=True)
@@ -334,8 +308,6 @@ class ModelTrainer(QRunnable):
 
 
     def get_tpot_pipeline(self, param_dict, tpot_params):
-        # print("tpot_params:")
-        # print(json.dumps(tpot_params, indent=2))
         pipeline_queue = PriorityQueue()
         for args, values in param_dict.items():
             full_class = args.split('.')
@@ -453,8 +425,6 @@ class ModelTrainer(QRunnable):
                 pipeline.steps.pop(1)
 
             self._update_log(f"Beginning RandomizedSearchCV on {model}...")
-            # print("Params: ", grid_params)
-            # print("Pipeline:", [name for name, _ in pipeline.steps])
             rscv = RandomizedSearchCV(pipeline,
                                       grid_params,
                                       n_jobs=n_jobs,
@@ -483,8 +453,6 @@ class ModelTrainer(QRunnable):
 
 
     def save_model(self, model_name, pipeline, save_path, score):
-        # if self.tune_models:
-        #     pipeline = pipeline.best_estimator_
         save_file = os.path.join(
             save_path, model_name + '.pkl')
         self._update_log(
@@ -502,10 +470,7 @@ class ModelTrainer(QRunnable):
 
 
     def save_params_to_file(self, model, best_params, model_param_path, best_score):
-        try:
-            print("best_params:")
-            print(best_params)
-            
+        try:            
             model_path = os.path.join(model_param_path, model, model + '.json')
             if not os.path.isfile(model_path):
                 # Get default values
@@ -541,8 +506,6 @@ class ModelTrainer(QRunnable):
                     if k.startswith(param_key) and best_param_key in parameters.keys():
                         parameters[best_param_key] = v
 
-            # print(
-            #     f"***** Saving {model} best_params to {model_param_path}....")
             with open(os.path.join(model_param_path, model + '.json'), 'w') as outfile:
                 json.dump(model_params, outfile, indent=2, cls=CATEncoder)
 
@@ -554,7 +517,8 @@ class ModelTrainer(QRunnable):
                 "ModelTrainer.save_params_to_file {}:".format(model), exc_info=True)
             tb = traceback.format_exc()
             print(tb)
-    # TODO: Get TPOT parameter save working
+
+
     def save_tpot_params_to_file(self, pipeline, model_param_path, best_score):
         try:
             model = 'TPOTClassifier'
@@ -567,24 +531,25 @@ class ModelTrainer(QRunnable):
             with open(model_path, 'r') as param_file:
                 model_params = json.load(param_file)
 
-            best_params = pipeline.named_steps['TfidfVectorizer'].get_params()
+            best_params = pipeline.get_params()
             print("best_params:")
             print(best_params)
 
-
-            tfidf_params = {}
-            tpot_model_params = {}
             tpot_params = model_params['tpot_params']
+            # Remove any models under params that are not TfidfVectorizers
+            for param_type in list(model_params['params'].keys()):
+                param_key = param_type.split('.')[1]
+                if param_key != 'feature_extraction':
+                    del model_params['params'][param_type]
+
             # Update tfidf params to the best
             for param_type, parameters in model_params['params'].items():
                 param_key = param_type.split('.')[-1]
                 for k, v in best_params.items():
                     best_param_key = k.split('__')[-1]
                     if k.startswith(param_key) and best_param_key in parameters.keys():
-                        tfidf_params[best_param_key] = v
+                        parameters[best_param_key] = v
             
-            model_params = {}
-
             model_params['meta'] = {
                 "training_meta": {
                     "last_train_date": time.ctime(time.time()),
@@ -599,23 +564,16 @@ class ModelTrainer(QRunnable):
                     "tuning_duration": self.grid_search_time,
                     "tune_eval_score": best_score
                 }
-            model_params['params'] = {}
-            # Now to get the 
+            # Now to get the new model parameters 
             for name, obj in pipeline.named_steps.items():
                 if name == 'TfidfVectorizer':
                     continue
                 module_name = str(obj.__class__).split("'")[1]
                 module_params = obj.get_params()
                 model_params['params'].update({module_name : module_params})
-                # tpot_model_params[module_name] = module_params
-            
-            model_params['params'].update(tpot_model_params)
-            model_params['params'].update(tfidf_params)
+
             model_params['tpot_params'] = tpot_params
-            print("model_params after all updates:")
-            print(model_params)
-            # print(
-            #     f"***** Saving {model} best_params to {model_param_path}....")
+
             with open(os.path.join(model_param_path, model + '.json'), 'w') as outfile:
                 json.dump(model_params, outfile, indent=2, cls=CATEncoder)
 
@@ -629,13 +587,10 @@ class ModelTrainer(QRunnable):
             print(tb)
 
 
-    @pyqtSlot()
+    # @pyqtSlot()
     def stop_thread(self):
-        self._update_log("Stopping ModelTrainer...")
-        # TODO: Add funtionality to stop the thread
-        self.__abort = True
-        self.quit()
-        self.wait()
+        self._update_log("Attempting to stop ModelTrainer.<br>Current task must complete before stopping...")
+        self._is_running = False
 
 
     def train_stacker(self, x, y, col_path):

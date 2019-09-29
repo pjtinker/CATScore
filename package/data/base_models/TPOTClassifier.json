@@ -10,7 +10,7 @@
                 "default" : 5,
                 "min" : 2,
                 "max" : 200,
-                "step_size" : 2,
+                "step_size" : 1,
                 "tunable" : false,
                 "tooltip" : ""
             },

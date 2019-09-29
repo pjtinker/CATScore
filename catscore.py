@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
         self.cat_train = CatTrain(self)
         self.cat_evaluate = CatEvaluate(self)
 
+        self.cat_train.version_widget.version_created.connect(self.cat_evaluate.score_widget.data_predictor.add_new_version)
         self.button_grid = QGridLayout()
 
         self.open_cat_train_btn = QPushButton('CAT &Train', self)

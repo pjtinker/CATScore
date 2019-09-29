@@ -63,9 +63,9 @@ class Predictor(QRunnable):
         self.signals = PredictorSignals()
 
         self.model_metadata = model_metadata
-        # print(json.dumps(self.model_metadata, indent=2))
+        print(json.dumps(self.model_metadata, indent=2))
         self.evaluation_data = evaluation_data
-        # print(evaluation_data.head())
+        print(evaluation_data.head())
         self.predictions = pd.DataFrame(index=self.evaluation_data.index)
         # self.problem_children = pd.DataFrame(index=self.evaluation_data.index)
 
@@ -110,8 +110,7 @@ class Predictor(QRunnable):
                       '__predicted'] = self.predictions[column_prefix + '__Stacker']
             data_copy[column_prefix + '__actual'] = np.NaN
             self._update_log(f"Searching for problematic samples for {column}")
-            # self.problem_children[column_prefix + '_' + model_name] = self.predictions[last_trained].apply(
-            # self.get_difficult_samples, axis=1)
+
             last_trained.append(column_prefix + '__Stacker')
             self.predictions[column_prefix +
                              '__agreement_ratio'] = self.predictions[last_trained].apply(get_ratio, axis=1)

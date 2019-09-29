@@ -319,7 +319,7 @@ class TPOTModelDialog(QDialog):
             print(tb)
 
     @pyqtSlot(str)
-    def update_version(self, directory):
+    def update_version(self, directory=None):
         """
         Updates the question combobox based upon selected directory.
 
@@ -328,7 +328,8 @@ class TPOTModelDialog(QDialog):
                 load default values.  
         """
         self.is_dirty = False
-        self.current_version = directory
+        if directory:
+            self.current_version = directory
         # Clear combobox to be reconstructed or blank if default.
         self.version_item_combobox.clear()
         if self.current_version.split('\\')[-1] == 'default':
@@ -367,10 +368,8 @@ class TPOTModelDialog(QDialog):
                 combo_text = d.split('\\')[-1]
                 for val in os.listdir(d):
                     path = os.path.join(d, val)
-                    # print("val in ModelDialog:", path)
                     if os.path.isdir(path):
                         for fname in os.listdir(path):
-                            # print("Filename in ModelDialog:", fname)
                             if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.h5':
                                 combo_text = combo_text + "*"
                                 model_exists = True
@@ -413,11 +412,10 @@ class TPOTModelDialog(QDialog):
         model_data = {}
         try:
             try:
-
                 with open(os.path.join(path, self.main_model_name, filename), 'r') as f:
                     model_data = json.load(f)
                 model_class = model_data['model_class']
-                for kind, params in model_data['params'].items():
+                for kind, params in model_data['tpot_params'].items():
                     self.set_input_params(params)
             except FileNotFoundError as fnfe:
                 # No parameter file exists.  Pass.
@@ -448,7 +446,7 @@ class TPOTModelDialog(QDialog):
             # Must check if default is in the dict, as other dicts exist that are not default values.
             if isinstance(v, dict) and 'default' in v:
                 v = v['default']
-            if isinstance(v, list):
+            if isinstance(v, list): # only list item so far is for tfidf ngram_range
                 v = v[-1]
             if k in self.input_widgets:
                 cla = self.input_widgets[k]
@@ -493,11 +491,8 @@ class TPOTModelDialog(QDialog):
                     "tpot.TPOTClassifier": {}
                 }
             }
-
+            #
             for model, types in self.model_params.items():
-                # print("check_for_defaults data:")
-                # print(f"{model}")
-                # print(types)
                 if model == 'tpot.TPOTClassifier':
                     for type, params in types.items():
                         if type == 'Model':
@@ -523,83 +518,3 @@ class TPOTModelDialog(QDialog):
                 tb = traceback.format_exc()
                 print(tb)
 
-
-if __name__ == "__main__":
-    import sys
-    # Qt Application
-    SVC = {
-        "model_base": "sklearn",
-        "model_module": "sklearn.svm",
-        "model_class": "SVC",
-        "SVC": {
-            "Hyperparameters": {
-                "C": {
-                    "type": "double",
-                    "default": 1.0,
-                    "min": 0,
-                    "max": 1000,
-                    "step_size": 1,
-                    "decimal_len": 1
-                },
-                "shrinking": {
-                    "type": "dropdown",
-                    "default": True,
-                    "options": {
-                        "True": True,
-                        "False": False
-                    }
-                },
-                "probability": {
-                    "type": "dropdown",
-                    "default": True,
-                    "options": {
-                        "True": True,
-                        "False": False
-                    }
-                },
-                "tol": {
-                    "type": "double",
-                    "default": 0.001,
-                    "min": 0,
-                    "max": 100,
-                    "step_size": 0.001,
-                    "decimal_len":  5
-                },
-                "cache_size": {
-                    "type": "int",
-                    "default": 200,
-                    "min": 100,
-                    "max": 100000,
-                    "step_size": 100
-                }
-            }
-        }
-    }
-    tfidf = {
-        "model_base": "sklearn",
-        "model_module": "sklearn.feature_extraction.text",
-        "model_class": "TfidfVectorizer",
-        "TfidfVectorizer": {
-            "Hyperparameters": {
-                "ngram_range": {
-                    "type": "range",
-                    "min": 1,
-                    "max": 9,
-                    "default": 1
-                },
-                "encoding": {
-                    "type": "dropdown",
-                    "default": "utf-8",
-                    "options": {
-                        "utf-8": "utf-8",
-                        "latin-1": "latin-1"
-                    }
-                }
-            }
-        }
-    }
-    app = QApplication(sys.argv)
-    app.setStyle('Fusion')
-    window = TPOTModelDialog(None, SVC, tfidf)
-    window.show()
-    sys.exit(app.exec_())

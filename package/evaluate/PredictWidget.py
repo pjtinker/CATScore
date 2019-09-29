@@ -239,6 +239,20 @@ class PredictWidget(QWidget):
     
         self.setLayout(self.main_layout)
 
+
+    @pyqtSlot(str)
+    def add_new_version(self, v_dir):
+        """
+        pyqtSlot to receive new version created pyqtSignal.
+
+            # Arguments
+                v_dir: string, directory of newly created version.
+        """
+        version = v_dir.split('\\')[-1]
+        self.version_selection.addItem(version, v_dir)
+        self.version_selection.model().sort(0)
+        
+        
     def update_version(self, current_dir):
         row = 1
         column = 0
