@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, Qt, QThread, QThreadPool, pyqtSignal, pyqtSlot, QSize
+from PyQt5.QtCore import QObject, Qt, QThread, QThreadPool, pyqtSignal, pyqtSlot, QSize, QModelIndex
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
                              QDoubleSpinBox, QFileDialog, QFormLayout,
@@ -23,10 +23,10 @@ from package.evaluate.EvaluateTableModel import EvaluateTableModel
 from package.utils.catutils import exceptionWarning, clearLayout
 from package.utils.DataframeTableModel import DataframeTableModel
 from package.utils.GraphWidget import GraphWidget
+from package.utils.config import CONFIG
 
 from sklearn.metrics import f1_score, accuracy_score, cohen_kappa_score
 
-PROBLEM_THRESHOLD = 0.5
 
 class Communicate(QObject):
     version_change = pyqtSignal(str)    
@@ -40,7 +40,6 @@ class EvaluateWidget(QWidget):
     def __init__(self, parent=None):
         super(EvaluateWidget, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
         self.parent = parent
         self.comms = Communicate()
 
@@ -79,6 +78,24 @@ class EvaluateWidget(QWidget):
         
         # Training stats and available models
         self.training_stats_groupbox = QGroupBox('Training Info')
+
+
+        # self.training_stats_grid = QGridLayout()
+        # self.training_stats_grid.setVerticalSpacing(0)
+        # self.training_stats_groupbox.setLayout(self.training_stats_grid)
+        # # self.training_stats_groupbox.setMinimumHeight(200)
+        # model_label = QLabel("Model")
+        # model_label.setFont(QFont("Times", weight=QFont.Bold))
+        # self.training_stats_grid.addWidget(model_label, 0, 0, Qt.AlignTop)
+        # train_date_label = QLabel("Last Trained")
+        # train_date_label.setFont(QFont("Times", weight=QFont.Bold))
+        # self.training_stats_grid.addWidget(train_date_label, 0, 1, Qt.AlignTop)
+        # accuracy_label = QLabel("Accuracy")
+        # accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
+        # self.training_stats_grid.addWidget(accuracy_label, 0, 2, Qt.AlignTop)
+        # # self.training_stats_groupbox.setAlignment(Qt.AlignTop)
+        # self.right_column.addWidget(self.training_stats_groupbox)
+
         self.training_stats_grid = QGridLayout()
         self.training_stats_grid.setVerticalSpacing(0)
         self.training_stats_groupbox.setLayout(self.training_stats_grid)
@@ -139,9 +156,15 @@ class EvaluateWidget(QWidget):
         if self.available_column_model.getTruth(col_name):
             col_tag = col_name.split('__')[0]
             pred_col = col_tag + '__predicted'
-            preds = self.prediction_data[pred_col].values.astype(int)
             truth_col = col_tag + '__actual'
-            truth = self.prediction_data[truth_col].values.astype(int)
+            try:
+                preds = self.prediction_data[pred_col].values.astype(int)
+                truth = self.prediction_data[truth_col].values.astype(int)
+            except KeyError as ke:
+                self.logger.info("Selected row does not have ground truthes for evaluation.")
+                return
+            except Exception:
+                raise
             f1 = f1_score(truth, preds, average='weighted')
             print(f1)
             acc = accuracy_score(truth, preds)
@@ -161,8 +184,6 @@ class EvaluateWidget(QWidget):
                     "EvaluateWidget.display_selected_row", exc_info=True)
                 tb = traceback.format_exc()
                 print(tb)
-
-            
 
         
     def open_file(self):
@@ -191,7 +212,7 @@ class EvaluateWidget(QWidget):
         try:
             self.graph.clear_graph()
             self.available_column_model.loadData([], include_labels=False)
-            self.prediction_data = pd.read_csv(f_path, encoding='utf-8', index_col=0)
+            self.prediction_data = pd.read_csv(f_path, encoding='utf-8', index_col=0) #TODO: user defined index column
         except UnicodeDecodeError as ude:
             self.logger.warning(
                 "UnicodeDecode error opening file", exc_info=True)
@@ -257,7 +278,7 @@ class EvaluateWidget(QWidget):
                 "Exception occured.  PredictWidget.load_file.", exception=e)
             
     
-    def get_problem_children(self, column_tag, threshold=PROBLEM_THRESHOLD):
+    def get_problem_children(self, column_tag, threshold=CONFIG.getfloat('VARIABLES', 'DisagreementThreshold')):
         """
         Displays the samples that fall below a particular threshold of agreement between classifiers.
         

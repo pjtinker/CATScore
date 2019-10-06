@@ -26,11 +26,20 @@
             "cv" : {
                 "type" : "int",
                 "default" : 5,
-                "min" : 1,
+                "min" : 2,
                 "max" : 10,
                 "step_size" : 1,
                 "tunable" : false,
                 "tooltip" : ""
+            },
+            "verbosity" : {
+                "type" : "int",
+                "default" : 2,
+                "min" : 0,
+                "max" : 10,
+                "step_size" : 1,
+                "tunable" : false,
+                "tooltip" : "Dictates how much information will be logged to the console during optimization.  The greater the value, the more information, with a value of 0 => silent."
             },
             "config_dict" : {
                 "type" : "static",

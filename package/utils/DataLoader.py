@@ -36,7 +36,7 @@ class DataLoader(QWidget):
     def __init__(self, parent=None):
         super(DataLoader, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
+        # self.logger.setLevel(logging.DEBUG)
         self.parent = parent
         self.column_checkboxes = []
         self.selected_column_targets = []
@@ -271,25 +271,32 @@ class DataLoader(QWidget):
             # Attributes
                 selection: QItemSelectionModel, item currently selected by user.
         """
-        if selection:
-            idx = selection.indexes()[0]
-        else:
-            # If no question selected, select the first in the list
-            self.available_column_view.selectRow(0)
-            self.available_column_view.setFocus()
-            idx = QModelIndex(self.available_column_model.index(0, 0))
-        offset = idx.row() * 2
-        col_name = self.available_column_model.data(idx)
-        label_col_name = col_name.split('__')[0] + '__actual'
-        self.text_stats_groupbox.setTitle(col_name)
-        question_data = self.full_data[col_name].fillna(
-            value="unanswered")
-        avg_num_words = get_avg_words_per_sample(str(question_data.values))
-        self.current_question_count.setText(str(question_data.shape[0]))
-        self.current_question_avg_word.setText("%.2f" % avg_num_words)
+        try:
+            if selection:
+                idx = selection.indexes()[0]
+            else:
+                # If no question selected, select the first in the list
+                self.available_column_view.selectRow(0)
+                self.available_column_view.setFocus()
+                idx = QModelIndex(self.available_column_model.index(0, 0))
+            offset = idx.row() * 2
+            col_name = self.available_column_model.data(idx)
+            label_col_name = col_name.split('__')[0] + '__actual'
+            self.text_stats_groupbox.setTitle(col_name)
+            question_data = self.full_data[col_name].fillna(
+                value="unanswered")
+            avg_num_words = get_avg_words_per_sample(str(question_data.values))
+            self.current_question_count.setText(str(question_data.shape[0]))
+            self.current_question_avg_word.setText("%.2f" % avg_num_words)
 
-        self.graph.chartSingleClassFrequency(
-            self.full_data[label_col_name].values.astype(int))
+            self.graph.chartSingleClassFrequency(
+                self.full_data[label_col_name].values.astype(int))
+        except Exception as e:
+            self.logger.error("Dataloader.display_selected_rows", exc_info=True)
+            exceptionWarning(
+                "Exception occured.  DataLoader.load_file.", exception=e)
+            tb = traceback.format_exc()
+            print(tb)
 
     def save_data(self):
         if self.selected_data.empty:
@@ -357,21 +364,11 @@ class DataLoader(QWidget):
         """
         self.text_proc_groupbox.setEnabled(state)
         self.preprocess_text_btn.setEnabled(state)
-        # if not state:
-        #     self.text_proc_groupbox.setEnabled(False)
-        #     self.preprocess_text_btn.setEnabled(False)
-        #     #self.export_dataset_btn.setEnabled(False)
-        # else:
-        #     self.text_proc_groupbox.setEnabled(True)
-        #     self.preprocess_text_btn.setEnabled(True)
-        #     #self.export_dataset_btn.setEnabled(True)
+
 
     @pyqtSlot(pd.DataFrame)
     def update_data(self, data):
         self.load_data_btn.setEnabled(True)
-        # self.text_proc_groupbox.setEnabled(True)
-        # self.preprocess_text_btn.setEnabled(True)
-        # self.export_dataset_btn.setEnabled(True)
         self.set_preprocessing_option_state(1, True)
         self.export_dataset_btn.setEnabled(True)
 
@@ -427,8 +424,6 @@ class PreprocessingThread(QThread):
         self.options = options
 
     def run(self):
-        # sys.stdout = open('nul', 'w')
-        # print()
         apply_cols = [
             col for col in self.data.columns if col.endswith('_text')
         ]

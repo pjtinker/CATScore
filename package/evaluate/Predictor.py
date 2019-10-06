@@ -29,15 +29,7 @@ import scipy
 from package.utils.catutils import CATEncoder, cat_decoder
 import package.utils.keras_models as keras_models
 import package.utils.embedding_utils as embed_utils
-# import package.utils.SequenceTransformer as seq_trans
-
-RANDOM_SEED = 1337
-TOP_K = 20000
-MAX_SEQUENCE_LENGTH = 1500
-PROBLEM_THRESHOLD = 0.5
-BASE_MODEL_DIR = ".\\package\\data\\base_models"
-BASE_TFIDF_DIR = ".\\package\\data\\feature_extractors\\TfidfVectorizer.json"
-INPUT_SHAPE = (0, 0)
+from package.utils.config import CONFIG
 
 
 class PredictorSignals(QObject):
@@ -51,11 +43,6 @@ class Predictor(QRunnable):
     """
     QThread tasked with evaluating data on previously trained models and saving results.
     """
-    # This allows for multi-threading from a thread.  GUI will not freeze and
-    # multithreading seems functional.
-    # NOTE: some models, e.g. RandomForestClassifier, will not train using this backend.
-    # An exception is caught and the log updated if this occurs.
-    register_parallel_backend('threading', ThreadingBackend, make_default=True)
 
     def __init__(self, model_metadata, evaluation_data):
         super(Predictor, self).__init__()
@@ -63,9 +50,9 @@ class Predictor(QRunnable):
         self.signals = PredictorSignals()
 
         self.model_metadata = model_metadata
-        print(json.dumps(self.model_metadata, indent=2))
+        # print(json.dumps(self.model_metadata, indent=2))
         self.evaluation_data = evaluation_data
-        print(evaluation_data.head())
+        # print(evaluation_data.head())
         self.predictions = pd.DataFrame(index=self.evaluation_data.index)
         # self.problem_children = pd.DataFrame(index=self.evaluation_data.index)
 
@@ -83,6 +70,7 @@ class Predictor(QRunnable):
                 if data == pred_value:
                     total_same += 1.0
             return total_same / col_count
+
         self._update_log("Beginning Evaluation run...")
         meta_copy = self.model_metadata.copy()
         data_copy = pd.DataFrame(index=self.evaluation_data.index)
@@ -98,13 +86,15 @@ class Predictor(QRunnable):
 
                 self._update_log(f"Evaluating via model: {model_name}")
                 model = joblib.load(model_meta['model_path'])
-                self.predictions[column_prefix + '__' +
-                                 model_name] = model.predict(self.evaluation_data[column])
+                with joblib.parallel_backend('dask'):
+                    self.predictions[column_prefix + '__' +
+                                     model_name] = model.predict(self.evaluation_data[column])
                 last_trained.append(column_prefix + '__' + model_name)
             self._update_log(f"Beginning Stacker evaluation")
             stacker = joblib.load(stacker_meta['model_path'])
-            self.predictions[column_prefix +
-                             '__Stacker'] = stacker.predict(self.predictions[last_trained])
+            with joblib.parallel_backend('dask'):
+                self.predictions[column_prefix +
+                                 '__Stacker'] = stacker.predict(self.predictions[last_trained])
             data_copy[column] = self.evaluation_data[column].copy()
             data_copy[column_prefix +
                       '__predicted'] = self.predictions[column_prefix + '__Stacker']
@@ -114,10 +104,12 @@ class Predictor(QRunnable):
             last_trained.append(column_prefix + '__Stacker')
             self.predictions[column_prefix +
                              '__agreement_ratio'] = self.predictions[last_trained].apply(get_ratio, axis=1)
+            data_copy[column_prefix +
+                             '__agreement_ratio'] = self.predictions[last_trained].apply(get_ratio, axis=1)
             pc_len = len(
-                self.predictions[self.predictions[column_prefix + '__agreement_ratio'] <= PROBLEM_THRESHOLD])
+                self.predictions[self.predictions[column_prefix + '__agreement_ratio'] <= CONFIG.getfloat('VARIABLES', 'DisagreementThreshold')])
             self._update_log(
-                f"Found {pc_len} samples for {column} that fall below {PROBLEM_THRESHOLD} predictor agreement.")
+                f"Found {pc_len} samples for {column} that fall below {CONFIG.get('VARIABLES', 'DisagreementThreshold')} predictor agreement.")
             self._update_log(f"Evaluation for {column} complete.\n")
 
         self._update_log("Evaluation run complete.")
@@ -126,17 +118,17 @@ class Predictor(QRunnable):
         path_prefix = time.strftime('%Y-%m-%d_%H-%M', current_time)
         result_path = os.path.join(result_dir, path_prefix + "__results.csv")
 
-        self._update_log(f"Saving results to: {result_path}")
-        self.predictions.to_csv(
-            result_path, index_label="testnum", encoding='utf-8')
+        # self._update_log(f"Saving results to: {result_path}")
+        # self.predictions.to_csv(
+        #     result_path, index_label="testnum", encoding='utf-8')
         stacker_cols = [
             x for x in self.predictions.columns if x.endswith('Stacker')]
 
         self.signals.prediction_complete.emit(data_copy)
 
     def _update_log(self, msg):
-        outbound = f"{time.ctime(time.time())} - {msg}<br>"
-        self.signals.update_eval_logger.emit(outbound)
+        # outbound = f"{time.ctime(time.time())} - {msg}<br>"
+        self.signals.update_eval_logger.emit(msg)
 
     def get_problem_children(self, threshold=0.5):
         """

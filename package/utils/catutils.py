@@ -1,5 +1,5 @@
 from PyQt5.QtCore import (Qt)
-from PyQt5.QtGui import QMovie
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QFormLayout, 
                                QGroupBox, QWidget, QLineEdit, QGridLayout, QMessageBox,
                                QDialog, QSpinBox, QDialogButtonBox, QComboBox, 
@@ -35,6 +35,8 @@ class CATEncoder(json.JSONEncoder):
 
 def exceptionWarning(exceptionText, exception=None, title='Warning'):
     msg_box = QMessageBox()
+    msg_box.setWindowTitle('CAT Warning')
+    msg_box.setWindowIcon(QIcon('../icons/cat-silhouette.jpg'))
     msg_box.setIcon(QMessageBox.Warning)
     msg_box.setText(exceptionText)
     if exception:

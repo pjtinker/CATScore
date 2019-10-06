@@ -1,9 +1,9 @@
 from PyQt5.QtCore import (QAbstractTableModel, QDateTime, QModelIndex, QObject,
                           Qt, QTimeZone, QByteArray, pyqtSignal, pyqtSlot, QThread, QThreadPool)
-from PyQt5.QtGui import QMovie, QIcon, QPixmap, QFont
+from PyQt5.QtGui import QMovie, QIcon, QPixmap, QFont, QTextCursor
 from PyQt5.QtWidgets import (QAction, QGroupBox, QMessageBox, QCheckBox, QComboBox,
                              QApplication, QLabel, QFileDialog, QHBoxLayout, QVBoxLayout,
-                             QGridLayout, QHeaderView, QProgressBar, QScrollArea, QTextEdit,
+                             QGridLayout, QSpacerItem, QHeaderView, QProgressBar, QScrollArea, QTextEdit,
                              QSizePolicy, QTableView, QWidget, QPushButton, QAbstractScrollArea)
 import os
 import logging
@@ -40,10 +40,6 @@ class Communicate(QObject):
     update_progressbar = pyqtSignal(int, bool)
     
 class PredictWidget(QWidget):
-    """
-    TODO: Refactor this monstrosity into functions to setup UI
-    """
-
 
     def __init__(self, parent=None):
         super(PredictWidget, self).__init__(parent)
@@ -192,7 +188,7 @@ class PredictWidget(QWidget):
         accuracy_label = QLabel("Accuracy")
         accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
         self.training_stats_grid.addWidget(accuracy_label, 0, 2, Qt.AlignTop)
-        # self.training_stats_groupbox.setAlignment(Qt.AlignTop)
+
         self.right_column.addWidget(self.training_stats_groupbox)
         
         # Text DataframeTableModel view for text preview
@@ -207,6 +203,8 @@ class PredictWidget(QWidget):
         
         # TextEdit box for evaluation status
         self.eval_logger = QTextEdit()
+        self.eval_logger.setAcceptRichText(True)
+        self.eval_logger.setReadOnly(True)
         self.right_column.addWidget(self.eval_logger)
         # self.right_column.addStretch()
         
@@ -329,15 +327,20 @@ class PredictWidget(QWidget):
     
     @pyqtSlot(str)
     def update_eval_logger(self, msg):
-        self.eval_logger.insertHtml(msg)
+        current_time = time.localtime()
+        outbound = f"{time.strftime('%Y-%m-%d %H:%M:%S', current_time)} - {msg}<br>"
+        self.eval_logger.insertHtml(outbound)
+        self.eval_logger.moveCursor(QTextCursor.End)
+
         
     @pyqtSlot(pd.DataFrame)
     def prediction_complete(self, predictions):
-        print(predictions.head())
+        # print(predictions.head())
         self.predictions = predictions
         self.comms.update_progressbar.emit(0, False)
         self.run_btn.setEnabled(True)
         self.save_predictions_btn.setEnabled(True)
+
         
     def load_selected_data(self):
         """Return columns selected from dataframe by user.
@@ -423,9 +426,9 @@ class PredictWidget(QWidget):
 
                 self.available_column_model.setAllowableData(
                     self.allowable_columns)
-                drop_cols = [col for col in self.full_data.columns if col not in self.available_columns]
-                self.full_data.drop(drop_cols, axis=1, inplace=True)
-                print("full_data columns: ", self.full_data.columns)
+                # drop_cols = [col for col in self.full_data.columns if col not in self.available_columns ]
+                # self.full_data.drop(drop_cols, axis=1, inplace=True)
+                # print("full_data columns: ", self.full_data.columns)
                 self.full_text_count.setText(str(self.full_data.shape[0]))
                 self.display_selected_row(None)
                 self.select_all_btn.setEnabled(True)
@@ -459,7 +462,9 @@ class PredictWidget(QWidget):
             # col_name = self.full_data.columns[row]
             col_name = self.available_column_model.data(idx)
             self.text_stats_groupbox.setTitle(col_name)
-            question_data = self.full_data[self.full_data.columns[row]].fillna(
+            # question_data = self.full_data[self.full_data.columns[row]].fillna(
+            #     value="unanswered")
+            question_data = self.full_data[col_name].fillna(
                 value="unanswered")
 
             avg_num_words = get_avg_words_per_sample(str(question_data.values))
@@ -468,8 +473,8 @@ class PredictWidget(QWidget):
             
             grid_row = 1
             grid_column = 0
-            # print(f"col_name: {col_name}")
-            # print(f"from display_selected_rows: \ntrained_model_meta: {json.dumps(self.trained_model_meta, indent=2)}")
+            print(f"col_name: {col_name}")
+            print(f"from display_selected_rows: \ntrained_model_meta: {json.dumps(self.trained_model_meta, indent=2)}")
             clearLayout(self.training_stats_grid)
             model_label = QLabel("Model")
             model_label.setFont(QFont("Times", weight=QFont.Bold))
@@ -481,7 +486,7 @@ class PredictWidget(QWidget):
             accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
             self.training_stats_grid.addWidget(accuracy_label, 0, 2, Qt.AlignTop)
             for model, meta in self.trained_model_meta[col_name].items():
-                # print(f"params in meta for {model}: {json.dumps(meta, indent=2)}")
+                print(f"params in meta for {model}: {json.dumps(meta, indent=2)}")
                 self.training_stats_grid.addWidget(QLabel(model), grid_row, grid_column, Qt.AlignTop)
                 grid_column += 1
                 self.training_stats_grid.addWidget(QLabel(meta['last_train_date']), grid_row, grid_column, Qt.AlignTop)
@@ -489,6 +494,8 @@ class PredictWidget(QWidget):
                 self.training_stats_grid.addWidget(QLabel("%.4f" % meta['train_eval_score']), grid_row, grid_column, Qt.AlignTop)
                 grid_row += 1
                 grid_column = 0
+            verticalSpacer = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+            self.training_stats_grid.addItem(verticalSpacer, grid_row, 0, Qt.AlignTop)
             self.repaint()
         except Exception as e:
             self.logger.error("PredictWidget.display_selected_row", exc_info=True)
@@ -499,26 +506,49 @@ class PredictWidget(QWidget):
 
 
     def save_data(self):
-        if self.selected_data.empty:
-            exceptionWarning('No data selected')
-            return
-        file_name, filter = QFileDialog.getSaveFileName(
-            self, 'Save to CSV', os.getenv('HOME'), 'CSV(*.csv)')
-        if file_name:
-            self.selected_data.to_csv(
-                file_name, index_label='testnum', quoting=1, encoding='utf-8')
-            self.comms.update_statusbar.emit("Processed data saved successfully.")
+        try:
+            if self.selected_data.empty:
+                exceptionWarning('No data selected')
+                return
+            file_name, filter = QFileDialog.getSaveFileName(
+                self, 'Save to CSV', os.getenv('HOME'), 'CSV(*.csv)')
+            if file_name:
+                self.selected_data.to_csv(
+                    file_name, index_label='testnum', quoting=1, encoding='utf-8')
+                self.comms.update_statusbar.emit("Processed data saved successfully.")
+        except PermissionError as pe:
+            self.logger.warning("PredictWidget.save_data", exc_info=True)
+            exceptionWarning(f'Permission denied while attempting to save {file_name}')
+        except Exception as e:
+            self.logger.error("PredictWidget.save_data", exc_info=True)
+            exceptionWarning(
+                "Exception occured.  PredictWidget.save_data.", exception=e)
+            tb = traceback.format_exc()
+            print(tb)
 
     def save_predictions(self):
-        if self.predictions.empty:
-            exceptionWarning('No predictions to save')
-            return
-        file_name, filter = QFileDialog.getSaveFileName(
-            self, 'Save to CSV', os.getenv('HOME'), 'CSV(*.csv)')
-        if file_name:
-            self.predictions.to_csv(
-                file_name, index_label='testnum', quoting=1, encoding='utf-8')
-            self.comms.update_statusbar.emit("Predictions saved successfully.")
+        try:
+            if self.predictions.empty:
+                exceptionWarning('No predictions to save')
+                return
+            file_name, filter = QFileDialog.getSaveFileName(
+                self, 'Save to CSV', os.getenv('HOME'), 'CSV(*.csv)')
+            if file_name:
+                for idx, col in enumerate(self.predictions.columns):
+                    if col.endswith('predicted') or col.endswith('ratio'):
+                        self.full_data[col] = self.predictions[col]
+                self.full_data.to_csv(
+                    file_name, index_label='testnum', quoting=1, encoding='utf-8')
+                self.comms.update_statusbar.emit("Predictions saved successfully.")
+        except PermissionError as pe:
+            self.logger.warning("PredictWidget.save_predictions", exc_info=True)
+            exceptionWarning(f'Permission denied while attempting to save {file_name}')
+        except Exception as e:
+            self.logger.error("PredictWidget.save_predictions", exc_info=True)
+            exceptionWarning(
+                "Exception occured.  PredictWidget.save_predictions.", exception=e)
+            tb = traceback.format_exc()
+            print(tb)
         
     def setup_text_preproc_ui(self):
         """
@@ -663,7 +693,7 @@ class PreprocessingThread(QThread):
     def run(self):
         # sys.stdout = open('nul', 'w')
         # print()
-        print(self.options)
+        # print(self.options)
         apply_cols = [
             col for col in self.data.columns if col.endswith('_text')
         ]

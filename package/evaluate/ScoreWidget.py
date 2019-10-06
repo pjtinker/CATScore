@@ -23,12 +23,8 @@ class ScoreWidget(QTabWidget):
         # FIXME: reset statusbar when tabs are changed
         self.currentChanged.connect(lambda: self.update_statusbar('Ready'))
         self.data_predictor = PredictWidget(self)
-        # self.model_widget = SelectModelWidget(self)
-        # self.model_widget.update_statusbar.connect(self.update_statusbar)
         self.addTab(self.data_predictor, 'Predict')      
-        # self.addTab(self.model_widget, 'Model Selection')
         self.setTabEnabled(1, True)
-        # self.data_predictor.data_load.connect(self.model_widget.load_data)
         self.data_predictor.comms.update_statusbar.connect(self.update_statusbar)
         self.evaluator = EvaluateWidget(self)
         self.addTab(self.evaluator, 'Evaluate')
