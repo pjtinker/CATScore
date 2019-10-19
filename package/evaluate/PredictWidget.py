@@ -189,9 +189,13 @@ class PredictWidget(QWidget):
         f1_label.setFont(QFont("Times", weight=QFont.Bold))
         self.training_stats_grid.addWidget(f1_label, 0, 2, Qt.AlignTop)
 
+        cohen_kappa = QLabel("Cohen's Kappa")
+        cohen_kappa.setFont(QFont("Times", weight=QFont.Bold))
+        self.training_stats_grid.addWidget(cohen_kappa, 0, 3, Qt.AlignTop)
+
         train_date_label = QLabel("Last Trained")
         train_date_label.setFont(QFont("Times", weight=QFont.Bold))
-        self.training_stats_grid.addWidget(train_date_label, 0, 3, Qt.AlignTop)
+        self.training_stats_grid.addWidget(train_date_label, 0, 4, Qt.AlignTop)
 
         self.right_column.addWidget(self.training_stats_groupbox)
         
@@ -479,28 +483,37 @@ class PredictWidget(QWidget):
             
             grid_row = 1
             grid_column = 0
-            print(f"col_name: {col_name}")
-            print(f"from display_selected_rows: \ntrained_model_meta: {json.dumps(self.trained_model_meta, indent=2)}")
             clearLayout(self.training_stats_grid)
-
-            model_label = QLabel("Model")
-            model_label.setFont(QFont("Times", weight=QFont.Bold))
-            self.training_stats_grid.addWidget(model_label, 0, 0, Qt.AlignTop)
 
             accuracy_label = QLabel("Accuracy")
             accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
             self.training_stats_grid.addWidget(accuracy_label, 0, 1, Qt.AlignTop)
 
+            model_label = QLabel("Model")
+            model_label.setFont(QFont("Times", weight=QFont.Bold))
+            self.training_stats_grid.addWidget(model_label, 0, 0, Qt.AlignTop)
+
+            f1_label = QLabel("F1 (weighted)")
+            f1_label.setFont(QFont("Times", weight=QFont.Bold))
+            self.training_stats_grid.addWidget(f1_label, 0, 2, Qt.AlignTop)
+
+            cohen_kappa = QLabel("Cohen's Kappa")
+            cohen_kappa.setFont(QFont("Times", weight=QFont.Bold))
+            self.training_stats_grid.addWidget(cohen_kappa, 0, 3, Qt.AlignTop)
+
             train_date_label = QLabel("Last Trained")
             train_date_label.setFont(QFont("Times", weight=QFont.Bold))
-            self.training_stats_grid.addWidget(train_date_label, 0, 2, Qt.AlignTop)
-
+            self.training_stats_grid.addWidget(train_date_label, 0, 4, Qt.AlignTop)
 
             for model, meta in self.trained_model_meta[col_name].items():
                 print(f"params in meta for {model}: {json.dumps(meta, indent=2)}")
                 self.training_stats_grid.addWidget(QLabel(model), grid_row, grid_column, Qt.AlignTop)
                 grid_column += 1
-                self.training_stats_grid.addWidget(QLabel("%.4f" % meta['train_eval_score']), grid_row, grid_column, Qt.AlignTop)
+                self.training_stats_grid.addWidget(QLabel("%.4f" % meta['train_eval_score']['accuracy']), grid_row, grid_column, Qt.AlignTop)
+                grid_column += 1
+                self.training_stats_grid.addWidget(QLabel("%.4f" % meta['train_eval_score']['f1_score']), grid_row, grid_column, Qt.AlignTop)
+                grid_column += 1
+                self.training_stats_grid.addWidget(QLabel("%.4f" % meta['train_eval_score']['cohen_kappa']), grid_row, grid_column, Qt.AlignTop)
                 grid_column += 1
                 self.training_stats_grid.addWidget(QLabel(meta['last_train_date']), grid_row, grid_column, Qt.AlignTop)
                 grid_row += 1

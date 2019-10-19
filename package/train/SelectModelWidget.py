@@ -560,15 +560,18 @@ class SelectModelWidget(QWidget):
             tb = traceback.format_exc()
             print(tb)
 
-    @pyqtSlot(str)
-    def update_training_logger(self, msg, include_time=True):
+    @pyqtSlot(str, bool, bool)
+    def update_training_logger(self, msg, include_time=True, use_html=True):
         if(include_time):
             current_time = time.localtime()
             outbound = f"{time.strftime('%Y-%m-%d %H:%M:%S', current_time)} - {msg}<br>"
         else:
             outbound = f"{msg}<br>"
-        self.training_logger.insertHtml(outbound)
-        self.training_logger.moveCursor(QTextCursor.End)
+        if(use_html):
+            self.training_logger.insertHtml(outbound)
+            self.training_logger.moveCursor(QTextCursor.End)
+        else:
+            self.training_logger.insertPlainText(msg)
 
     @pyqtSlot(int, bool)
     def training_complete(self, val, pulse):
