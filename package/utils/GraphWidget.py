@@ -1,4 +1,11 @@
 from __future__ import unicode_literals
+# import seaborn as sns
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import numpy as np
+from numpy import arange, sin, pi
+from sklearn.metrics import confusion_matrix
+from PyQt5 import QtCore, QtWidgets
 import sys
 import os
 import random
@@ -6,18 +13,11 @@ from collections import Counter
 import matplotlib
 # Make sure that we are using QT5
 matplotlib.use('Qt5Agg')
-from PyQt5 import QtCore, QtWidgets
 
-from sklearn.metrics import confusion_matrix
+from package.utils.config import CONFIG
 
-from numpy import arange, sin, pi
-import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-import seaborn as sns
-
-progname = os.path.basename(sys.argv[0])
-progversion = "0.1"
+# progname = os.path.basename(sys.argv[0])
+# progversion = "0.1"
 
 
 class GraphWidget(FigureCanvas):
@@ -35,7 +35,6 @@ class GraphWidget(FigureCanvas):
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
-
     def chartSingleClassFrequency(self, data):
         """Display a bar chart of frequencies per label
             # Arguments
@@ -43,7 +42,6 @@ class GraphWidget(FigureCanvas):
                 question score.
         """
 
-            
         num_classes = self.getNumClasses(data)
         count_map = Counter(data)
         counts = [count_map[i] for i in range(num_classes)]
@@ -53,8 +51,7 @@ class GraphWidget(FigureCanvas):
         idx = np.arange(num_classes)
         colors = []
         for count in counts:
-            # FIXME: Put threshold percent in init file
-            if count < (total_count * .1):
+            if count < (total_count * CONFIG.getfloat('VARIABLES', 'MinorityClassThreshold')):
                 colors.append('r')
             else:
                 colors.append('b')
@@ -67,7 +64,8 @@ class GraphWidget(FigureCanvas):
         rects = self.axes.patches
         for rect, label in zip(rects, counts):
             height = rect.get_height()
-            self.axes.text(rect.get_x() + rect.get_width() / 2, height + 5, label, ha='center', va='bottom')
+            self.axes.text(rect.get_x() + rect.get_width() / 2,
+                           height + 5, label, ha='center', va='bottom')
         self.draw()
 
     def getNumClasses(self, labels):
@@ -80,42 +78,47 @@ class GraphWidget(FigureCanvas):
         missing_classes = [i for i in range(num_classes) if i not in labels]
         if len(missing_classes):
             raise ValueError('Missing samples with label value(s) '
-                            '{missing_classes}. Please make sure you have '
-                            'at least one sample for every label value '
-                            'in the range(0, {max_class})'.format(
-                                missing_classes=missing_classes,
-                                max_class=num_classes - 1))
+                             '{missing_classes}. Please make sure you have '
+                             'at least one sample for every label value '
+                             'in the range(0, {max_class})'.format(
+                                 missing_classes=missing_classes,
+                                 max_class=num_classes - 1))
 
         if num_classes <= 1:
             raise ValueError('Invalid number of labels: {num_classes}.'
-                            'Please make sure there are at least two classes '
-                            'of samples'.format(num_classes=num_classes))
+                             'Please make sure there are at least two classes '
+                             'of samples'.format(num_classes=num_classes))
         return num_classes
-    
+
     def plotROC(self, data):
         num_classes = self.getNumClasses(data['Stacker'])
         fpr = dict()
         tpr = dict()
         roc_auc = dict()
-        
+
         for i in range(num_classes):
             fpr[i], tpr[i], _ = roc_curve()
 
-    
     def plot_confusion_matrix(self, actual, predictions):
+        if(len(actual) < 1 or len(predictions) < 1):
+            raise ValueError('No actual or predicted data passed to function. '
+                             'actual: {actual_len}, predictions: {prediction_len}'
+                             .format(
+                                 actual_len=len(actual),
+                                 prediction_len=len(predictions)))
+
         c_mat = confusion_matrix(actual, predictions)
-        # sns.heatmap(c_mat, annot=True, fmt='d', xticklabels=np.unique(actual))
         self.axes.cla()
+        # sns.heatmap(c_mat, annot=True, fmt='d', xticklabels=np.unique(actual))
         self.axes.matshow(c_mat)
         for i, cas in enumerate(c_mat):
             for j, c in enumerate(cas):
                 self.axes.text(j-.1, i+.1, c, fontsize=14)
-        # self.axes.colorbar()
         self.axes.set_xlabel('Predicted')
         self.axes.set_ylabel('Actual')
         self.axes.set_xticks(np.unique(actual))
         self.draw()
-        
+
     def clear_graph(self):
         self.axes.clear()
         self.draw()
@@ -137,5 +140,3 @@ class GraphWidget(FigureCanvas):
 #         self.axes.cla()
 #         self.axes.plot([0, 1, 2, 3], l, 'r')
 #         self.draw()
-
-

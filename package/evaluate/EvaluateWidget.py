@@ -49,12 +49,6 @@ class EvaluateWidget(QWidget):
         
         self.open_file_button = QPushButton('Load CSV', self)
         self.open_file_button.clicked.connect(lambda: self.open_file())
-
-        # self.get_problem_children_btn = QPushButton('Get Problem Children', self)
-        # self.get_problem_children_btn.clicked.connect(lambda: self.get_problem_children)
-        
-        # self.save_problem_children_btn = QPushButton('Save PC', self)
-        # self.save_problem_children_btn.clicked.connect(lambda: self.save_pc())
         
         self.main_layout = QHBoxLayout()
         self.left_column = QVBoxLayout()
@@ -62,7 +56,7 @@ class EvaluateWidget(QWidget):
 
         self.main_layout.addLayout(self.left_column)
         self.main_layout.addLayout(self.right_column)
-        # Available question column view
+        # * Available question column view
         self.available_column_view = QTableView()
         self.available_column_view.setMinimumHeight(321)
         self.available_column_view.setMaximumWidth(234)
@@ -126,9 +120,6 @@ class EvaluateWidget(QWidget):
 
         self.left_column.addWidget(self.open_file_button)
         self.left_column.addWidget(self.available_column_view)
-        # self.right_column.addWidget(self.get_problem_children_btn)
-        # self.right_column.addWidget(self.save_problem_children_btn)
-        # self.right_column.addWidget(self.text_table_view)
 
         self.setLayout(self.main_layout)
 
@@ -143,16 +134,12 @@ class EvaluateWidget(QWidget):
         if selection:
             idx = selection.indexes()[0]
         else:
-            # If no question selected, select the first in the list
+            #* If no question selected, select the first in the list
             self.available_column_view.selectRow(0)
             self.available_column_view.setFocus()
             idx = QModelIndex(self.available_column_model.index(0, 0))
-        print("Display selected rows fired")
-        # offset = 0 if idx.row() == 0 else (idx.row() * 2) + idx.row()
-        print(f"prediction_data.columns: {self.prediction_data.columns}")
-        # col_name = self.prediction_data.columns[offset]
+
         col_name = self.available_column_model.data(idx)
-        print(f"col_name: {col_name}")
         if self.available_column_model.getTruth(col_name):
             col_tag = col_name.split('__')[0]
             pred_col = col_tag + '__predicted'
@@ -161,7 +148,7 @@ class EvaluateWidget(QWidget):
                 preds = self.prediction_data[pred_col].values.astype(int)
                 truth = self.prediction_data[truth_col].values.astype(int)
             except KeyError as ke:
-                self.logger.info("Selected row does not have ground truthes for evaluation.")
+                self.graph.clear_graph()
                 return
             except Exception:
                 raise
@@ -171,12 +158,7 @@ class EvaluateWidget(QWidget):
             print(acc)
             kappa = cohen_kappa_score(truth, preds)
             print(kappa)
-        # self.text_stats_groupbox.setTitle(col_name)
-        # question_data = self.full_data[self.full_data.columns[offset]].fillna(
-        #     value="unanswered")
-        # avg_num_words = get_avg_words_per_sample(str(question_data.values))
-        # self.current_question_count.setText(str(question_data.shape[0]))
-        # self.current_question_avg_word.setText("%.2f" % avg_num_words)
+
             try:
                 self.graph.plot_confusion_matrix(truth, preds)
             except Exception as e:
@@ -278,49 +260,49 @@ class EvaluateWidget(QWidget):
                 "Exception occured.  PredictWidget.load_file.", exception=e)
             
     
-    def get_problem_children(self, column_tag, threshold=CONFIG.getfloat('VARIABLES', 'DisagreementThreshold')):
-        """
-        Displays the samples that fall below a particular threshold of agreement between classifiers.
+    # def get_problem_children(self, column_tag, threshold=CONFIG.getfloat('VARIABLES', 'DisagreementThreshold')):
+    #     """
+    #     Displays the samples that fall below a particular threshold of agreement between classifiers.
         
-            # Arguments
+    #         # Arguments
             
-                column_tag, string: Column identifying tag
-                threshold, float: threshold to determine if a sample is problematic.  Non-inclusive.
-        """
-        def get_ratio(row):
-            """
-            Returns the ratio of agreement between column values (here, predictors) in a given row.
-            """
-            pred_value = row.iloc[-1]
-            total_same = 0.0
-            col_count = float(len(row.iloc[:-1]))
-            for data in row.iloc[:-1]:
-                if data == pred_value:
-                    total_same += 1.0
-            return total_same / col_count
+    #             column_tag, string: Column identifying tag
+    #             threshold, float: threshold to determine if a sample is problematic.  Non-inclusive.
+    #     """
+    #     def get_ratio(row):
+    #         """
+    #         Returns the ratio of agreement between column values (here, predictors) in a given row.
+    #         """
+    #         pred_value = row.iloc[-1]
+    #         total_same = 0.0
+    #         col_count = float(len(row.iloc[:-1]))
+    #         for data in row.iloc[:-1]:
+    #             if data == pred_value:
+    #                 total_same += 1.0
+    #         return total_same / col_count
                 
-        file_name, filter = QFileDialog.getOpenFileName(
-            self, 'Open CSV', os.getenv('HOME'), 'CSV(*.csv)')
-        if file_name:
-            result_data = pd.read_csv(file_name, index_col=0)
-            # result_data['agreement_ratio'] = result_data.apply(get_ratio, axis=1)
-            # print(result_data.head())
-            col = column_tag + '__agreement_ratio'
-            if(col in result.data.columns):
-                self.pc = self.prediction_data[result_data[column_tag + '__agreement_ratio'] < threshold]
-                self.text_table_model.loadData(self.pc)
-            else:
-                exceptionWarning(f"No agreement ratio found for {column_tag}")
+    #     file_name, filter = QFileDialog.getOpenFileName(
+    #         self, 'Open CSV', os.getenv('HOME'), 'CSV(*.csv)')
+    #     if file_name:
+    #         result_data = pd.read_csv(file_name, index_col=0)
+    #         # result_data['agreement_ratio'] = result_data.apply(get_ratio, axis=1)
+    #         # print(result_data.head())
+    #         col = column_tag + '__agreement_ratio'
+    #         if(col in result.data.columns):
+    #             self.pc = self.prediction_data[result_data[column_tag + '__agreement_ratio'] < threshold]
+    #             self.text_table_model.loadData(self.pc)
+    #         else:
+    #             exceptionWarning(f"No agreement ratio found for {column_tag}")
             
     
-    def save_pc(self):
-        if self.pc.empty:
-            exceptionWarning("No problem children loaded.")
-            return
+    # def save_pc(self):
+    #     if self.pc.empty:
+    #         exceptionWarning("No problem children loaded.")
+    #         return
         
-        file_name, filter = QFileDialog.getSaveFileName(
-            self, 'Save to CSV', os.getenv('HOME'), 'CSV(*.csv)')
-        if file_name:
-            self.pc.to_csv(
-                file_name, index_label='testnum', quoting=1, encoding='utf-8')
-            self.comms.update_statusbar.emit("PC saved successfully.")
+    #     file_name, filter = QFileDialog.getSaveFileName(
+    #         self, 'Save to CSV', os.getenv('HOME'), 'CSV(*.csv)')
+    #     if file_name:
+    #         self.pc.to_csv(
+    #             file_name, index_label='testnum', quoting=1, encoding='utf-8')
+    #         self.comms.update_statusbar.emit("PC saved successfully.")

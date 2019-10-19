@@ -20,6 +20,7 @@ import functools
 from package.utils.catutils import CATEncoder
 from package.utils.catutils import cat_decoder
 from package.train.models.BaseModelDialog import BaseModelDialog
+from package.utils.config import CONFIG
 
 
 
@@ -36,7 +37,7 @@ class SkModelDialog(BaseModelDialog):
         tfidf_params: String, path to default TF-IDF param file.
         fs_params: String, path to default feature selection file.
     '''
-
+    # ! TODO: Update to use CONFIG values
     def __init__(self,
                  parent=None,
                  *params):
