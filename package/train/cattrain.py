@@ -12,6 +12,8 @@ import argparse
 import logging
 import json
 import os
+import shutil
+import errno
 
 import pandas as pd
 
@@ -19,12 +21,14 @@ from PyQt5.QtCore import (Qt, pyqtSlot, pyqtSignal)
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QDialog, QHeaderView, QAction,
                                QMainWindow, QSizePolicy, QProgressBar, QWidget,
                                QVBoxLayout, QFormLayout, QGroupBox, QLineEdit,
-                               QLabel, QDialogButtonBox, QMessageBox, QPushButton)
+                               QLabel, QDialogButtonBox, QMessageBox, QComboBox, QPushButton)
 
 from package.train.TrainWidget import TrainWidget
 from package.utils.catutils import exceptionWarning
+from package.utils.config import CONFIG
 
-VERSION_BASE_DIR = "./package/data/versions"
+
+VERSION_BASE_DIR = CONFIG.get('PATHS', 'BaseVersionDirectory')
 DEFAULT_QUESTION_LABELS = ['Q1', 'Q2', 'Q3', 'Q4', 'Q6',
                     'Q7', 'Q9', 'Q11', 'Q14', 'Q15']
 class CatTrain(QMainWindow):
@@ -64,10 +68,17 @@ class CatTrain(QMainWindow):
         self.create_version_action.triggered.connect(
             lambda: self.open_create_version_dialog(self.version_widget)
         )
+        self.version_copy_widget = CopyVersionWidget(self)
+        self.copy_version_action = QAction('Copy Version', self)
+        self.version_menu.addAction(self.copy_version_action)
+        self.copy_version_action.triggered.connect(
+            lambda: self.open_copy_version_dialog(self.version_copy_widget)
+        )
     
         self.statusBar().addPermanentWidget(self.progressBar)
         self.train_widget = TrainWidget(self)
         self.version_widget.version_created.connect(self.train_widget.model_widget.add_new_version)
+        self.version_copy_widget.version_copied.connect(self.train_widget.model_widget.add_new_version)
         self.train_widget.data_loader.update_progressbar.connect(self.update_progress_bar)
         self.train_widget.model_widget.update_progressbar.connect(self.update_progress_bar)
         self.setCentralWidget(self.train_widget)
@@ -86,6 +97,10 @@ class CatTrain(QMainWindow):
 
     def open_create_version_dialog(self, dialog):
         dialog.create_version()
+
+    def open_copy_version_dialog(self, dialog):
+        dialog.copy_version()
+
 
     def reload_all_modules(self):
         try:
@@ -111,6 +126,113 @@ class CatTrain(QMainWindow):
                 "CatTrain.print_all_modules:", exc_info=True)
             tb = traceback.format_exc()
             print(tb)
+
+class CopyVersionWidget(QDialog):
+    '''
+    Fully copy an existing version, spec files and models.
+    '''
+    version_copied = pyqtSignal(str)
+    def __init__(self, parent=None):
+        super(CopyVersionWidget, self).__init__(parent)
+        self.logger = logging.getLogger(__name__)
+        self.parent = parent
+        self.setWindowTitle('Copy CAT Version')
+        self.version_name = None
+        self.main_layout = QVBoxLayout()
+        self.version_form = QFormLayout()
+
+        self.main_layout.addLayout(self.version_form)
+        self.setupUI()
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.buttonBox.setObjectName("version_copy_warning")
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.buttonBox.setWindowTitle("Version Copy Warning")
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.main_layout.addWidget(self.buttonBox)
+        self.setLayout(self.main_layout)
+
+    def _update_version_name(self, value):
+        self.version_name = value
+           
+
+    def _version_check(self, version):
+        """
+        Checks that user has both supplied a version name and that, if supplied, 
+        the name is unique.
+
+            # Arguments
+                version(String): version name supplied by user
+
+            # Returns
+                bool: True if version is supplied and unique, else False
+        """
+        if version == '':
+            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            return False
+        v = os.path.join(VERSION_BASE_DIR, version)
+        if os.path.exists(v):
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setText("Version {} already exists!".format(version))
+            msg_box.setWindowTitle('Version Warning')
+            msg_box.exec_()
+            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            return False
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        return True
+
+
+    def copy_version(self):
+        """
+        Copy version specified by the user.
+        """
+        if(self.exec_() == QDialog.Accepted):
+            src_dir = self.version_selection.currentData()
+            dest_dir = os.path.join(VERSION_BASE_DIR, self.version_name_input.text())
+            try:
+                shutil.copytree(src_dir, dest_dir)
+                self.version_copied.emit(dest_dir)
+            except OSError as e:
+                if e.errno == errno.ENOTDIR:
+                    shutil.copy(src_dir, dest_dir)
+                else:
+                    exceptionWarning(f'Unable to copy {src_dir} to {dest_dir}', title='Copy version exception')
+                    tb = traceback.format_exc()
+                    print(tb)
+            except Exception as e:
+                exceptionWarning('Error occured when copying version.', e, title='Copy version exception')
+            finally:
+                self.version_name = None
+                self.version_selection.addItem(self.version_name_input.text(), dest_dir)
+
+
+    def setupUI(self):
+        self.version_name_label = QLabel("Version name: ")
+        self.version_name_input = QLineEdit(objectName='version_name')
+        self.version_name_input.textChanged.connect(
+            lambda state, y=self.version_name_input:
+                self._update_version_name(
+                    (y.text() if self._version_check(y.text()) else None)
+                )
+        )
+        self.version_form.addRow(self.version_name_label, self.version_name_input)
+
+        self.version_selection_label = QLabel("Select version: ")
+        self.version_selection = QComboBox(objectName='version_select')
+
+        available_versions = os.listdir(".\\package\\data\\versions")
+        for version in available_versions:
+            v_path = os.path.join('.\\package\\data\\versions', version)
+            if os.path.isdir(v_path):
+                self.version_selection.addItem(version, v_path)
+        # self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection:
+        #                                                    self._update_version_name(
+        #                                                        y.currentData())
+        #                                                    )
+        self.version_form.addRow(self.version_selection_label, self.version_selection)
 
 class CreateVersionWidget(QDialog):
     """

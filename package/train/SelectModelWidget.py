@@ -162,11 +162,11 @@ class SelectModelWidget(QWidget):
         self.main_layout.addWidget(self.training_logger)
 
         self.main_layout.addStretch()
-        self.run_btn = QPushButton("Train Models")
+        self.run_btn = QPushButton("&Train Models")
         self.run_btn.clicked.connect(lambda: self.train_models())
         self.run_btn.setEnabled(False)
 
-        self.stop_btn = QPushButton('S&top')
+        self.stop_btn = QPushButton('&Stop')
         self.stop_btn.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.comms.enable_training_btn.connect(self.set_training_btn_state)
@@ -190,8 +190,8 @@ class SelectModelWidget(QWidget):
         self.version_selection = QComboBox(objectName='version_select')
         # Changed default models to a unique directory.  This
         # is where default models will be saved.
-        self.version_selection.addItem(
-            'default', '.\\package\\data\\default_models\\default')
+        # self.version_selection.addItem(
+        #     'default', '.\\package\\data\\default_models\\default')
         available_versions = os.listdir(".\\package\\data\\versions")
         for version in available_versions:
             v_path = os.path.join('.\\package\\data\\versions', version)

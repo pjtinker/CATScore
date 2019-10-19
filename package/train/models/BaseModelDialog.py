@@ -177,9 +177,9 @@ class BaseModelDialog(QDialog):
             # alphabetic.
             question_directories = sorted(question_directories,
                                           key=lambda item:
-                                          (int(re.findall('\d+|D+', item)[0])
-                                           if len(re.findall('\d+|D+', item)) > 0
-                                           else float('inf'), item)
+                                            (int(re.findall('\d+|D+', item)[0])
+                                                if len(re.findall('\d+|D+', item)) > 0
+                                                else float('inf'), item)
                                           )
             model_exists = False
             for d in question_directories:
@@ -190,7 +190,6 @@ class BaseModelDialog(QDialog):
                     # print("val in ModelDialog:", path)
                     if os.path.isdir(path):
                         for fname in os.listdir(path):
-                            # print("Filename in ModelDialog:", fname)
                             if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.h5':
                                 combo_text = combo_text + "*"
                                 model_exists = True

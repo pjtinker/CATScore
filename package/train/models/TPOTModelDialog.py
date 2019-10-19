@@ -39,7 +39,7 @@ class TPOTModelDialog(BaseModelDialog):
                  parent=None,
                  *params):
         super(BaseModelDialog, self).__init__(parent)
-        # super().__init__(self)
+        
         self.logger = logging.getLogger(__name__)
         self.comms = Communicate()
         self.comms.check_for_existing_model.connect(self.parent().model_exists)
@@ -104,34 +104,12 @@ class TPOTModelDialog(BaseModelDialog):
         self.main_layout.addWidget(self.buttonBox)
         self.setLayout(self.main_layout)
 
-    # @property
-    # def get_model_name(self):
-    #     return self.main_model_name
-
-    # def get_class(self, params, init_class=None):
-    #     """
-    #     Return instantiated class using importlib
-    #     Loads any static parameters defined by the system.
-    #         # Arguments
-    #             params: dict, dictionary of parameters necessary to instantiate
-    #                     the class.
-    #         # Returns
-    #             model: instantiated class
-    #     """
-    #     model = None
-    #     module = importlib.import_module(params['model_module'])
-    #     module_class = getattr(module, params['model_class'])
-    #     if "static_params" in params:
-    #         model = module_class(**params['static_params'])
-    #     else:
-    #         model = module_class(init_class)
-    #     return model
 
     def apply_changes(self):
         version = self.current_version.split('\\')[-1]
         if version == 'default':
-            # print("Default version selected.  Returning...")
             return
+
         if self.is_dirty:
             filename = self.main_model_name + '.json'
             save_dir = os.path.join(self.version_item_combobox.currentData(),
@@ -151,31 +129,20 @@ class TPOTModelDialog(BaseModelDialog):
                     default_dir, self.main_model_name + '.json')
                 with open(default_path, 'r') as infile:
                     full_default_params = json.load(infile)
-                save_data = {
-                    "model_base": self.params[0]['model_base'],
-                    "model_module": self.params[0]['model_module'],
-                    "model_class": self.main_model_name,
+                
+                full_default_params.update({
                     "question_number": self.version_item_combobox.currentData().split('\\')[-1],
-                    "version": version,
-                    "tuned": False,
-                    "params": {},
-                    "tpot_params": {}
-                }
-                save_data['params'] = full_default_params['params']
-                save_data['tpot_params'] = full_default_params['tpot_params']
-                # print("save_data['tpot_params'] in save_params")
-                # print("save_data['tpot_params'] in apply_changes:")
-                # print(json.dumps(
-                #     save_data['tpot_params'], indent=2, cls=CATEncoder))
+                    "version": version
+                })
+                save_data = full_default_params.copy()
+
             else:
                 with open(save_file_path, 'r') as infile:
                     save_data = json.load(infile)
 
-            # print("updated_params:")
-            # print(json.dumps(self.updated_params, cls=CATEncoder, indent=2))
             for param_type, params in self.updated_params.items():
                 if(params):
-                    # Check for key existence to specify which parameter we're saving
+                    #* Check for key existence to specify which parameter we're saving
                     if(param_type in save_data['params'].keys()):
                         root = 'params'
                     else:
@@ -195,23 +162,6 @@ class TPOTModelDialog(BaseModelDialog):
         self.is_dirty = False
         return
 
-    # def save_params(self):
-    #     """
-    #     Saves the model parameters entered by the user. If default version is selected,
-    #     return without saving.
-    #     """
-    #     if (self.exec_() == QDialog.Accepted):
-    #         self.apply_changes()
-
-    # def _split_key(self, key):
-    #     return key.split('__')[1]
-
-    # def _update_param(self, param_type, key, value, callback=None, **cbargs):
-    #     if self.current_version != 'default':
-    #         if callback:
-    #             functools.partial(callback, key, value)
-    #         self.updated_params[param_type][key] = value
-    #         self.is_dirty = True
 
     def setupTPOTModelDetailUI(self, form):
         '''
@@ -255,8 +205,6 @@ class TPOTModelDialog(BaseModelDialog):
                             x,
                             y.currentData())
                     )
-                    # form.addRow(label, input_field)
-                    # self.input_widgets[k] = input_field
 
                 elif val_type == 'double':
                     input_field = QDoubleSpinBox(objectName=k)
@@ -315,77 +263,6 @@ class TPOTModelDialog(BaseModelDialog):
             tb = traceback.format_exc()
             print(tb)
 
-    # @pyqtSlot(str)
-    # def update_version(self, directory=None):
-    #     """
-    #     Updates the question combobox based upon selected directory.
-
-    #         # Arguments:
-    #             directory (String): path to top of version directory.  If 'default', 
-    #             load default values.  
-    #     """
-    #     self.is_dirty = False
-    #     if directory:
-    #         self.current_version = directory
-    #     # Clear combobox to be reconstructed or blank if default.
-    #     self.version_item_combobox.clear()
-    #     if self.current_version.split('\\')[-1] == 'default':
-    #         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-    #         self.buttonBox.button(QDialogButtonBox.Apply).setEnabled(False)
-    #         model_exists = False
-    #         for val in os.listdir(self.current_version):
-    #             path = os.path.join(self.current_version, val)
-    #             if os.path.isdir(path):
-    #                 for fname in os.listdir(path):
-    #                     if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.h5':
-    #                         model_exists = True
-    #                         break
-    #         self.comms.check_for_existing_model.emit(
-    #             self.main_model_name, model_exists)
-    #         return
-    #     else:
-    #         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-    #         self.buttonBox.button(QDialogButtonBox.Apply).setEnabled(True)
-    #     try:
-    #         question_directories = [os.path.join(directory, o) for o in os.listdir(
-    #             directory) if os.path.isdir(os.path.join(directory, o))]
-    #         # Sort the directories correctly.
-    #         # Takes the last digit given as the sort key.
-    #         # If no numeric values, regex will return an empty list and sorting will be
-    #         # alphabetic.
-    #         question_directories = sorted(question_directories,
-    #                                       key=lambda item:
-    #                                       (int(re.findall('\d+|D+', item)[0])
-    #                                        if len(re.findall('\d+|D+', item)) > 0
-    #                                        else float('inf'), item)
-    #                                       )
-    #         model_exists = False
-    #         for d in question_directories:
-    #             # self.comms.check_for_existing_model.emit("Test", True)
-    #             combo_text = d.split('\\')[-1]
-    #             for val in os.listdir(d):
-    #                 path = os.path.join(d, val)
-    #                 if os.path.isdir(path):
-    #                     for fname in os.listdir(path):
-    #                         if fname == self.main_model_name + '.pkl' or fname == self.main_model_name + '.h5':
-    #                             combo_text = combo_text + "*"
-    #                             model_exists = True
-    #             self.version_item_combobox.addItem(combo_text, d)
-
-    #         self.comms.check_for_existing_model.emit(
-    #             self.main_model_name, model_exists)
-
-    #         self.form_grid.addWidget(self.version_item_combobox, 0, 0)
-    #         self.update()
-    #     except FileNotFoundError as fnfe:
-    #         pass
-    #     except Exception as e:
-    #         self.logger.error(
-    #             "Error loading updated version directories.", exc_info=True)
-    #         print("Exception {}".format(e))
-    #         tb = traceback.format_exc()
-    #         print(tb)
-    #     # self.version_item_combobox.show()
 
     def load_version_params(self, path):
         """
@@ -414,6 +291,10 @@ class TPOTModelDialog(BaseModelDialog):
                 model_class = model_data['model_class']
                 for kind, params in model_data['tpot_params'].items():
                     self.set_input_params(params)
+
+                for kind, params in model_data['params'].items():
+                    self.set_input_params(params)
+                # self.update_trained_model_params(model_data[''])
             except FileNotFoundError as fnfe:
                 # No parameter file exists.  Pass.
                 pass
@@ -425,36 +306,6 @@ class TPOTModelDialog(BaseModelDialog):
             tb = traceback.format_exc()
             print(tb)
 
-    # def set_input_params(self, param_dict):
-    #     """
-    #     Set input parameter values based on passed parameter dict.  Iterates through
-    #     key/value pairs => input_widget key / input value
-
-    #         # Arguments
-    #             param_dict(dict): dictionary of parameter key/value pairs.  
-    #                 Key references name of input widget.
-
-    #         # Returns
-    #             None
-    #     """
-    #     for k, v in param_dict.items():
-    #         # If v is dictionary, function was called using default values.
-    #         # Set v equal to the default value of that parameter.
-    #         # Must check if default is in the dict, as other dicts exist that are not default values.
-    #         if isinstance(v, dict) and 'default' in v:
-    #             v = v['default']
-    #         if isinstance(v, list): # only list item so far is for tfidf ngram_range
-    #             v = v[-1]
-    #         if k in self.input_widgets:
-    #             cla = self.input_widgets[k]
-    #             if isinstance(cla, QComboBox):
-    #                 idx = cla.findData(v)
-    #                 if idx != -1:
-    #                     cla.setCurrentIndex(idx)
-    #             elif isinstance(cla, QLineEdit):
-    #                 cla.setText(v)
-    #             else:
-    #                 cla.setValue(v)
 
     @pyqtSlot(bool)
     def check_for_default(self, force_reload=False):

@@ -36,10 +36,10 @@
                 "type" : "int",
                 "default" : 2,
                 "min" : 0,
-                "max" : 10,
+                "max" : 4,
                 "step_size" : 1,
                 "tunable" : false,
-                "tooltip" : "Dictates how much information will be logged to the console during optimization.  The greater the value, the more information, with a value of 0 => silent."
+                "tooltip" : "Dictates how much information will be logged to the terminal during optimization.  The greater the value, the more information.  0 => silent."
             },
             "config_dict" : {
                 "type" : "static",
