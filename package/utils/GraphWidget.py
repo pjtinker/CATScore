@@ -15,6 +15,7 @@ import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import seaborn as sns
+from package.utils.config import CONFIG
 
 progname = os.path.basename(sys.argv[0])
 progversion = "0.1"
@@ -53,8 +54,7 @@ class GraphWidget(FigureCanvas):
         idx = np.arange(num_classes)
         colors = []
         for count in counts:
-            # FIXME: Put threshold percent in init file
-            if count < (total_count * .1):
+            if count < (total_count * CONFIG.getfloat('VARIABLES', 'MinorityClassThreshold')):
                 colors.append('r')
             else:
                 colors.append('b')
@@ -103,9 +103,13 @@ class GraphWidget(FigureCanvas):
 
     
     def plot_confusion_matrix(self, actual, predictions):
+        print(f'Here are the lengths: {len(actual)}, {len(predictions)}')
+        if(len(actual) < 1 or len(predictions) < 1):
+            raise ValueError('shit wonked out, yo')
+
         c_mat = confusion_matrix(actual, predictions)
-        # sns.heatmap(c_mat, annot=True, fmt='d', xticklabels=np.unique(actual))
         self.axes.cla()
+        sns.heatmap(c_mat, annot=True, fmt='d', xticklabels=np.unique(actual))
         self.axes.matshow(c_mat)
         for i, cas in enumerate(c_mat):
             for j, c in enumerate(cas):

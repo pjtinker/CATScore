@@ -11,11 +11,11 @@ import pandas as pd
 import pkg_resources
 from PyQt5.QtCore import QObject, Qt, QThread, QThreadPool, pyqtSignal, pyqtSlot, QSize
 from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
-                               QDoubleSpinBox, QFileDialog, QFormLayout,
-                               QGridLayout, QGroupBox, QHBoxLayout, QLabel,
-                               QMessageBox, QPushButton, QRadioButton,
-                               QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
-                               QVBoxLayout, QTextEdit, QWidget)
+                             QDoubleSpinBox, QFileDialog, QFormLayout,
+                             QGridLayout, QGroupBox, QHBoxLayout, QLabel,
+                             QMessageBox, QPushButton, QRadioButton,
+                             QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
+                             QVBoxLayout, QTextEdit, QWidget)
 
 from PyQt5.QtGui import QTextCursor
 from package.train.models.SkModelDialog import SkModelDialog
@@ -26,7 +26,7 @@ from package.utils.config import CONFIG
 
 
 class Communicate(QObject):
-    version_change = pyqtSignal(str)    
+    version_change = pyqtSignal(str)
     enable_training_btn = pyqtSignal(Qt.CheckState)
     stop_training = pyqtSignal()
 
@@ -42,9 +42,11 @@ class SelectModelWidget(QWidget):
         self.logger = logging.getLogger(__name__)
         self.parent = parent
         self.threadpool = QThreadPool()
-        self.logger.info(f"Multithreading enabled with a maximum of {self.threadpool.maxThreadCount()} threads.")
+        self.logger.info(
+            f"Multithreading enabled with a maximum of {self.threadpool.maxThreadCount()} threads.")
 
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+        print("Multithreading with maximum %d threads" %
+              self.threadpool.maxThreadCount())
         self.training_data = pd.DataFrame()
 
         self.selected_version = CONFIG.get('PATHS', 'DefaultModelDirectory')
@@ -54,28 +56,26 @@ class SelectModelWidget(QWidget):
         self.selected_models['sklearn'] = {}
         self.selected_models['tensorflow'] = {}
         self.model_checkboxes = []
-        # Initialize training parameter dict.  
-        # Has entry for both model base types
+        # * Initialize training parameter dict.
+        # * Has entry for both model base types
         self.training_params = {}
         self.training_params['sklearn'] = {}
         self.training_params['sklearn']['type'] = None
         self.training_params['sklearn']['value'] = None
         self.training_params['tensorflow'] = {}
-        # Init tuning param dict
-        # Currently only using gridsearch
+        # * Init tuning param dict
+        # * Currently only using gridsearch
         self.tuning_params = {}
         self.tuning_params['gridsearch'] = {
-            "n_iter" : 20,
-            "cv" : 3,
-            "n_jobs" : -1,
-            'scoring' : ['accuracy']
+            "n_iter": 20,
+            "cv": 3,
+            "n_jobs": -1,
+            'scoring': ['accuracy']
         }
-        # self.tuning_params['scoring'] = ['accuracy', 'f1_weighted', 'precision_weighted']
-        
+
         self.sklearn_model_dialogs = []
         self.sklearn_model_dialog_btns = []
         self.sklearn_training_inputs = []
-
 
         self.tensorflow_training_inputs = []
         self.tensorflow_model_dialogs = []
@@ -91,28 +91,27 @@ class SelectModelWidget(QWidget):
         self.tune_models_chkbox = QCheckBox("Tune Models")
         self.header_hbox.addWidget(self.tune_models_chkbox)
         self.tune_models_chkbox.stateChanged.connect(lambda state:
-                                            self._enable_tuning_ui(state)
-                                            )
+                                                     self._enable_tuning_ui(
+                                                         state)
+                                                     )
         self.main_layout.addLayout(self.header_hbox)
         self.main_layout.addLayout(self.upper_hbox)
 
         self.model_vbox = QVBoxLayout()
-        # self.model_vbox.addSpacing(100)
         self.tuning_vbox = QVBoxLayout()
 
         self.upper_hbox.addLayout(self.model_vbox)
         self.upper_hbox.addSpacing(10)
         self.upper_hbox.addLayout(self.tuning_vbox)
         self.upper_hbox.addSpacing(200)
-        # Build sklearn ui components
+        # * Build sklearn ui components
         self.sklearn_hbox = QHBoxLayout()
         self.sklearn_groupbox = QGroupBox("Sklearn")
         self.sklearn_groupbox.setLayout(self.sklearn_hbox)
-        
+
         self.skmodel_groupbox = QGroupBox("Model Selection")
         self.sklearn_hbox.addWidget(self.skmodel_groupbox)
         self.sklearn_model_form = QFormLayout()
-        # self.sklearn_model_form.setLabelAlignment(Qt.AlignLeft | Qt.AlignCenter)
         self.sklearn_model_form.setFormAlignment(Qt.AlignTop)
         self.skmodel_groupbox.setLayout(self.sklearn_model_form)
 
@@ -121,28 +120,23 @@ class SelectModelWidget(QWidget):
         self.sklearn_training_form = QFormLayout()
         self.sklearn_training_groupbox.setLayout(self.sklearn_training_form)
         self.sklearn_hbox.addWidget(self.sklearn_training_groupbox)
-        # self.sklearn_training_radio_btngroup = QButtonGroup()
 
-        # self.sklearn_tuning_groupbox = QGroupBox("Tuning")
-        # self.sklearn_hbox.addWidget(self.sklearn_tuning_groupbox)
-
-        # self.main_layout.addWidget(self.sklearn_groupbox)
         self.model_vbox.addWidget(self.sklearn_groupbox)
 
-        # Build Tensorflow ui components
+        # * Build Tensorflow ui components
         self.tensorflow_hbox = QHBoxLayout()
         self.tensorflow_groupbox = QGroupBox("Tensorflow")
         self.tensorflow_groupbox.setLayout(self.tensorflow_hbox)
-        
+
         self.tensorflow_model_groupbox = QGroupBox("Model Selection")
         self.tensorflow_hbox.addWidget(self.tensorflow_model_groupbox)
         self.tensorflow_model_form = QFormLayout()
-        # self.tensorflow_model_form.setLabelAlignment(Qt.AlignLeft | Qt.AlignCenter)
-        # self.tensorflow_model_form.setFormAlignment(Qt.AlignCenter)
+
         self.tensorflow_model_groupbox.setLayout(self.tensorflow_model_form)
         self.tensorflow_training_groupbox = QGroupBox("Training")
         self.tensorflow_training_form = QFormLayout()
-        self.tensorflow_training_groupbox.setLayout(self.tensorflow_training_form)
+        self.tensorflow_training_groupbox.setLayout(
+            self.tensorflow_training_form)
         self.tensorflow_hbox.addWidget(self.tensorflow_training_groupbox)
 
         # This is the tensorflow groupbox for models and training params.
@@ -162,7 +156,8 @@ class SelectModelWidget(QWidget):
         self.training_logger = QTextEdit()
         self.training_logger.setReadOnly(True)
         self.training_logger.setAcceptRichText(True)
-        self.training_logger.insertHtml("<i>Multithreading with maximum %d threads</i><br>" % self.threadpool.maxThreadCount())
+        self.training_logger.insertHtml(
+            "<i>Multithreading with maximum %d threads</i><br>" % self.threadpool.maxThreadCount())
         # self.training_logger.setHeight(400)
         self.main_layout.addWidget(self.training_logger)
 
@@ -181,7 +176,7 @@ class SelectModelWidget(QWidget):
         self.button_hbox.addWidget(self.stop_btn)
         self.main_layout.addLayout(self.button_hbox)
         self.setLayout(self.main_layout)
-        
+
         # Trigger update to load model parameters
         self._update_version(self.version_selection.currentData())
 
@@ -194,18 +189,21 @@ class SelectModelWidget(QWidget):
         self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
         # Changed default models to a unique directory.  This
-        # is where default models will be saved.  
-        self.version_selection.addItem('default', '.\\package\\data\\default_models\\default')
+        # is where default models will be saved.
+        self.version_selection.addItem(
+            'default', '.\\package\\data\\default_models\\default')
         available_versions = os.listdir(".\\package\\data\\versions")
         for version in available_versions:
             v_path = os.path.join('.\\package\\data\\versions', version)
             if os.path.isdir(v_path):
                 self.version_selection.addItem(version, v_path)
-        self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection: 
-                                                            self._update_version(y.currentData())
-                                                            )
-        self.version_form.addRow(self.version_selection_label, self.version_selection)
-        
+        self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection:
+                                                           self._update_version(
+                                                               y.currentData())
+                                                           )
+        self.version_form.addRow(
+            self.version_selection_label, self.version_selection)
+
         # Load base TF-IDF features
         # and feature selection data
         try:
@@ -213,42 +211,49 @@ class SelectModelWidget(QWidget):
                 tfidf_data = json.load(f)
         except IOError as ioe:
             self.logger.error("Error loading base TFIDF params", exc_info=True)
-            exceptionWarning('Error occurred while loading base TFIDF parameters.', repr(ioe))
+            exceptionWarning(
+                'Error occurred while loading base TFIDF parameters.', repr(ioe))
         try:
             with open(CONFIG.get('PATHS', 'BaseFeatureSeletionDirectory'), 'r') as f:
                 self.fs_params = json.load(f)
         except IOError as ioe:
-            self.logger.error("Error loading base feature selector params", exc_info=True)
-            exceptionWarning('Error occurred while loading base feature selector parameters.', repr(ioe))
+            self.logger.error(
+                "Error loading base feature selector params", exc_info=True)
+            exceptionWarning(
+                'Error occurred while loading base feature selector parameters.', repr(ioe))
         # Dynamically generate ModelDialogs for each model in the base model directory.
         # Only considers *.json file extension.
         try:
             row = 0
             for filename in os.listdir(CONFIG.get('PATHS', 'BaseModelDirectory')):
                 if filename.endswith('.json'):
-                    with open(os.path.join(CONFIG.get('PATHS','BaseModelDirectory'), filename), 'r') as f:
+                    with open(os.path.join(CONFIG.get('PATHS', 'BaseModelDirectory'), filename), 'r') as f:
                         # print("Loading model:", filename)
                         model_data = json.load(f)
                         model = model_data['model_class']
                         model_base = model_data['model_base']
                         model_module = model_data['model_module']
-                        # The order of the arguments matters!  model_data must come first. 
+                        # The order of the arguments matters!  model_data must come first.
                         if model_base == 'tensorflow':
                             continue
                             # model_dialog = SkModelDialog(self, model_data)
                         if model_module == 'tpot':
-                            model_dialog = TPOTModelDialog(self, model_data, tfidf_data)
+                            model_dialog = TPOTModelDialog(
+                                self, model_data, tfidf_data)
                         else:
-                            model_dialog = SkModelDialog(self, model_data, tfidf_data, self.fs_params)
-                        self.comms.version_change.connect(model_dialog.update_version)
+                            model_dialog = SkModelDialog(
+                                self, model_data, tfidf_data, self.fs_params)
+                        self.comms.version_change.connect(
+                            model_dialog.update_version)
                         # Initialize model as unselected
                         self.selected_models[model_base][model] = False
-                        btn = QPushButton(model, objectName= model + '_btn')
+                        btn = QPushButton(model, objectName=model + '_btn')
                         # Partial allows the connection of dynamically generated QObjects
-                        btn.clicked.connect(partial(self.open_dialog, model_dialog))
+                        btn.clicked.connect(
+                            partial(self.open_dialog, model_dialog))
                         chkbox = QCheckBox(objectName=model)
-                        chkbox.stateChanged.connect(lambda state, x=model, y=model_base :
-                                                self._update_selected_models(x, y, state))
+                        chkbox.stateChanged.connect(lambda state, x=model, y=model_base:
+                                                    self._update_selected_models(x, y, state))
                         if model_base == 'tensorflow':
                             self.tensorflow_model_form.addRow(chkbox, btn)
                             self.tensorflow_model_dialogs.append(model_dialog)
@@ -260,18 +265,17 @@ class SelectModelWidget(QWidget):
                         self.model_checkboxes.append(chkbox)
                         row += 1
         except OSError as ose:
-            self.logger.error("OSError opening model config files", exc_info=True)
+            self.logger.error(
+                "OSError opening model config files", exc_info=True)
             exceptionWarning('OSError opening model config files!', ose)
             tb = traceback.format_exc()
             print(tb)
         except Exception as e:
-            self.logger.error("Error opening model config files", exc_info=True)
+            self.logger.error(
+                "Error opening model config files", exc_info=True)
             exceptionWarning('Error occured.', e)
             tb = traceback.format_exc()
             print(tb)
-        
-
-            
 
     def setup_training_ui(self):
         """
@@ -285,35 +289,40 @@ class SelectModelWidget(QWidget):
         self.cv_n_fold_input.valueChanged.connect(
             lambda state, x=self.cv_n_fold_input:
                 self.update_training_params('sklearn', 'cv', x.value())
-            )
+        )
         self.cv_radio_btn = QRadioButton("Cross-validation", objectName='cv')
-        self.cv_radio_btn.toggled.connect(lambda state, x=self.cv_n_fold_input: 
-                                        self._update_sklearn_training_type('cv', x.value())
-                                    )
-        self.sklearn_training_form.addRow(self.cv_radio_btn, self.cv_n_fold_input)
-        
+        self.cv_radio_btn.toggled.connect(lambda state, x=self.cv_n_fold_input:
+                                          self._update_sklearn_training_type(
+                                              'cv', x.value())
+                                          )
+        self.sklearn_training_form.addRow(
+            self.cv_radio_btn, self.cv_n_fold_input)
+
         self.sk_validation_radio_btn = QRadioButton("Validation set")
-        self.sk_validation_percent_input = QDoubleSpinBox(objectName='test_split')
+        self.sk_validation_percent_input = QDoubleSpinBox(
+            objectName='test_split')
         self.sk_validation_percent_input.setRange(0.05, 1)
         self.sk_validation_percent_input.setSingleStep(0.1)
         self.sk_validation_percent_input.setEnabled(False)
         self.sk_validation_percent_input.valueChanged.connect(
             lambda state, x=self.sk_validation_percent_input:
                 self.update_training_params('sklearn', 'validation', x.value())
-            )
+        )
 
         self.sk_validation_radio_btn.toggled.connect(
             lambda state, x=self.sk_validation_percent_input:
                 self._update_sklearn_training_type('validation', x.value())
-            )
+        )
         # NOTE: Removing validation split option from evaluation.  It seems less than useful and
         # requires time that could be spent elsewhere as we near the end of our time together.
         # self.sklearn_training_form.addRow(self.sk_validation_radio_btn, self.sk_validation_percent_input)
-    
-        self.no_eval_btn = QRadioButton("No evaluation set", objectName='no_eval')
-        self.no_eval_btn.toggled.connect(lambda: 
-                                        self._update_sklearn_training_type(None, None)
-                                   )
+
+        self.no_eval_btn = QRadioButton(
+            "No evaluation set", objectName='no_eval')
+        self.no_eval_btn.toggled.connect(lambda:
+                                         self._update_sklearn_training_type(
+                                             None, None)
+                                         )
         self.sklearn_training_form.addRow(self.no_eval_btn)
         # TENSORFLOW TRAINING UI.  Unused as of 10/04/19
         # self.tf_val_label = QLabel("Validation split")
@@ -384,7 +393,7 @@ class SelectModelWidget(QWidget):
         # self.tensorflow_training_form.addRow(self.tf_is_embedding_trainable_label, self.tf_is_embedding_trainable_chkbox)
         # END OF TENSORFLOW TRAINING UI
 
-        # Toggle 
+        # Toggle
         self.cv_radio_btn.toggle()
 
     def setup_tuning_ui(self):
@@ -397,7 +406,8 @@ class SelectModelWidget(QWidget):
             lambda state, x=self.tuning_n_iter_input:
                 self.update_tuning_params('gridsearch', 'n_iter', x.value())
         )
-        self.tuning_form.addRow(self.tuning_n_iter_label, self.tuning_n_iter_input)
+        self.tuning_form.addRow(self.tuning_n_iter_label,
+                                self.tuning_n_iter_input)
 
         self.tuning_cv_label = QLabel("CV folds:")
         self.tuning_cv_input = QSpinBox(objectName='cv')
@@ -417,7 +427,8 @@ class SelectModelWidget(QWidget):
             lambda state, x=self.tuning_n_jobs_input:
                 self.update_tuning_params('gridsearch', 'n_jobs', x.value())
         )
-        self.tuning_form.addRow(self.tuning_n_jobs_label, self.tuning_n_jobs_input)
+        self.tuning_form.addRow(self.tuning_n_jobs_label,
+                                self.tuning_n_jobs_input)
 
         self.scoring_metric_groupbox = QGroupBox('Scoring metrics')
         self.scoring_metric_vbox = QVBoxLayout()
@@ -442,10 +453,10 @@ class SelectModelWidget(QWidget):
         self.prec_weighted_checkbox.setChecked(False)
         self.prec_weighted_checkbox.stateChanged.connect(
             lambda state, x=self.prec_weighted_checkbox:
-            self.update_tuning_params('gridsearch', 'precision_weighted', state, True)
+            self.update_tuning_params(
+                'gridsearch', 'precision_weighted', state, True)
         )
         self.scoring_metric_vbox.addWidget(self.prec_weighted_checkbox)
-
 
         self.scoring_metric_groupbox.setLayout(self.scoring_metric_vbox)
         self.tuning_form.addRow(self.scoring_metric_groupbox)
@@ -459,7 +470,6 @@ class SelectModelWidget(QWidget):
                 dialog: ModelDialog, Specified model dialog.
         """
         dialog.save_params()
-
 
     @pyqtSlot(str)
     def add_new_version(self, v_dir):
@@ -484,18 +494,17 @@ class SelectModelWidget(QWidget):
         self.training_data = data
         self.comms.enable_training_btn.emit(True)
 
-
     @pyqtSlot(Qt.CheckState)
     def set_training_btn_state(self):
         """
         Sets the run button enabled state.
         Checks that there are models selected in sklearn or tensorflow 
         """
-        if (not self.training_data.empty 
-            and 
-                (1 in self.selected_models['sklearn'].values() 
-            or 
-                1 in self.selected_models['tensorflow'].values()) 
+        if (not self.training_data.empty
+                and
+            (1 in self.selected_models['sklearn'].values()
+                     or
+                     1 in self.selected_models['tensorflow'].values())
             ):
             self.run_btn.setEnabled(True)
         else:
@@ -527,15 +536,17 @@ class SelectModelWidget(QWidget):
         try:
             tune_models = self.tune_models_chkbox.isChecked()
             self.model_trainer = ModelTrainer(self.selected_models,
-                                                self.selected_version,
-                                                self.training_params,
-                                                self.training_data,
-                                                tune_models,
-                                                self.tuning_params,
-                                                self.tuning_n_iter_input.value())
-            self.model_trainer.signals.update_training_logger.connect(self.update_training_logger)
+                                              self.selected_version,
+                                              self.training_params,
+                                              self.training_data,
+                                              tune_models,
+                                              self.tuning_params,
+                                              self.tuning_n_iter_input.value())
+            self.model_trainer.signals.update_training_logger.connect(
+                self.update_training_logger)
             self.update_progressbar.emit(1, True)
-            self.model_trainer.signals.training_complete.connect(self.training_complete)
+            self.model_trainer.signals.training_complete.connect(
+                self.training_complete)
             self.comms.stop_training.connect(self.model_trainer.stop_thread)
             self.run_btn.setEnabled(False)
             self.stop_btn.clicked.connect(lambda: self._abort_training())
@@ -573,14 +584,12 @@ class SelectModelWidget(QWidget):
         self.run_btn.setEnabled(True)
         self.run_btn.setText("Train models")
         self.tune_models_chkbox.setChecked(False)
-        # Emitting a version change here reloads all parameters.  i.e. we update the 
-        # parameters displayed in the dialog.  
+        # Emitting a version change here reloads all parameters.  i.e. we update the
+        # parameters displayed in the dialog.
         self.comms.version_change.emit(self.selected_version)
-
 
     def _abort_training(self):
         self.comms.stop_training.emit()
-
 
     def _update_version(self, directory):
         """
@@ -592,7 +601,6 @@ class SelectModelWidget(QWidget):
         self.selected_version = directory
         # Emit pyqtSignal
         self.comms.version_change.emit(directory)
-
 
     def _update_selected_models(self, model, model_base, state):
         """
@@ -620,7 +628,6 @@ class SelectModelWidget(QWidget):
         self.run_btn.setText("Tune Models" if state else "Train Models")
         self.tuning_groupbox.setEnabled(state)
 
-
     def update_tuning_params(self, model_base, param, value, scorer=False):
         if model_base is None or param is None:
             return
@@ -637,12 +644,12 @@ class SelectModelWidget(QWidget):
             self.tuning_params[model_base][param] = {}
             self.tuning_params[model_base][param] = value
         except Exception as e:
-            self.logger.error("SelectModelWidget.update_tuning_params", exc_info=True)
+            self.logger.error(
+                "SelectModelWidget.update_tuning_params", exc_info=True)
             exceptionWarning('Exception occured when training models.', e)
             tb = traceback.format_exc()
             print(tb)
         print(self.tuning_params)
-
 
     def update_training_params(self, model_base, param, value):
         """
@@ -666,7 +673,6 @@ class SelectModelWidget(QWidget):
         except KeyError as ke:
             print(ke)
 
-
     def _update_sklearn_training_type(self, eval_type, value):
         """
         SKlearn model tuning is mutually exclusive.  This helper function
@@ -683,7 +689,7 @@ class SelectModelWidget(QWidget):
         truth = False
         if eval_type == 'cv':
             self.cv_n_fold_input.setEnabled(not truth)
-            self.sk_validation_percent_input.setEnabled(truth)     
+            self.sk_validation_percent_input.setEnabled(truth)
         elif eval_type == 'validation':
             self.cv_n_fold_input.setEnabled(truth)
             self.sk_validation_percent_input.setEnabled(not truth)

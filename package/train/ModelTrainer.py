@@ -103,7 +103,7 @@ class ModelTrainer(QRunnable):
         self.grid_search_time = None
         self.model_checksums = {}
         self._is_running = True
-        self.tag_suffix = CONFIG.get('VARIABLES', 'TagDelimiter') + CONFIG.get('VARIABLES', 'TagLabelSuffix')
+        self.tag_suffix = CONFIG.get('VARIABLES', 'TagDelimiter') + CONFIG.get('VARIABLES', 'TagDataColumnSuffix')
     @pyqtSlot()
     def run(self):
         def get_ratio(row):
@@ -471,7 +471,7 @@ class ModelTrainer(QRunnable):
             #     updated_key_dict = {f'{model}__{k}': 
             #         [v] for k, v in keras_params.items()}
             #     grid_params.update(updated_key_dict)
-            # FIXME: I'm popping this by idx.  This is a serious no-no.
+            # ! FIXME: I'm popping this by idx.  This is a serious no-no.
             # find a better way to remove feature selection from pipeline.
             if 'SelectPercentile' in pipeline.named_steps:
                 pipeline.steps.pop(1)
@@ -521,7 +521,7 @@ class ModelTrainer(QRunnable):
         else:
             self.save_params_to_file(model_name, pipeline.get_params(), save_path, score)
 
-    #TODO: STOP OVERWRITING THE LAST TUNING DATA IN THE JSON FILE
+    # ! TODO: STOP OVERWRITING THE LAST TUNING DATA IN THE JSON FILE
     def save_params_to_file(self, model, best_params, model_param_path, best_score):
         try:            
             model_path = os.path.join(model_param_path, model + '.json')
@@ -532,22 +532,34 @@ class ModelTrainer(QRunnable):
                                           model + '.json')
             with open(model_path, 'r') as param_file:
                 model_params = json.load(param_file)
-
-            model_params['meta'] = {
-                'training_meta': {
-                    'last_train_date': time.ctime(time.time()),
+            current_time = time.localtime()
+            # model_params['meta'] = {
+            #     'training_meta': {
+            #         'last_train_date': time.strftime('%Y-%m-%d', current_time),
+            #         'train_eval_score': best_score,
+            #         'checksum': self.model_checksums[model]
+            #     }
+            # }
+            model_params['meta']['training_meta'].update(
+                {
+                    'last_train_date': time.strftime('%Y-%m-%d', current_time),
                     'train_eval_score': best_score,
                     'checksum': self.model_checksums[model]
-                },
-
-            }
+                }
+            )
             if self.tune_models:
-                model_params['meta']['tuning_meta'] = {
-                    'last_tune_date': time.ctime(time.time()),
+                # model_params['meta']['tuning_meta'] = {
+                #     'last_tune_date': time.strftime('%Y-%m-%d', current_time),
+                #     'n_iter': self.n_iter,
+                #     'tuning_duration': self.grid_search_time,
+                #     'tune_eval_score': best_score
+                # }
+                model_params['meta']['tuning_meta'].update({
+                    'last_tune_date': time.strftime('%Y-%m-%d', current_time),
                     'n_iter': self.n_iter,
                     'tuning_duration': self.grid_search_time,
                     'tune_eval_score': best_score
-                }
+                })
 
             # Update model params to those discovered during tuning
             for param_type, parameters in model_params['params'].items():
@@ -583,17 +595,15 @@ class ModelTrainer(QRunnable):
                 model_params = json.load(param_file)
 
             best_params = pipeline.get_params()
-            # print('best_params:')
-            # print(best_params)
 
             tpot_params = model_params['tpot_params']
-            # Remove any models under params that are not TfidfVectorizers
+            #* Remove any models under params that are not TfidfVectorizers
             for param_type in list(model_params['params'].keys()):
                 param_key = param_type.split('.')[1]
                 if param_key != 'feature_extraction':
                     del model_params['params'][param_type]
 
-            # Update tfidf params to the best
+            #* Update tfidf params to the best
             for param_type, parameters in model_params['params'].items():
                 param_key = param_type.split('.')[-1]
                 for k, v in best_params.items():
@@ -603,19 +613,19 @@ class ModelTrainer(QRunnable):
             current_time = time.localtime()
             model_params['meta'] = {
                 'training_meta': {
-                    'last_train_date': time.strftime('%Y-%m-%d %H:%M:%S', current_time),
+                    'last_train_date': time.strftime('%Y-%m-%d', current_time),
                     'train_eval_score': best_score,
                     'checksum': self.model_checksums[model]
                 },
             }
             if self.tune_models:
                 model_params['meta']['tuning_meta'] = {
-                    'last_tune_date': time.strftime('%Y-%m-%d %H:%M:%S', current_time),
+                    'last_tune_date': time.strftime('%Y-%m-%d', current_time),
                     'n_iter': self.n_iter,
                     'tuning_duration': self.grid_search_time,
                     'tune_eval_score': best_score
                 }
-            # Now to get the new model parameters 
+            #* Now to get the new model parameters 
             for name, obj in pipeline.named_steps.items():
                 if name == 'TfidfVectorizer':
                     continue
@@ -672,11 +682,12 @@ class ModelTrainer(QRunnable):
         self.model_checksums['Stacker'] = hashlib.md5(
             open(save_file, 'rb').read()).hexdigest()
         self._update_log(f'Stacking hash: {self.model_checksums["Stacker"]}')
+        
         # Save particulars to file
         stacker_info = {
             'column': col_path.split('\\')[-1],
             'version_directory': self.version_directory,
-            'last_train_date': time.ctime(time.time()),
+            'last_train_date': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
             'train_eval_score': stack_acc,
             'model_checksums': self.model_checksums
         }
@@ -705,7 +716,7 @@ class ModelTrainer(QRunnable):
             print(tb)
 
     def _update_log(self, msg, include_time=True):
-        # outbound = f'{time.ctime(time.time())} - {msg}<br>'
+        # outbound = f'{time.strftime('%Y-%m-%d %H:%M:%S', current_time)} - {msg}<br>'
         self.signals.update_training_logger.emit(msg, include_time)
 
 
