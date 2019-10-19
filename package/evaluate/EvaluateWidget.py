@@ -50,11 +50,11 @@ class EvaluateWidget(QWidget):
         self.open_file_button = QPushButton('Load CSV', self)
         self.open_file_button.clicked.connect(lambda: self.open_file())
 
-        self.get_problem_children_btn = QPushButton('Get Problem Children', self)
-        self.get_problem_children_btn.clicked.connect(lambda: self.get_problem_children)
+        # self.get_problem_children_btn = QPushButton('Get Problem Children', self)
+        # self.get_problem_children_btn.clicked.connect(lambda: self.get_problem_children)
         
-        self.save_problem_children_btn = QPushButton('Save PC', self)
-        self.save_problem_children_btn.clicked.connect(lambda: self.save_pc())
+        # self.save_problem_children_btn = QPushButton('Save PC', self)
+        # self.save_problem_children_btn.clicked.connect(lambda: self.save_pc())
         
         self.main_layout = QHBoxLayout()
         self.left_column = QVBoxLayout()
@@ -62,7 +62,7 @@ class EvaluateWidget(QWidget):
 
         self.main_layout.addLayout(self.left_column)
         self.main_layout.addLayout(self.right_column)
-        # ~ Available question column view
+        # Available question column view
         self.available_column_view = QTableView()
         self.available_column_view.setMinimumHeight(321)
         self.available_column_view.setMaximumWidth(234)
@@ -99,7 +99,7 @@ class EvaluateWidget(QWidget):
         self.training_stats_grid = QGridLayout()
         self.training_stats_grid.setVerticalSpacing(0)
         self.training_stats_groupbox.setLayout(self.training_stats_grid)
-        # self.training_stats_groupbox.setMinimumHeight(200)
+        self.training_stats_groupbox.setMinimumHeight(200)
         model_label = QLabel("Model")
         model_label.setFont(QFont("Times", weight=QFont.Bold))
         self.training_stats_grid.addWidget(model_label, 0, 0, Qt.AlignTop)
@@ -126,9 +126,9 @@ class EvaluateWidget(QWidget):
 
         self.left_column.addWidget(self.open_file_button)
         self.left_column.addWidget(self.available_column_view)
-        self.right_column.addWidget(self.get_problem_children_btn)
-        self.right_column.addWidget(self.save_problem_children_btn)
-        self.right_column.addWidget(self.text_table_view)
+        # self.right_column.addWidget(self.get_problem_children_btn)
+        # self.right_column.addWidget(self.save_problem_children_btn)
+        # self.right_column.addWidget(self.text_table_view)
 
         self.setLayout(self.main_layout)
 

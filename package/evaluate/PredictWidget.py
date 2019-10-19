@@ -23,14 +23,13 @@ from package.utils.spellcheck import SpellCheck
 from package.evaluate.Predictor import Predictor
 from package.utils.DataframeTableModel import DataframeTableModel
 from package.utils.AttributeTableModel import AttributeTableModel
-# from package.utils.DataLoader import DataLoader
 from package.utils.GraphWidget import GraphWidget
+
 """PredictWidget imports CSV file and returns a dataframe with the appropriate columns.
 For training data, DI will consider the nth column as a training sample
 and nth+1 as ground truth.
 CSV files must be formatted accordingly.
 """
-
 class Communicate(QObject):
     version_change = pyqtSignal(str)    
     enable_eval_btn = pyqtSignal(bool)
@@ -44,7 +43,6 @@ class PredictWidget(QWidget):
     def __init__(self, parent=None):
         super(PredictWidget, self).__init__(parent)
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
         self.parent = parent
         self.threadpool = QThreadPool()
         
@@ -64,8 +62,6 @@ class PredictWidget(QWidget):
         self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
 
-        # self.version_selection.addItem(
-        #     'default', '.\\package\\data\\default_models\\default')
         available_versions = os.listdir(".\\package\\data\\versions")
         for version in available_versions:
             v_path = os.path.join('.\\package\\data\\versions', version)
@@ -85,14 +81,15 @@ class PredictWidget(QWidget):
 
         # Column selection and basic stats
         self.text_stats_groupbox = QGroupBox("Selected Question")
+        self.text_stats_groupbox.setMinimumWidth(400)
         self.text_stats_grid = QGridLayout()
 
         self.full_text_count_label = QLabel("Total samples")
         self.full_text_count = QLabel()
 
-        self.current_question_count_label = QLabel("No. samples")
+        self.current_question_count_label = QLabel("Number of samples")
         self.current_question_count = QLabel()
-        self.current_question_avg_word_label = QLabel("Avg. words per sample")
+        self.current_question_avg_word_label = QLabel("Average number of words per sample")
         self.current_question_avg_word = QLabel()
 
         self.text_stats_grid.addWidget(self.current_question_count_label, 1, 0)
@@ -116,7 +113,7 @@ class PredictWidget(QWidget):
         selection = self.available_column_view.selectionModel()
         selection.selectionChanged.connect(
             lambda x: self.display_selected_row(x))
-
+        self.left_column.addWidget(self.version_selection_label)
         self.left_column.addWidget(self.version_selection)
         self.left_column.addStretch()
         self.left_column.addWidget(self.open_file_button)
@@ -210,7 +207,7 @@ class PredictWidget(QWidget):
         
         self.btn_hbox = QHBoxLayout()
         # Run button
-        self.run_btn = QPushButton("Evaluate")
+        self.run_btn = QPushButton("Predict")
         self.run_btn.clicked.connect(lambda: self.evaluate())
         self.run_btn.setEnabled(False)
         self.comms.enable_eval_btn.connect(self.set_eval_btn_state)
@@ -268,6 +265,7 @@ class PredictWidget(QWidget):
                         self.load_trained_models(os.path.split(root)[0], stacker_data['model_checksums'], column_name)
                    
             self.available_column_model.setAllowableData(self.allowable_columns)
+            self.repaint()
         except Exception as e:
             self.logger.error(
                 "PredictWidget.update_version", exc_info=True)
@@ -451,12 +449,13 @@ class PredictWidget(QWidget):
                 selection: QItemSelectionModel, item currently selected by user.
         """
         try:
+            print(f'display_selected_row fired with selection: {selection}')
             if selection:
                 idx = selection.indexes()[0]
             else:
                 # If no question selected, select the first in the list
-                self.available_column_view.selectRow(0)
-                self.available_column_view.setFocus()
+                # self.available_column_view.selectRow(0)
+                # self.available_column_view.setFocus()
                 idx = QModelIndex(self.available_column_model.index(0, 0))
             row = idx.row()
             # col_name = self.full_data.columns[row]
@@ -591,7 +590,7 @@ class PredictWidget(QWidget):
         self.selected_data = pd.DataFrame()
         # self.full_data = pd.DataFrame()
         self.available_column_model.setCheckboxes(False)
-        self.available_column_view.selectRow(0)
+        # self.available_column_view.selectRow(0)
         self.available_column_view.setFocus()
         self.set_eval_btn_state(False)
     
