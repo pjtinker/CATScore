@@ -18,6 +18,8 @@ from package.utils.spellcheck import SpellCheck
 from package.utils.DataframeTableModel import DataframeTableModel
 from package.utils.AttributeTableModel import AttributeTableModel
 from package.utils.GraphWidget import GraphWidget
+from package.utils.config import CONFIG
+
 """DataLoader imports CSV file and returns a dataframe with the appropriate columns.
 For training data, DI will consider the nth column as a training sample
 and nth+1 as ground truth.
@@ -54,6 +56,7 @@ class DataLoader(QWidget):
 
         # Column selection and basic stats
         self.text_stats_groupbox = QGroupBox("Selected Question")
+        self.text_stats_groupbox.setMinimumWidth(400)
         self.text_stats_grid = QGridLayout()
 
         self.full_text_count_label = QLabel("Total samples")
@@ -255,6 +258,8 @@ class DataLoader(QWidget):
                 exceptionWarning(f"No usable data found in {f_path}")
                 self.logger.info(f"No usable data found in {f_path}")
                 self.update_statusbar.emit("No usable data found in file")
+            self.available_column_model.setCheckboxes(False)
+            self.load_selected_data()
         except pd.errors.EmptyDataError as ede:
             exceptionWarning(
                 exceptionTitle='Empty Data Error.\n', exception=ede)
@@ -434,7 +439,7 @@ class PreprocessingThread(QThread):
             sentences = self.data[apply_cols].applymap(
                 lambda x: str(x).split()
             ).values
-            sc = SpellCheck(sentences, 5000)
+            sc = SpellCheck(sentences, CONFIG.get('VARIABLES', 'TopKSpellCheck'))
 
             self.data[apply_cols] = self.data[apply_cols].applymap(
                 lambda x: sc.correct_spelling(x)

@@ -412,7 +412,7 @@ class SelectModelWidget(QWidget):
         self.tuning_n_jobs_label = QLabel("Number of parallel jobs:")
         self.tuning_n_jobs_input = QSpinBox(objectName='n_jobs')
         self.tuning_n_jobs_input.setRange(-1, 4)
-        # self.tuning_n_jobs_input.setValue()
+        self.tuning_n_jobs_input.setValue(-1)
         self.tuning_n_jobs_input.valueChanged.connect(
             lambda state, x=self.tuning_n_jobs_input:
                 self.update_tuning_params('gridsearch', 'n_jobs', x.value())

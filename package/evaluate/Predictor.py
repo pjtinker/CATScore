@@ -77,7 +77,7 @@ class Predictor(QRunnable):
 
         for col_idx, column in enumerate(self.evaluation_data, 0):
             stacker_meta = meta_copy[column]['Stacker']
-            column_prefix = column.split('__')[0]
+            column_prefix = column.split(CONFIG.get('VARIABLES', 'TagDelimiter'))[0]
             last_trained = []
             self._update_log(f"Current evaluation task: {column_prefix}")
             for model_name, model_meta in meta_copy[column].items():
@@ -87,21 +87,21 @@ class Predictor(QRunnable):
                 self._update_log(f"Evaluating via model: {model_name}")
                 model = joblib.load(model_meta['model_path'])
                 with joblib.parallel_backend('dask'):
-                    self.predictions[column_prefix + '__' +
+                    self.predictions[column_prefix + CONFIG.get('VARIABLES', 'TagDelimiter') +
                                      model_name] = model.predict(self.evaluation_data[column])
-                last_trained.append(column_prefix + '__' + model_name)
+                last_trained.append(column_prefix + CONFIG.get('VARIABLES', 'TagDelimiter') + model_name)
             self._update_log(f"Beginning Stacker evaluation")
             stacker = joblib.load(stacker_meta['model_path'])
             with joblib.parallel_backend('dask'):
                 self.predictions[column_prefix +
-                                 '__Stacker'] = stacker.predict(self.predictions[last_trained])
+                                 CONFIG.get('VARIABLES', 'StackerLabelSuffix')] = stacker.predict(self.predictions[last_trained])
             data_copy[column] = self.evaluation_data[column].copy()
             data_copy[column_prefix +
-                      '__predicted'] = self.predictions[column_prefix + '__Stacker']
-            data_copy[column_prefix + '__actual'] = np.NaN
+                      CONFIG.get('VARIABLES', 'PredictedLabelSuffix')] = self.predictions[column_prefix + CONFIG.get('VARIABLES', 'StackerLabelSuffix')]
+            data_copy[column_prefix + CONFIG.get('VARIABLES', 'TruthLabelSuffix')] = np.NaN
             self._update_log(f"Searching for problematic samples for {column}")
 
-            last_trained.append(column_prefix + '__Stacker')
+            last_trained.append(column_prefix + CONFIG.get('VARIABLES', 'StackerLabelSuffix'))
             self.predictions[column_prefix +
                              '__agreement_ratio'] = self.predictions[last_trained].apply(get_ratio, axis=1)
             data_copy[column_prefix +
@@ -118,9 +118,9 @@ class Predictor(QRunnable):
         path_prefix = time.strftime('%Y-%m-%d_%H-%M', current_time)
         result_path = os.path.join(result_dir, path_prefix + "__results.csv")
 
-        # self._update_log(f"Saving results to: {result_path}")
-        # self.predictions.to_csv(
-        #     result_path, index_label="testnum", encoding='utf-8')
+        self._update_log(f'<b>Saving results to: <font color="#ffb900">{result_path}</font></b>')
+        self.predictions.to_csv(
+            result_path, index_label="testnum", encoding='utf-8')
         stacker_cols = [
             x for x in self.predictions.columns if x.endswith('Stacker')]
 
