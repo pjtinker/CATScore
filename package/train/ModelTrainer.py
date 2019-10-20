@@ -27,7 +27,7 @@ from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.model_selection import cross_val_score, StratifiedKFold, train_test_split, RandomizedSearchCV
 from sklearn.linear_model import ElasticNetCV, LinearRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score, classification_report, cohen_kappa_score
+from sklearn.metrics import accuracy_score, balanced_accuracy_score, balanced_accuracy_score, f1_score, classification_report, cohen_kappa_score
 from sklearn.utils import parallel_backend, register_parallel_backend
 from sklearn.preprocessing import FunctionTransformer
 
@@ -137,8 +137,8 @@ class ModelTrainer(QRunnable):
                     fill_dict = pd.DataFrame(
                         data={col: 'unanswered', label_col_name: 0}, index=[0])
                     self.training_data.fillna(value=fill_dict, inplace=True)
-                    x = self.training_data[col]
-                    y = self.training_data[self.training_data.columns[col_idx]].values
+                    x = self.training_data[col].copy()
+                    y = self.training_data[self.training_data.columns[col_idx]].copy().values
 
                     results = pd.DataFrame(index=self.training_data.index)
                     results['actual'] = y
@@ -151,6 +151,7 @@ class ModelTrainer(QRunnable):
                     # * SKLEARN
                     for model, selected in self.selected_models['sklearn'].items():
                         if self._is_running == False:
+                            self.signals.training_complete.emit(0, False)
                             break
                         if selected:
                             try:
@@ -187,8 +188,6 @@ class ModelTrainer(QRunnable):
                                             f'Grid search failed for {model} on task {col}.  Skipping...')
                                         break
                                     with joblib.parallel_backend('dask'):
-                                        print("Pipeline for predict:")
-                                        print(pipeline)
                                         preds = pipeline.predict(x)
                                 else:
                                     model_params = self.get_params_from_file(
@@ -241,7 +240,7 @@ class ModelTrainer(QRunnable):
                                     model_acc = accuracy_score(y, preds)
 
                                 except ValueError as ve:
-                                    model_acc = "No evaluation was conducted"
+                                    model_scores = "No evaluation was conducted"
 
                                 self._update_log(
                                     f'Task completed on <b>{model}</b>.')
@@ -292,8 +291,11 @@ class ModelTrainer(QRunnable):
                                                results.actual.values,
                                                col_path)
                     except ValueError as ve:
+                        self.signals.training_complete.emit(0, False)
                         self._update_log(
                             f'Unable to train Stacking algorithm on {col_label}.')
+                        tb = traceback.format_exc()
+                        print(tb)
                     except Exception as e:
                         self.logger.error(
                             f'ModelTrainer.run {model}:', exc_info=True)
@@ -303,6 +305,7 @@ class ModelTrainer(QRunnable):
             self._is_running = False
 
         except Exception as e:
+            self.signals.training_complete.emit(0, False)
             self.logger.error('ModelTrainer.run (General):', exc_info=True)
             tb = traceback.format_exc()
             print(tb)
@@ -582,13 +585,6 @@ class ModelTrainer(QRunnable):
             with open(model_path, 'r') as param_file:
                 model_params = json.load(param_file)
             current_time = time.localtime()
-            # model_params['meta'] = {
-            #     'training_meta': {
-            #         'last_train_date': time.strftime('%Y-%m-%d', current_time),
-            #         'train_eval_score': best_score,
-            #         'checksum': self.model_checksums[model]
-            #     }
-            # }
             model_params['meta']['training_meta'].update(
                 {
                     'last_train_date': time.strftime('%Y-%m-%d', current_time),
@@ -699,14 +695,14 @@ class ModelTrainer(QRunnable):
         self._update_log(
             'Training Stacking algorithm (DecisionTreeClassifier)')
         final_preds = np.empty(y.shape)
-        encv = DecisionTreeClassifier()
+        stacker = DecisionTreeClassifier()
         skf = StratifiedKFold(n_splits=5,
                               random_state=RANDOM_SEED)
 
         for train, test in skf.split(x, y):
             with joblib.parallel_backend('dask'):
-                encv.fit(x.iloc[train], y[train])
-            final_preds[test] = encv.predict(x.iloc[test])
+                stacker.fit(x.iloc[train], y[train])
+            final_preds[test] = stacker.predict(x.iloc[test])
         # stack_preds = [1 if x > .5 else 0 for x in np.nditer(final_preds)]
         self._update_log('Stacking training complete')
         stack_scores = self.get_model_scores(y, final_preds)
@@ -724,14 +720,15 @@ class ModelTrainer(QRunnable):
             table_str += '<td style="border: 1px solid #333;">%.2f</td>' % score
         table_str += '</tr></tbody></table><br>'
         self._update_log(table_str, False, True)
-
+        self._update_log('Retraining Stacker on full dataset')
+        stacker.fit(x, y)
         save_path = os.path.join(col_path, 'Stacker')
         if not os.path.exists(save_path):
             os.makedirs(save_path)
         save_file = os.path.join(
             save_path, 'Stacker.pkl')
         self._update_log(f'Saving Stacking algorithm to : {save_file}', False)
-        joblib.dump(encv, save_file, compress=1)
+        joblib.dump(stacker, save_file, compress=1)
         self.model_checksums['Stacker'] = hashlib.md5(
             open(save_file, 'rb').read()).hexdigest()
         self._update_log(f'Stacking hash: {self.model_checksums["Stacker"]}')
@@ -749,7 +746,7 @@ class ModelTrainer(QRunnable):
             json.dump(stacker_info, outfile, indent=2)
 
         self._update_log('Run complete')
-        self._update_log(('*' * 100) + '\n', False)
+        self._update_log('<hr>', False, True)
         self.signals.training_complete.emit(0, False)
 
     def _generate_best_param_dict(self, model_param_keys, best_params):
@@ -767,6 +764,6 @@ class ModelTrainer(QRunnable):
             tb = traceback.format_exc()
             print(tb)
 
-    def _update_log(self, msg, include_time=True, include_html=True):
+    def _update_log(self, msg, include_time=True, as_html=True):
         # outbound = f'{time.strftime('%Y-%m-%d %H:%M:%S', current_time)} - {msg}<br>'
-        self.signals.update_training_logger.emit(msg, include_time, include_html)
+        self.signals.update_training_logger.emit(msg, include_time, as_html)

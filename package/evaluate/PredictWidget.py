@@ -460,13 +460,12 @@ class PredictWidget(QWidget):
                 selection: QItemSelectionModel, item currently selected by user.
         """
         try:
-            print(f'display_selected_row fired with selection: {selection}')
             if selection:
                 idx = selection.indexes()[0]
             else:
                 # If no question selected, select the first in the list
-                # self.available_column_view.selectRow(0)
-                # self.available_column_view.setFocus()
+                self.available_column_view.selectRow(0)
+                self.available_column_view.setFocus()
                 idx = QModelIndex(self.available_column_model.index(0, 0))
             row = idx.row()
             # col_name = self.full_data.columns[row]
@@ -485,13 +484,14 @@ class PredictWidget(QWidget):
             grid_column = 0
             clearLayout(self.training_stats_grid)
 
+            model_label = QLabel("Model")
+            model_label.setFont(QFont("Times", weight=QFont.Bold))
+            self.training_stats_grid.addWidget(model_label, 0, 0, Qt.AlignHCenter)
+
             accuracy_label = QLabel("Accuracy")
             accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
             self.training_stats_grid.addWidget(accuracy_label, 0, 1, Qt.AlignTop)
 
-            model_label = QLabel("Model")
-            model_label.setFont(QFont("Times", weight=QFont.Bold))
-            self.training_stats_grid.addWidget(model_label, 0, 0, Qt.AlignTop)
 
             f1_label = QLabel("F1 (weighted)")
             f1_label.setFont(QFont("Times", weight=QFont.Bold))
@@ -506,7 +506,6 @@ class PredictWidget(QWidget):
             self.training_stats_grid.addWidget(train_date_label, 0, 4, Qt.AlignTop)
 
             for model, meta in self.trained_model_meta[col_name].items():
-                print(f"params in meta for {model}: {json.dumps(meta, indent=2)}")
                 self.training_stats_grid.addWidget(QLabel(model), grid_row, grid_column, Qt.AlignTop)
                 grid_column += 1
                 self.training_stats_grid.addWidget(QLabel("%.4f" % meta['train_eval_score']['accuracy']), grid_row, grid_column, Qt.AlignTop)

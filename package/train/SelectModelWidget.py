@@ -12,7 +12,7 @@ import pkg_resources
 from PyQt5.QtCore import QObject, Qt, QThread, QThreadPool, pyqtSignal, pyqtSlot, QSize
 from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
                              QDoubleSpinBox, QFileDialog, QFormLayout,
-                             QGridLayout, QGroupBox, QHBoxLayout, QLabel,
+                             QGridLayout, QGroupBox, QButtonGroup, QHBoxLayout, QLabel,
                              QMessageBox, QPushButton, QRadioButton,
                              QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
                              QVBoxLayout, QTextEdit, QWidget)
@@ -158,8 +158,16 @@ class SelectModelWidget(QWidget):
         self.training_logger.setAcceptRichText(True)
         self.training_logger.insertHtml(
             "<i>Multithreading with maximum %d threads</i><br>" % self.threadpool.maxThreadCount())
-        # self.training_logger.setHeight(400)
+        self.training_logger.setMinimumHeight(400)
         self.main_layout.addWidget(self.training_logger)
+        self.clear_btn_hbox = QHBoxLayout()
+        self.clear_text_btn = QPushButton('Clear')
+        self.clear_text_btn.setMaximumWidth(50)
+        self.clear_text_btn.clicked.connect(lambda: self.training_logger.clear())
+        self.clear_btn_hbox.addStretch()
+        self.clear_btn_hbox.addWidget(self.clear_text_btn)
+
+        self.main_layout.addLayout(self.clear_btn_hbox)
 
         self.main_layout.addStretch()
         self.run_btn = QPushButton("&Train Models")
@@ -324,77 +332,15 @@ class SelectModelWidget(QWidget):
                                              None, None)
                                          )
         self.sklearn_training_form.addRow(self.no_eval_btn)
-        # TENSORFLOW TRAINING UI.  Unused as of 10/04/19
-        # self.tf_val_label = QLabel("Validation split")
-        # self.tf_val_input = QDoubleSpinBox(objectName='validation_split')
-        # self.tf_val_input.setRange(0.05, 1)
-        # self.tf_val_input.setSingleStep(0.1)
-        # self.tf_val_input.valueChanged.connect(
-        #     lambda state, x=self.tf_val_input:
-        #         self.update_training_params('tensorflow', 'validation_split', x.value())
-        #     )
-        # self.tf_val_input.setValue(0.2)
-        # self.tensorflow_training_form.addRow(self.tf_val_label, self.tf_val_input)
+        # TENSORFLOW TRAINING UI.  Removed as of 10/04/19
 
-        # self.tf_patience_label = QLabel("Patience")
-        # self.tf_patience_input = QSpinBox(objectName='patience')
-        # self.tf_patience_input.setRange(0, 1000)
-        # self.tf_patience_input.setSingleStep(1)
-        # self.tf_patience_input.valueChanged.connect(
-        #     lambda state, x=self.tf_patience_input:
-        #         self.update_training_params('tensorflow', 'patience', x.value())
-        #     )
-        # self.tf_patience_input.setValue(2)
-        # self.tensorflow_training_form.addRow(self.tf_patience_label, self.tf_patience_input)
-
-        # # TODO: enable/disable other embedding options based on the state of this checkbox
-        # self.tf_use_pretrained_embedding_label = QLabel("Use pretrained embeddings")
-        # self.tf_use_pretrained_embedding_chkbox = QCheckBox(objectName='use_pretrained_embedding')
-        # self.tf_use_pretrained_embedding_chkbox.stateChanged.connect(
-        #     lambda state, x=self.tf_use_pretrained_embedding_chkbox:
-        #         self.update_training_params('tensorflow', 'use_pretrained_embedding', x.isChecked())
-        #     )
-        # self.tf_use_pretrained_embedding_chkbox.setChecked(True)
-        # self.tensorflow_training_form.addRow(self.tf_use_pretrained_embedding_label, self.tf_use_pretrained_embedding_chkbox)
-
-        # self.tf_embedding_type_label = QLabel("Embedding type")
-        # self.tf_embedding_combobox = QComboBox(objectName='embedding_type')
-        # self.tf_embedding_combobox.addItem('GloVe', 'glove')
-        # self.tf_embedding_combobox.addItem('Word2Vec', 'word2vec')
-        # self.tf_embedding_combobox.addItem('Generate', '')
-        # self.tf_embedding_combobox.setCurrentIndex(1)
-        # self.tf_embedding_combobox.currentIndexChanged.connect(
-        #     lambda state, x=self.tf_embedding_combobox:
-        #         self.update_training_params('tensorflow', 'embedding_type', x.currentData())
-        #     )
-        # self.tf_embedding_combobox.setCurrentIndex(0)
-        # self.tensorflow_training_form.addRow(self.tf_embedding_type_label, self.tf_embedding_combobox)
-
-        # self.tf_embedding_dim_label = QLabel("Embedding dim")
-        # self.tf_embedding_dim_combobox = QComboBox(objectName='embedding_dim')
-        # self.tf_embedding_dim_combobox.addItem('100', 100)
-        # self.tf_embedding_dim_combobox.addItem('200', 200)
-        # self.tf_embedding_dim_combobox.addItem('300', 300)
-        # self.tf_embedding_dim_combobox.currentIndexChanged.connect(
-        #     lambda state, x=self.tf_embedding_dim_combobox:
-        #         self.update_training_params('tensorflow', 'embedding_dim', x.currentData())
-        # )
-        # self.tf_embedding_dim_combobox.setCurrentIndex(1)
-        # self.tensorflow_training_form.addRow(self.tf_embedding_dim_label, self.tf_embedding_dim_combobox)
-
-        # self.tf_is_embedding_trainable_label = QLabel("Train embeddings")
-        # self.tf_is_embedding_trainable_chkbox = QCheckBox(objectName='is_embedding_trainable')
-        # self.tf_is_embedding_trainable_chkbox.stateChanged.connect(
-        #     lambda state, x=self.tf_is_embedding_trainable_chkbox:
-        #         self.update_training_params('tensorflow', 'is_embedding_trainable', x.isChecked())
-        #     )
-        # self.tf_is_embedding_trainable_chkbox.setChecked(True)
-        # # self.tensorflow_training_inputs.append([self.tf_is_embedding_trainable_label, self.tf_is_embedding_trainable_chkbox])
-        # self.tensorflow_training_form.addRow(self.tf_is_embedding_trainable_label, self.tf_is_embedding_trainable_chkbox)
-        # END OF TENSORFLOW TRAINING UI
-
-        # Toggle
+        # Toggle to set params on load
         self.cv_radio_btn.toggle()
+
+        #* Select stacker
+        # self.stacker_groupbox = QGroupBox('Stacking algorithm')
+        # self.stacker_vbox = QVBoxLayout()
+        # self.train_stacker
 
     def setup_tuning_ui(self):
         self.tuning_n_iter_label = QLabel("Number of iterations:")
@@ -431,8 +377,35 @@ class SelectModelWidget(QWidget):
                                 self.tuning_n_jobs_input)
 
         self.scoring_metric_groupbox = QGroupBox('Scoring metrics')
+
         self.scoring_metric_vbox = QVBoxLayout()
 
+        # self.acc_checkbox = QRadioButton('Accuracy')
+        # self.acc_checkbox.setChecked(True)
+        # self.acc_checkbox.toggled.connect(
+        #     lambda state, x=self.acc_checkbox:
+        #     self.update_tuning_params('gridsearch', 'scoring', 'accuracy')
+        # )
+        # self.scoring_metric_vbox.addWidget(self.acc_checkbox)
+
+        # self.f1_weighted_checkbox = QRadioButton('F1 weighted')
+        # self.f1_weighted_checkbox.setChecked(False)
+        # self.f1_weighted_checkbox.toggled.connect(
+        #     lambda state, x=self.f1_weighted_checkbox:
+        #     self.update_tuning_params('gridsearch', 'scoring', 'f1_weighted')
+        # )
+        # self.scoring_metric_vbox.addWidget(self.f1_weighted_checkbox)
+
+        # self.prec_weighted_checkbox = QRadioButton('Precision weighted')
+        # self.prec_weighted_checkbox.setChecked(False)
+        # self.prec_weighted_checkbox.toggled.connect(
+        #     lambda state, x=self.prec_weighted_checkbox:
+        #     self.update_tuning_params(
+        #         'gridsearch', 'scoring', 'precision_weighted')
+        # )
+        # self.scoring_metric_vbox.addWidget(self.prec_weighted_checkbox)
+
+  
         self.acc_checkbox = QCheckBox('Accuracy')
         self.acc_checkbox.setChecked(True)
         self.acc_checkbox.stateChanged.connect(
@@ -643,6 +616,7 @@ class SelectModelWidget(QWidget):
                         self.tuning_params[model_base]['scoring'].remove(param)
             else:
                 self.tuning_params[model_base][param] = value
+            # self.tuning_params[model_base][param] = value
         except KeyError as ke:
             self.tuning_params[model_base][param] = {}
             self.tuning_params[model_base][param] = value

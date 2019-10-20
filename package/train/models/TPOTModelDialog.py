@@ -96,7 +96,7 @@ class TPOTModelDialog(BaseModelDialog):
                 self.ui_widgets.append(groupbox)
                 self.ui_widgets.append(model_param_form)
                 if t == 'Model':
-                    self.setupTPOTModelDetailUI(model_param_form)
+                    self.setupTPOTModelDetailUI(params, model_param_form)
                 else:
                     self.setupUI(model, params, model_param_form)
 
@@ -163,7 +163,7 @@ class TPOTModelDialog(BaseModelDialog):
         return
 
 
-    def setupTPOTModelDetailUI(self, form):
+    def setupTPOTModelDetailUI(self, param_dict, form):
         '''
         Build TPOT classifier chosen model UI.
 
@@ -172,10 +172,17 @@ class TPOTModelDialog(BaseModelDialog):
         '''
         model_name_label = QLabel('Model name:')
         model_param_label = QLabel('Model parameters:')
-        self.model_name_display = QLabel('No model found')
+        self.model_name_display = QLabel()
         form.addRow(model_name_label, self.model_name_display)
-        self.model_param_display = QLabel('Test: \ttester\nBest: \tbester')
-        form.addRow(model_param_label, self.model_param_display)
+        self.model_param_display = QLabel()
+        # param_string = ''
+        # for key, value in param_dict['model_params'].items():
+        #     param_string += ('\t' + key + ': ' + str(value) +'\n')
+        # self.model_param_display.setText(param_string)
+        # form.addRow(model_param_label, self.model_param_display)
+        self.update_trained_model_label(param_dict['model_name'], param_dict['model_params'])
+        form.addRow(model_param_label)
+        form.addRow(self.model_param_display)
 
     def setupUI(self, param_type, param_dict, form):
         """
@@ -277,6 +284,7 @@ class TPOTModelDialog(BaseModelDialog):
         for model, types in self.model_params.items():
             for t, params in types.items():
                 self.set_input_params(params)
+        self.update_trained_model_label(None, None)
         # If true, default (or none available) selected, thus Return
         if path == None or path == 'default':
             self.is_dirty = False
@@ -293,7 +301,11 @@ class TPOTModelDialog(BaseModelDialog):
                     self.set_input_params(params)
 
                 for kind, params in model_data['params'].items():
-                    self.set_input_params(params)
+                    if(kind.split('.')[1] != 'feature_extraction' or kind.split('.')[1] != 'feature_selection'):
+                        self.update_trained_model_label(kind, params)
+                    else:
+                        self.set_input_params(params)
+                
                 # self.update_trained_model_params(model_data[''])
             except FileNotFoundError as fnfe:
                 # No parameter file exists.  Pass.
@@ -306,6 +318,20 @@ class TPOTModelDialog(BaseModelDialog):
             tb = traceback.format_exc()
             print(tb)
 
+
+    def update_trained_model_label(self, model_name, param_dict):
+        if not model_name:
+            self.model_name_display.setText(self.model_params['tpot.TPOTClassifier']['Model']['model_name'])
+        else:
+            self.model_name_display.setText(model_name)
+        detail_string = ''
+        if not param_dict:
+            for key, value in self.model_params['tpot.TPOTClassifier']['Model']['model_params'].items():
+                detail_string += ('\t' + key + ': ' + str(value) +'\n')
+        else:
+            for key, value in param_dict.items():
+                detail_string += ('\t' + key + ': ' + str(value) + '\n')
+        self.model_param_display.setText(detail_string)
 
     @pyqtSlot(bool)
     def check_for_default(self, force_reload=False):

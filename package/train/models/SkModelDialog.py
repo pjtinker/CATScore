@@ -55,7 +55,6 @@ class SkModelDialog(BaseModelDialog):
         self.current_version = 'default'
         self.params = params
         self.main_model_name = params[0]['model_class']
-        # print(self.main_model_name)
         for param in self.params:
             cls_name = param['model_class']
             full_name = param['model_module'] + '.' + param['model_class']

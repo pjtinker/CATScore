@@ -25,8 +25,12 @@ from package.utils.DataframeTableModel import DataframeTableModel
 from package.utils.GraphWidget import GraphWidget
 from package.utils.config import CONFIG
 
-from sklearn.metrics import f1_score, accuracy_score, cohen_kappa_score
+from sklearn.metrics import f1_score, accuracy_score, cohen_kappa_score, precision_score, recall_score
 
+DELIMITER = CONFIG.get('VARIABLES', 'TagDelimiter')
+PRED_SUFFIX = CONFIG.get('VARIABLES', 'PredictedLabelSuffix')
+TRUTH_SUFFIX = CONFIG.get('VARIABLES', 'TruthLabelSuffix')
+AVG_TYPE = CONFIG.get('VARIABLES', 'MetricsAverageType')
 
 class Communicate(QObject):
     version_change = pyqtSignal(str)    
@@ -70,40 +74,43 @@ class EvaluateWidget(QWidget):
         selection.selectionChanged.connect(
             lambda x: self.display_selected_rows(x))
         
-        # Training stats and available models
-        self.training_stats_groupbox = QGroupBox('Training Info')
-
-
-        # self.training_stats_grid = QGridLayout()
-        # self.training_stats_grid.setVerticalSpacing(0)
-        # self.training_stats_groupbox.setLayout(self.training_stats_grid)
-        # # self.training_stats_groupbox.setMinimumHeight(200)
-        # model_label = QLabel("Model")
-        # model_label.setFont(QFont("Times", weight=QFont.Bold))
-        # self.training_stats_grid.addWidget(model_label, 0, 0, Qt.AlignTop)
-        # train_date_label = QLabel("Last Trained")
-        # train_date_label.setFont(QFont("Times", weight=QFont.Bold))
-        # self.training_stats_grid.addWidget(train_date_label, 0, 1, Qt.AlignTop)
-        # accuracy_label = QLabel("Accuracy")
-        # accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
-        # self.training_stats_grid.addWidget(accuracy_label, 0, 2, Qt.AlignTop)
-        # # self.training_stats_groupbox.setAlignment(Qt.AlignTop)
-        # self.right_column.addWidget(self.training_stats_groupbox)
-
+         # Training stats and available models
+        self.training_stats_groupbox = QGroupBox('Performance Metrics')
         self.training_stats_grid = QGridLayout()
         self.training_stats_grid.setVerticalSpacing(0)
         self.training_stats_groupbox.setLayout(self.training_stats_grid)
-        self.training_stats_groupbox.setMinimumHeight(200)
-        model_label = QLabel("Model")
-        model_label.setFont(QFont("Times", weight=QFont.Bold))
-        self.training_stats_grid.addWidget(model_label, 0, 0, Qt.AlignTop)
-        train_date_label = QLabel("Last Trained")
-        train_date_label.setFont(QFont("Times", weight=QFont.Bold))
-        self.training_stats_grid.addWidget(train_date_label, 0, 1, Qt.AlignTop)
-        accuracy_label = QLabel("Accuracy")
-        accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
-        self.training_stats_grid.addWidget(accuracy_label, 0, 2, Qt.AlignTop)
-        # self.training_stats_groupbox.setAlignment(Qt.AlignTop)
+        self.training_stats_groupbox.setMinimumHeight(100)
+
+        self.accuracy_label = QLabel("Accuracy")
+        self.accuracy_label.setFont(QFont("Times", weight=QFont.Bold))
+        self.accuracy = QLabel("N/A")
+        self.training_stats_grid.addWidget(self.accuracy_label, 0, 0, Qt.AlignTop)
+        self.training_stats_grid.addWidget(self.accuracy, 1, 0, Qt.AlignTop)
+
+        self.f1_label = QLabel("F1 (" + AVG_TYPE + ")")
+        self.f1_label.setFont(QFont("Times", weight=QFont.Bold))
+        self.f1 = QLabel("N/A")
+        self.training_stats_grid.addWidget(self.f1_label, 0, 1, Qt.AlignTop)
+        self.training_stats_grid.addWidget(self.f1, 1, 1, Qt.AlignTop)
+
+        self.cohen_kappa_label = QLabel("Cohen's Kappa")
+        self.cohen_kappa_label.setFont(QFont("Times", weight=QFont.Bold))
+        self.cohen_kappa = QLabel("N/A")
+        self.training_stats_grid.addWidget(self.cohen_kappa_label, 0, 2, Qt.AlignTop)
+        self.training_stats_grid.addWidget(self.cohen_kappa, 1, 2, Qt.AlignTop)
+
+        self.precision_label = QLabel("Precision")
+        self.precision_label.setFont(QFont("Times", weight=QFont.Bold))
+        self.precision = QLabel("N/A")
+        self.training_stats_grid.addWidget(self.precision_label, 0, 3, Qt.AlignTop)
+        self.training_stats_grid.addWidget(self.precision, 1, 3, Qt.AlignTop)
+
+        self.recall_label = QLabel("Recall")
+        self.recall_label.setFont(QFont("Times", weight=QFont.Bold))
+        self.recall = QLabel("N/A")
+        self.training_stats_grid.addWidget(self.recall_label, 0, 4, Qt.AlignTop)
+        self.training_stats_grid.addWidget(self.recall, 1, 4, Qt.AlignTop)
+
         self.right_column.addWidget(self.training_stats_groupbox)
         
         
@@ -144,20 +151,26 @@ class EvaluateWidget(QWidget):
             col_tag = col_name.split('__')[0]
             pred_col = col_tag + '__predicted'
             truth_col = col_tag + '__actual'
+
             try:
                 preds = self.prediction_data[pred_col].values.astype(int)
                 truth = self.prediction_data[truth_col].values.astype(int)
+                self.accuracy.setText("%.4f" % accuracy_score(truth, preds))
+                self.f1.setText("%.4f" % f1_score(truth, preds, average=AVG_TYPE))
+                self.cohen_kappa.setText("%.4f" %cohen_kappa_score(truth, preds))
+                self.precision.setText("%.4f" % precision_score(truth, preds, average=AVG_TYPE))
+                self.recall.setText("%.4f" % recall_score(truth, preds, average=AVG_TYPE))
             except KeyError as ke:
                 self.graph.clear_graph()
+                self.accuracy.setText("N/A")
+                self.f1.setText("N/A")
+                self.cohen_kappa.setText("N/A")
+                self.precision.setText("N/A")
+                self.recall.setText("N/A")
                 return
             except Exception:
                 raise
-            f1 = f1_score(truth, preds, average='weighted')
-            print(f1)
-            acc = accuracy_score(truth, preds)
-            print(acc)
-            kappa = cohen_kappa_score(truth, preds)
-            print(kappa)
+
 
             try:
                 self.graph.plot_confusion_matrix(truth, preds)

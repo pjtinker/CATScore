@@ -105,6 +105,7 @@ if __name__ == "__main__":
     logFormatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(logFormatter)
     logging.basicConfig( handlers=[handler], format=logFormatter, level=logging.DEBUG)
+    logging.captureWarnings(True)
     # dask client for paralellization
     # Qt Application
     # splash_pix = QPixmap('./icons/busycat.gif', Qt.WindowStaysOnTopHint)
