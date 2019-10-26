@@ -139,16 +139,21 @@ class SkModelDialog(BaseModelDialog):
                     default_dir, self.main_model_name + '.json')
                 with open(default_path, 'r') as infile:
                     full_default_params = json.load(infile)
-                save_data = {
-                    'model_base': self.params[0]['model_base'],
-                    'model_module': self.params[0]['model_module'],
-                    'model_class': self.main_model_name,
-                    'question_number': self.version_item_combobox.currentData().split('\\')[-1],
-                    'version': version,
-                    'tuned': False,
-                    'params': {}
-                }
-                save_data['params'] = full_default_params['params']
+                # save_data = {
+                #     'model_base': self.params[0]['model_base'],
+                #     'model_module': self.params[0]['model_module'],
+                #     'model_class': self.main_model_name,
+                #     'question_number': self.version_item_combobox.currentData().split('\\')[-1],
+                #     'version': version,
+                #     'tuned': False,
+                #     'params': {}
+                # }
+                # save_data['params'] = full_default_params['params']
+                full_default_params.update({
+                    "question_number": self.version_item_combobox.currentData().split('\\')[-1],
+                    "version": version
+                })
+                save_data = full_default_params.copy()
             else:
                 with open(save_file_path, 'r') as infile:
                     save_data = json.load(infile)
@@ -335,11 +340,8 @@ class SkModelDialog(BaseModelDialog):
                 'params': {}
             }
             for model, types in self.model_params.items():
-                # print('check_for_defaults data:')
-                # print(f'{model}')
-                # print(types)
                 for t, params in types.items():
-                    # True if model spec has more than one category of parameters.  Only TF models at this point.
+                    # True if model spec has more than one category of parameters.  Only TPOT and TF models at this point.
                     if not model in save_data['params'].keys():
                         save_data['params'][model] = {}
                     for param_name, data in params.items():

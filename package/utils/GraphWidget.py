@@ -108,12 +108,18 @@ class GraphWidget(FigureCanvas):
                                  prediction_len=len(predictions)))
 
         c_mat = confusion_matrix(actual, predictions)
+        num_classes = self.getNumClasses(actual)
+        print(f'num_classes: {num_classes}')
         self.axes.cla()
         # sns.heatmap(c_mat, annot=True, fmt='d', xticklabels=np.unique(actual))
         self.axes.matshow(c_mat)
         for i, cas in enumerate(c_mat):
             for j, c in enumerate(cas):
                 self.axes.text(j-.1, i+.1, c, fontsize=14)
+
+        # for i in range(num_classes):
+        #     for j in range(num_classes):
+        #         self.axes.text(j-.1, i+.1, j, fontsize=14)
         self.axes.set_xlabel('Predicted')
         self.axes.set_ylabel('Actual')
         self.axes.set_xticks(np.unique(actual))
