@@ -27,9 +27,16 @@ from joblib._parallel_backends import ThreadingBackend, SequentialBackend, LokyB
 import scipy
 
 from package.utils.catutils import CATEncoder, cat_decoder
-import package.utils.keras_models as keras_models
+# import package.utils.keras_models as keras_models
 import package.utils.embedding_utils as embed_utils
 from package.utils.config import CONFIG
+
+TAG_DELIMITER = CONFIG.get('VARIABLES', 'TagDelimiter')
+PRED_LABEL_SUFFIX = CONFIG.get('VARIABLES', 'PredictedLabelSuffix')
+TRUTH_LABEL_SUFFIX = CONFIG.get('VARIABLES', 'TruthLabelSuffix')
+
+STACKER_LABEL_SUFFIX = CONFIG.get('VARIABLES', 'StackerLabelSuffix')
+DISAGREEMENT_THRESHOLD = CONFIG.getfloat('VARIABLES', 'DisagreementThreshold')
 
 
 class PredictorSignals(QObject):
@@ -59,7 +66,7 @@ class Predictor(QRunnable):
     @pyqtSlot()
     def run(self):
 
-        def get_ratio(row):
+        def get_agreement_ratio(row):
             """
             Returns the ratio of agreement between column values (here, predictors) in a given row.
             """
@@ -77,7 +84,7 @@ class Predictor(QRunnable):
 
         for col_idx, column in enumerate(self.evaluation_data, 0):
             stacker_meta = meta_copy[column]['Stacker']
-            column_prefix = column.split(CONFIG.get('VARIABLES', 'TagDelimiter'))[0]
+            column_prefix = column.split(TAG_DELIMITER)[0]
             last_trained = []
             self._update_log(f"Current evaluation task: {column_prefix}")
             for model_name, model_meta in meta_copy[column].items():
@@ -87,29 +94,31 @@ class Predictor(QRunnable):
                 self._update_log(f"Evaluating via model: {model_name}")
                 model = joblib.load(model_meta['model_path'])
                 with joblib.parallel_backend('dask'):
-                    self.predictions[column_prefix + CONFIG.get('VARIABLES', 'TagDelimiter') +
-                                     model_name] = model.predict(self.evaluation_data[column])
-                last_trained.append(column_prefix + CONFIG.get('VARIABLES', 'TagDelimiter') + model_name)
+                    self.predictions[column_prefix + TAG_DELIMITER +
+                                     model_name + PRED_LABEL_SUFFIX] = model.predict(self.evaluation_data[column])
+                last_trained.append(column_prefix + TAG_DELIMITER + model_name + PRED_LABEL_SUFFIX)
+
             self._update_log(f"Beginning Stacker evaluation")
             stacker = joblib.load(stacker_meta['model_path'])
             with joblib.parallel_backend('dask'):
                 self.predictions[column_prefix +
-                                 CONFIG.get('VARIABLES', 'StackerLabelSuffix')] = stacker.predict(self.predictions[last_trained])
+                                 STACKER_LABEL_SUFFIX] = stacker.predict(self.predictions[last_trained])
             data_copy[column] = self.evaluation_data[column].copy()
             data_copy[column_prefix +
-                      CONFIG.get('VARIABLES', 'PredictedLabelSuffix')] = self.predictions[column_prefix + CONFIG.get('VARIABLES', 'StackerLabelSuffix')]
-            data_copy[column_prefix + CONFIG.get('VARIABLES', 'TruthLabelSuffix')] = np.NaN
+                      PRED_LABEL_SUFFIX] = self.predictions[column_prefix + STACKER_LABEL_SUFFIX]
+            data_copy[column_prefix +
+                      TRUTH_LABEL_SUFFIX] = np.NaN
             self._update_log(f"Searching for problematic samples for {column}")
 
-            last_trained.append(column_prefix + CONFIG.get('VARIABLES', 'StackerLabelSuffix'))
+            last_trained.append(column_prefix + STACKER_LABEL_SUFFIX)
             self.predictions[column_prefix +
-                             '__agreement_ratio'] = self.predictions[last_trained].apply(get_ratio, axis=1)
+                             '__agreement_ratio'] = self.predictions[last_trained].apply(get_agreement_ratio, axis=1)
             data_copy[column_prefix +
-                             '__agreement_ratio'] = self.predictions[last_trained].apply(get_ratio, axis=1)
+                      '__agreement_ratio'] = self.predictions[last_trained].apply(get_agreement_ratio, axis=1)
             pc_len = len(
-                self.predictions[self.predictions[column_prefix + '__agreement_ratio'] <= CONFIG.getfloat('VARIABLES', 'DisagreementThreshold')])
+                self.predictions[self.predictions[column_prefix + '__agreement_ratio'] <= DISAGREEMENT_THRESHOLD])
             self._update_log(
-                f"Found {pc_len} samples for {column} that fall below {CONFIG.get('VARIABLES', 'DisagreementThreshold')} predictor agreement.")
+                f"Found {pc_len} samples for {column} that fall below {DISAGREEMENT_THRESHOLD} predictor agreement.")
             self._update_log(f"Evaluation for {column} complete.\n")
 
         self._update_log("Evaluation run complete.")
@@ -118,7 +127,8 @@ class Predictor(QRunnable):
         path_prefix = time.strftime('%Y-%m-%d_%H-%M', current_time)
         # result_path = os.path.join(result_dir, path_prefix + "__results.csv")
         result_path = os.path.join(result_dir, 'results.csv')
-        self._update_log(f'<b>Saving results to: <font color="#ffb900">{result_path}</font></b>')
+        self._update_log(
+            f'<b>Saving results to: <font color="#ffb900">{result_path}</font></b>')
         self.predictions.to_csv(
             result_path, index_label="testnum", encoding='utf-8')
         stacker_cols = [
@@ -139,7 +149,7 @@ class Predictor(QRunnable):
 
                 threshold, float: Value for which any sample's agreement falls below is marked as problematic.
         """
-        def get_ratio(row):
+        def get_agreement_ratio(row):
             """
             Returns the ratio of agreement between column values (here, predictors) in a given row.
             """
@@ -156,7 +166,7 @@ class Predictor(QRunnable):
         if file_name:
             result_data = pd.read_csv(file_name, index_col=0)
             result_data['agreement_ratio'] = result_data.apply(
-                get_ratio, axis=1)
+                get_agreement_ratio, axis=1)
             print(result_data.head())
             self.pc = self.prediction_data[result_data['agreement_ratio'] <= threshold]
             self.text_table_model.loadData(self.pc)

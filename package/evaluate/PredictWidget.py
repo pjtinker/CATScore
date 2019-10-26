@@ -290,10 +290,10 @@ class PredictWidget(QWidget):
                 model_path = os.path.join(model_dir, model, model + '.pkl')
                 current_chksum = hashlib.md5(open(model_path, 'rb').read()).hexdigest()
                 if(current_chksum != checksum):
-                    self.logger.warning(f"PredictWidget._load_training_models: \
+                    self.logger.error(f"PredictWidget._load_training_models: \
                         Checksums for model {model_path} do not match.  \
                         Model checksum: {current_chksum}, Saved checksum: {checksum}")
-                    exceptionWarning(f"Checksums for {model_path} are invalid.  Skipping... ")
+                    exceptionWarning(f"Checksums for {model_path} are invalid.  Retrain or delete this model.  Skipping... ")
                     continue
                 # Update the stacker info with model directory for ease of access later
                 if model == 'Stacker':

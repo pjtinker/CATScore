@@ -16,7 +16,6 @@ import hashlib
 # import threading
 import time
 from queue import PriorityQueue
-from tpot import TPOTClassifier
 
 
 import pandas as pd
@@ -31,21 +30,22 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, balanced_ac
 from sklearn.utils import parallel_backend, register_parallel_backend
 from sklearn.preprocessing import FunctionTransformer
 
-# from dask.distributed import Client
+from xgboost.sklearn import XGBClassifier
+from tpot import TPOTClassifier
 import joblib
 from joblib._parallel_backends import ThreadingBackend, SequentialBackend, LokyBackend
-import scipy
 
-from tensorflow.python.keras.preprocessing import sequence, text
-from tensorflow.python.keras.wrappers.scikit_learn import KerasClassifier
-from tensorflow.python.keras.callbacks import EarlyStopping
+import scipy
+# from tensorflow.python.keras.preprocessing import sequence, text
+# from tensorflow.python.keras.wrappers.scikit_learn import KerasClassifier
+# from tensorflow.python.keras.callbacks import EarlyStopping
 
 import package.utils.training_utils as tu
-from package.utils.catutils import CATEncoder, cat_decoder
+from package.utils.catutils import CATEncoder, cat_decoder, exceptionWarning
 from package.utils.config import CONFIG
-import package.utils.keras_models as keras_models
 import package.utils.embedding_utils as embed_utils
-import package.utils.SequenceTransformer as seq_trans
+# import package.utils.keras_models as keras_models
+# import package.utils.SequenceTransformer as seq_trans
 
 
 RANDOM_SEED = 1337
@@ -55,6 +55,13 @@ BASE_MODEL_DIR = './package/data/base_models'
 BASE_TFIDF_DIR = './package/data/feature_extractors/TfidfVectorizer.json'
 INPUT_SHAPE = (0, 0)
 
+TAG_DELIMITER = CONFIG.get('VARIABLES', 'TagDelimiter')
+PRED_LABEL_SUFFIX = CONFIG.get('VARIABLES', 'PredictedLabelSuffix')
+PROB_LABEL_SUFFIX = CONFIG.get('VARIABLES', 'ProbabilityLabelSuffix')
+TRUTH_LABEL_SUFFIX = CONFIG.get('VARIABLES', 'TruthLabelSuffix')
+STACKER_LABEL_SUFFIX = CONFIG.get('VARIABLES', 'StackerLabelSuffix')
+DISAGREEMENT_THRESHOLD = CONFIG.getfloat('VARIABLES', 'DisagreementThreshold')
+BAMBOOZLED_THRESHOLD = CONFIG.getint('VARIABLES', 'BamboozledThreshold')
 
 class ModelTrainerSignals(QObject):
     training_complete = pyqtSignal(pd.DataFrame)
@@ -77,11 +84,18 @@ class ModelTrainer(QRunnable):
     register_parallel_backend('threading', ThreadingBackend, make_default=True)
     parallel_backend('threading')
 
-    def __init__(self, selected_models, version_directory,
-                 training_eval_params, training_data,
-                 tune_models, tuning_params, n_iter, n_jobs=1,
-                 use_proba=False, train_stacking_algorithm=True, **kwargs
-                 ):
+    def __init__(
+        self,
+        selected_models,
+        version_directory,
+        training_eval_params,
+        training_data,
+        tune_models,
+        tuning_params,
+        use_proba=False,
+        train_stacking_algorithm=True,
+        **kwargs
+    ):
         super(ModelTrainer, self).__init__()
         self.logger = logging.getLogger(__name__)
         self.signals = ModelTrainerSignals()
@@ -96,8 +110,6 @@ class ModelTrainer(QRunnable):
         self.training_data = training_data
         self.tune_models = tune_models
         self.tuning_params = tuning_params
-        self.n_iter = n_iter
-        self.n_jobs = n_jobs
         self.use_proba = use_proba
         self.train_stacking_algorithm = train_stacking_algorithm
         self.kwargs = kwargs
@@ -121,24 +133,27 @@ class ModelTrainer(QRunnable):
                     col_label = col.split(CONFIG.get(
                         'VARIABLES', 'TagDelimiter'))[0]
                     col_path = os.path.join(self.version_directory, col_label)
-                    #* FInd and drop any samples missing an index
+                    # * FInd and drop any samples missing an index
                     missing_idx_count = self.training_data.index.isna().sum()
                     if(missing_idx_count > 0):
                         self._update_log(f"<b>Found {missing_idx_count} samples missing a value for index </b> \
                                         (index_col = {CONFIG.get('VARIABLES', 'IndexColumn')}).  Removing those samples...")
                         valid_indexes = self.training_data.index.dropna()
-                        self.training_data = self.training_data[self.training_data.index.isin(valid_indexes)]
-                        self._update_log(f'Shape of dataset after removal: {self.training_data.shape}')
+                        self.training_data = self.training_data[self.training_data.index.isin(
+                            valid_indexes)]
+                        self._update_log(
+                            f'Shape of dataset after removal: {self.training_data.shape}')
                     # * Create dict to fill na samples with 'unanswered' and score of 0
                     label_col_name = self.training_data.columns[col_idx]
                     fill_dict = pd.DataFrame(
                         data={col: 'unanswered', label_col_name: 0}, index=[0])
                     self.training_data.fillna(value=0, inplace=True, axis=1)
                     x = self.training_data[col].copy()
-                    y = self.training_data[self.training_data.columns[col_idx]].copy().values
+                    y = self.training_data[self.training_data.columns[col_idx]].copy(
+                    ).values
 
                     results = pd.DataFrame(index=self.training_data.index)
-                    results['actual'] = y
+                    results[TRUTH_LABEL_SUFFIX] = y
                     preds = np.empty(y.shape)
                     probs = np.empty(shape=(y.shape[0], len(np.unique(y))))
 
@@ -148,7 +163,7 @@ class ModelTrainer(QRunnable):
                     # * SKLEARN
                     for model, selected in self.selected_models['sklearn'].items():
                         if self._is_running == False:
-                            self.signals.training_complete.emit(None)
+                            self.signals.training_complete.emit(pd.DataFrame())
                             break
                         if selected:
                             try:
@@ -163,7 +178,7 @@ class ModelTrainer(QRunnable):
                                 try:
                                     if sk_eval_type == 'cv':
                                         skf = StratifiedKFold(n_splits=sk_eval_value,
-                                                                random_state=RANDOM_SEED)
+                                                              random_state=RANDOM_SEED)
                                         for train, test in skf.split(x, y):
                                             with joblib.parallel_backend('dask'):
                                                 preds[test] = pipeline.fit(
@@ -187,9 +202,8 @@ class ModelTrainer(QRunnable):
                                                                                             random_state=CONFIG.getfloat('VARIABLES', 'RandomSeed'))
                                         preds = np.empty(len(y_test))
                                     else:
-                                        # print('Train called with invalid cv type:', json.dumps(
-                                        #     self.training_eval_params, indent=2, cls=CATEncoder))
-                                        self._update_log(f'No evaluation type chosen.')
+                                        self._update_log(
+                                            f'No evaluation type chosen.')
                                 except(KeyboardInterrupt, SystemExit):
                                     raise
                                 except Exception:
@@ -201,10 +215,6 @@ class ModelTrainer(QRunnable):
                                     self._update_log('{} threw an exception during fit. \
                                             Possible error with joblib multithreading.'.format(model), True, False)
                                 model_scores = self.get_model_scores(y, preds)
-                                # try:
-                                #     # model_acc = accuracy_score(y, preds)
-                                # except ValueError as ve:
-                                #     model_scores = self.get_model_scores([], [])
 
                                 self._update_log(
                                     f'Task completed on <b>{model}</b>.')
@@ -227,8 +237,8 @@ class ModelTrainer(QRunnable):
                                 with joblib.parallel_backend('dask'):
                                     pipeline.fit(x, y)
 
-                                pred_col_name = col_label + '_' + model + '_preds'
-                                prob_col_name = col_label + '_' + model + '_probs'
+                                pred_col_name = col_label + TAG_DELIMITER + model + PRED_LABEL_SUFFIX
+                                prob_col_name = col_label + TAG_DELIMITER + model + PROB_LABEL_SUFFIX
                                 results[pred_col_name] = preds.astype(int)
                                 # If predicting probabilities and the probability array has values,
                                 # use those values for the results.
@@ -249,14 +259,16 @@ class ModelTrainer(QRunnable):
                                 tb = traceback.format_exc()
                                 print(tb)
                                 self._update_log(tb)
-                # Tensorflow used to reside here
+                    # Tensorflow__ would reside here
                     try:
-                        if self.train_stacking_algorithm:
-                            self.train_stacker(results.drop('actual', axis=1),
-                                               results.actual.values,
+                        if self.train_stacking_algorithm and self._is_running:
+                            self.train_stacker(results.drop(TRUTH_LABEL_SUFFIX, axis=1),
+                                               results[TRUTH_LABEL_SUFFIX].values,
                                                col_path)
+                        else:
+                            self._update_log('Skipping Stacker training.')
                     except ValueError as ve:
-                        self.signals.training_complete.emit(None)
+                        self.signals.training_complete.emit(pd.DataFrame())
                         self._update_log(
                             f'Unable to train Stacking algorithm on {col_label}.')
                         tb = traceback.format_exc()
@@ -271,7 +283,7 @@ class ModelTrainer(QRunnable):
             self.signals.training_complete.emit(self.all_predictions_df)
 
         except Exception as e:
-            self.signals.training_complete.emit(None)
+            self.signals.training_complete.emit(pd.DataFrame())
             self.logger.error('ModelTrainer.run (General):', exc_info=True)
             tb = traceback.format_exc()
             print(tb)
@@ -292,9 +304,10 @@ class ModelTrainer(QRunnable):
             scores['f1_score'] = f1_score(y, y_hat, average='weighted')
             scores['cohen_kappa'] = cohen_kappa_score(y, y_hat)
         except ValueError as ve:
-            self._update_log("Unable to generate performance scores.")
+            self._update_log(
+                "Unable to generate performance metrics.  Returning all values as zero.")
             scores['accuracy'] = 0
-            scores['f1_score'] =  0
+            scores['f1_score'] = 0
             scores['cohen_kappa'] = 0
         except Exception as e:
             # self.signals.training_complete.emit(0, False)
@@ -322,7 +335,7 @@ class ModelTrainer(QRunnable):
                     model_path = os.path.join(CONFIG.get('PATHS', 'DefaultModelDirectory'),
                                               model_name,
                                               model_name + '.json')
-                                              
+
             # elif base_path is not None:
             #     model_path = os.path.join(
             #         base_path, model_name, model_name + '.json')
@@ -382,7 +395,6 @@ class ModelTrainer(QRunnable):
             pipeline.append(pipeline_queue.get()[-1])
         return pipeline
 
-        
     def get_tpot_pipeline(self, param_dict, tpot_params, include_feature_selection=False):
         pipeline_queue = PriorityQueue()
         for args, values in param_dict.items():
@@ -442,7 +454,6 @@ class ModelTrainer(QRunnable):
                 keras_params: dict, parameters necessary for model training outside of the regular hyperparams.  e.g. input_shape, num_classes, num_features
         '''
         try:
-            print(f'N_ITER PASSED TO GRID SEARCH {n_iter}')
             start_time = time.time()
             filepath = os.path.join(CONFIG.get(
                 'PATHS', 'BaseModelDirectory'), model + '.json')
@@ -517,7 +528,7 @@ class ModelTrainer(QRunnable):
                                       scoring=tuning_params['gridsearch']['scoring'] if len(
                                           tuning_params['gridsearch']['scoring']) > 0 else None,
                                       refit='accuracy')
-                                    #   refit='accuracy' if len(tuning_params['gridsearch']['scoring']) > 0 else None)  # ! FIXME: Should we allow other, non accuracy metrics here?
+            #   refit='accuracy' if len(tuning_params['gridsearch']['scoring']) > 0 else None)  # ! FIXME: Should we allow other, non accuracy metrics here?
             with joblib.parallel_backend('dask'):
                 rscv.fit(x, y)
             self.grid_search_time = time.time() - start_time
@@ -560,7 +571,6 @@ class ModelTrainer(QRunnable):
         #         self.save_params_to_file(
         #             model_name, pipeline.get_params(), save_path, scores)
 
-
     def save_params_to_file(self, model, best_params, model_param_path, score_dict={}):
         try:
             model_path = os.path.join(model_param_path, model + '.json')
@@ -582,7 +592,7 @@ class ModelTrainer(QRunnable):
             if self.tune_models:
                 model_params['meta']['tuning_meta'].update({
                     'last_tune_date': time.strftime('%Y-%m-%d %H:%M:%S', current_time),
-                    'n_iter': self.n_iter,
+                    'n_iter': self.tuning_params['gridsearch']['n_iter'],
                     'tuning_duration': self.grid_search_time,
                     'tune_eval_score': score_dict
                 })
@@ -642,11 +652,11 @@ class ModelTrainer(QRunnable):
                 'train_eval_score': score_dict,
                 'checksum': self.model_checksums[model]
             })
-            
+
             if self.tune_models:
                 model_params['meta']['tuning_meta'].update({
                     'last_tune_date': time.strftime('%Y-%m-%d %H:%M:%S', current_time),
-                    'n_iter': self.n_iter,
+                    'n_iter': self.tuning_params['gridsearch']['n_iter'],
                     'tuning_duration': self.grid_search_time,
                     'tune_eval_score': score_dict
                 })
@@ -699,12 +709,57 @@ class ModelTrainer(QRunnable):
                 self.logger.error(
                     "ModelTrainer.get_ratio", exc_info=True)
                 exceptionWarning(
-                    'Exception occured in ModelTrainer.get_ratio.', repr(ioe))
+                    'Exception occured in ModelTrainer.get_ratio.', repr(e))
+
+        def get_bamboozled_score(row):
+            """
+            Returns the difference between the number of models and the number of models who predicted incorrectly.
+            The higher this value, the more bamboozling the sample
+            """
+            try:
+                pred_value = row.iloc[-1]
+                total_wrong = 0
+                col_count = len(row.iloc[:-1])
+                for data in row.iloc[:-1]:
+                    if data != pred_value:
+                        total_wrong += 1
+                return col_count - total_wrong
+            except Exception as e:
+                self.logger.error(
+                    "ModelTrainer.get_bamboozled_score", exc_info=True)
+                exceptionWarning(
+                    'Exception occured in ModelTrainer.get_bamboozled_score.', repr(e))
+
+        stacker_full_class = CONFIG.get(
+            'VARIABLES', 'StackingAlgorithmCLassName').split('.')
+
+        final_preds = np.empty(y.shape)
+        stacker_module = '.'.join(stacker_full_class[0:-1])
+        inst_module = importlib.import_module(stacker_module)
+        stacker_class = getattr(inst_module, stacker_full_class[-1])
+        stacker = stacker_class()
+        if self.tuning_params['gridsearch']['tune_stacker']:
+            self._update_log(
+                f'Beginning tuning run on Stacker <b>{".".join(stacker_full_class)}</b>...')
+            rscv = RandomizedSearchCV(estimator=stacker,
+                                      n_jobs=self.tuning_params['gridsearch']['n_jobs'] if self.tuning_params[
+                                          'gridsearch']['n_jobs'] != 0 else None,
+                                      cv=self.tuning_params['gridsearch']['cv'],
+                                      n_iter=self.tuning_params['gridsearch']['n_iter'],
+                                      pre_dispatch=CONFIG.get(
+                                          'VARIABLES', 'PreDispatch'),
+                                      verbose=CONFIG.getint(
+                                          'VARIABLES', 'RandomizedSearchVerbosity'),
+                                      scoring=self.tuning_params['gridsearch']['scoring'] if len(
+                                          self.tuning_params['gridsearch']['scoring']) > 0 else None,
+                                      refit='accuracy')
+            rscv.fit(x, y)
+            best_params = rscv.best_params_
+            stacker = stacker_class(**best_params)
+            self._update_log('Stacker tuning completed!  Re-evaluating...')
 
         self._update_log(
-            'Training Stacking algorithm (DecisionTreeClassifier)')
-        final_preds = np.empty(y.shape)
-        stacker = DecisionTreeClassifier()
+            f'Training Stacking algorithm <b>{".".join(stacker_full_class)}</b>')
         skf = StratifiedKFold(n_splits=5,
                               random_state=RANDOM_SEED)
 
@@ -754,18 +809,28 @@ class ModelTrainer(QRunnable):
         stacker_json_save_file = os.path.join(save_path, 'Stacker.json')
         with open(stacker_json_save_file, 'w') as outfile:
             json.dump(stacker_info, outfile, indent=2)
-            #TODO Rework this to save predictions in column folder.  This will be passed as a parameter
-        x[col_name + '__actual'] = y
-        x[col_name + '__agreement_ratio'] = x.apply(get_ratio, axis=1)
-        pc_len = len(x[x[col_name + '__agreement_ratio'] <= CONFIG.getfloat('VARIABLES', 'DisagreementThreshold')])
+        x[col_name + TRUTH_LABEL_SUFFIX] = y
+        agreement_ratios = x.apply(get_ratio, axis=1)
+        bamboozled = x.apply(get_bamboozled_score, axis=1)
+
+        x[col_name + TAG_DELIMITER + 'agreement_ratio'] = agreement_ratios
+        x[col_name + TAG_DELIMITER + 'bamboozled_score'] = bamboozled
+        pc_len = len(x[x[col_name + TAG_DELIMITER + 'agreement_ratio'] <= DISAGREEMENT_THRESHOLD])
+        bamboozled_len = len(x[x[col_name + TAG_DELIMITER + 'bamboozled_score'] <= BAMBOOZLED_THRESHOLD])
         self._update_log(
-            f"Found {pc_len} samples for {col_name} that fall below {CONFIG.get('VARIABLES', 'DisagreementThreshold')} predictor agreement.")
-        # training_prediction_save_file = os.path.join(col_path, 'training_predictions.csv')
-        # x.to_csv(training_prediction_save_file, index_label='testnum', quoting=1, encoding='utf-8')
-        self.all_predictions_df.join(x, how='outer')
+            f"Found {pc_len} samples for {col_name} that fall at or below the {DISAGREEMENT_THRESHOLD} predictor agreement.")
+        self._update_log(
+            f"Found {bamboozled_len} samples for {col_name} that have a bamboozled score of {BAMBOOZLED_THRESHOLD} or below.")
+        # print('HEAD OF X IN TRAIN_STACKER')
+        # print(x.head())
+        # print(x.columns)
+        # ? What X is a dataframe  [col_name + CONFIG.get('VARIABLES', 'StackerLabelSuffix')] = final_preds
+        self.all_predictions_df = pd.merge(self.all_predictions_df, x, how='outer', left_index=True, right_index=True)
+        # print('HEAD OF all_redictions_df IN TRAIN_STACKER')
+        # print(self.all_predictions_df.head())
+        # print(self.all_predictions_df.columns)
         self._update_log('Run complete')
         self._update_log('<hr>', False, True)
-
 
     def _tune_model(self, x, y, model, col_path):
         model_params = self.get_params_from_file(
@@ -784,7 +849,6 @@ class ModelTrainer(QRunnable):
                 'TPOTClassifier'].fitted_pipeline_
             for n, p in fitted_pipeline.named_steps.items():
                 new_steps.append((n, p))
-            # print(f'new_steps: {new_steps}')
             pipeline = Pipeline(new_steps)
         else:
             gs_pipeline = Pipeline(
@@ -797,13 +861,13 @@ class ModelTrainer(QRunnable):
                                             y=y,
                                             pipeline=gs_pipeline,
                                             tuning_params=self.tuning_params,
-                                            n_iter=self.n_iter,
-                                            n_jobs=self.n_jobs,
+                                            n_iter=self.tuning_params['gridsearch']['n_iter'],
+                                            n_jobs=self.tuning_params['gridsearch']['n_jobs'],
                                             include_tfidf=True).best_estimator_
 
         if pipeline is None:
             self._update_log(
-                f'Grid search failed for {model} on task {col_path}.  Skipping...')  
+                f'Grid search failed for {model} on task {col_path}.  Skipping...')
             return False
         else:
             save_path = os.path.join(col_path, model)
@@ -811,7 +875,6 @@ class ModelTrainer(QRunnable):
                 os.makedirs(save_path)
             self.save_model(model, pipeline, save_path)
             return True
-
 
     def _generate_best_param_dict(self, model_param_keys, best_params):
         try:

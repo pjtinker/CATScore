@@ -16,8 +16,8 @@ from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
                              QMessageBox, QPushButton, QRadioButton,
                              QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
                              QVBoxLayout, QTextEdit, QWidget)
-
 from PyQt5.QtGui import QTextCursor, QIcon, QPixmap
+
 from package.train.models.SkModelDialog import SkModelDialog
 from package.train.models.TPOTModelDialog import TPOTModelDialog
 from package.train.ModelTrainer import ModelTrainer
@@ -45,7 +45,7 @@ class SelectModelWidget(QWidget):
             f"Multithreading enabled with a maximum of {self.threadpool.maxThreadCount()} threads.")
 
         print("Multithreading with maximum %d threads" %
-              self.threadpool.maxThreadCount())
+                self.threadpool.maxThreadCount())
         self.training_data = pd.DataFrame()
         self.training_predictions = pd.DataFrame()
         self.selected_version = CONFIG.get('PATHS', 'DefaultModelDirectory')
@@ -66,10 +66,11 @@ class SelectModelWidget(QWidget):
         # * Currently only using gridsearch
         self.tuning_params = {}
         self.tuning_params['gridsearch'] = {
-            "n_iter": 20,
-            "cv": 3,
-            "n_jobs": -1,
-            'scoring': ['accuracy']
+            'n_iter': 20,
+            'cv': 3,
+            'n_jobs': -1,
+            'scoring': ['accuracy'],
+            'tune_stacker' : False
         }
 
         self.sklearn_model_dialogs = []
@@ -388,7 +389,7 @@ class SelectModelWidget(QWidget):
         self.scoring_metric_groupbox = QGroupBox('Scoring metrics')
 
         self.scoring_metric_vbox = QVBoxLayout()
-
+        #* The following code is for metric radio buttons.  Left in for posterity
         # self.acc_checkbox = QRadioButton('Accuracy')
         # self.acc_checkbox.setChecked(True)
         # self.acc_checkbox.toggled.connect(
@@ -441,7 +442,16 @@ class SelectModelWidget(QWidget):
         self.scoring_metric_vbox.addWidget(self.prec_weighted_checkbox)
 
         self.scoring_metric_groupbox.setLayout(self.scoring_metric_vbox)
+
+        self.tune_stacker_checkbox = QCheckBox('Tune Stacking Algorithm')
+        self.tune_stacker_checkbox.setChecked(False)
+        self.tune_stacker_checkbox.stateChanged.connect(
+            lambda state, x=self.tune_stacker_checkbox:
+            self.update_tuning_params(
+                'gridsearch', 'tune_stacker', state)
+        )
         self.tuning_form.addRow(self.scoring_metric_groupbox)
+        self.tuning_form.addRow(self.tune_stacker_checkbox)
 
     def open_dialog(self, dialog):
         """
@@ -522,9 +532,7 @@ class SelectModelWidget(QWidget):
                                               training_eval_params=self.training_params,
                                               training_data=self.training_data,
                                               tune_models=tune_models,
-                                              tuning_params=self.tuning_params,
-                                              n_iter=self.tuning_n_iter_input.value(),
-                                              n_jobs=self.tuning_n_jobs_input.value())
+                                              tuning_params=self.tuning_params)
             self.model_trainer.signals.update_training_logger.connect(
                 self.update_training_logger)
             self.update_progressbar.emit(1, True)
@@ -534,8 +542,7 @@ class SelectModelWidget(QWidget):
             self.run_btn.setEnabled(False)
             self.stop_btn.clicked.connect(lambda: self._abort_training())
 
-            # self.model_trainer.start()
-            # self.run_btn.clicked.connect(self._abort_training)
+            self.training_predictions = pd.DataFrame()
             self.threadpool.start(self.model_trainer)
         except Exception as e:
             self.logger.error("SelectModelWidget.train_models", exc_info=True)
@@ -571,10 +578,9 @@ class SelectModelWidget(QWidget):
         self.run_btn.setText("Train models")
         self.tune_models_chkbox.setChecked(False)
         self.save_results_btn.setEnabled(True)
-        #TODO: save the returned ratio_series for possible saving
+
         if(prediction_df is not None and not prediction_df.empty):
-            print(prediction_df.head())
-        # self.training_predictions = prediction_df
+            self.training_predictions = prediction_df
         # Emitting a version change here reloads all parameters.  i.e. we update the
         # parameters displayed in the dialog.
         self.comms.version_change.emit(self.selected_version)

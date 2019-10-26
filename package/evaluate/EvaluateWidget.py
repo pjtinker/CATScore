@@ -207,7 +207,7 @@ class EvaluateWidget(QWidget):
         try:
             self.graph.clear_graph()
             self.available_column_model.loadData([], include_labels=False)
-            self.prediction_data = pd.read_csv(f_path, encoding='utf-8', index_col=0) #TODO: user defined index column
+            self.prediction_data = pd.read_csv(f_path, encoding='utf-8', index_col=CONFIG.getint('VARIABLES', 'IndexColumn')) #TODO: user defined index column
         except UnicodeDecodeError as ude:
             self.logger.warning(
                 "UnicodeDecode error opening file", exc_info=True)

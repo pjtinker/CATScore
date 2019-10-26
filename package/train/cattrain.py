@@ -29,8 +29,9 @@ from package.utils.config import CONFIG
 
 
 VERSION_BASE_DIR = CONFIG.get('PATHS', 'BaseVersionDirectory')
-DEFAULT_QUESTION_LABELS = ['Q1', 'Q2', 'Q3', 'Q4', 'Q6',
-                    'Q7', 'Q9', 'Q11', 'Q14', 'Q15'] #TODO: can lists be stored in ini files?
+# DEFAULT_QUESTION_LABELS = ['Q1', 'Q2', 'Q3', 'Q4', 'Q6',
+#                     'Q7', 'Q9', 'Q11', 'Q14', 'Q15'] 
+DEFAULT_QUESTION_LABELS = CONFIG.get('VARIABLES', 'DefaultQuestionLabels').split(',')
 class CatTrain(QMainWindow):
     """ The central widget for the training component of CATScore
         Most of the functionality is contained in this class

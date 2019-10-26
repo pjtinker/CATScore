@@ -10,11 +10,11 @@ import logging
 import logging.handlers
 from dask.distributed import Client
 
-from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QVBoxLayout, 
+from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QVBoxLayout,
                                 QMainWindow, QSizePolicy, QWidget, QGridLayout,
                                 QPushButton, QTabWidget, QMenuBar, QSplashScreen)
-from PyQt5.QtGui import QPixmap, QMovie, QIcon
-from PyQt5.QtCore import Qt, pyqtSlot, QEventLoop
+from PyQt5.QtGui import QPixmap, QMovie, QIcon, QImage, QPalette, QBrush
+from PyQt5.QtCore import Qt, pyqtSlot, QEventLoop, QSize
 
 from multiprocessing import Pool
 
@@ -44,14 +44,21 @@ class MainWindow(QMainWindow):
         self.logger.setLevel(logging.DEBUG)
         self.current_file = ''
         self.title = 'CAT Score'
+
         self.setWindowIcon(QIcon('./icons/cat-silhouette.jpg'))
+        background_img = QImage('./icons/cat-silhouette.jpg')
+        background_img_scaled = background_img.scaled(QSize(240, 280))
+        palette = QPalette()
+        palette.setBrush(10, QBrush(background_img_scaled))
+        self.setPalette(palette)
         self.left = 0
         self.top = 0
-        self.width = 500
-        self.height = 400
+        self.width = 250
+        self.height = 300
         self.setWindowTitle(self.title)
         geometry = app.desktop().availableGeometry(self)
-        self.setGeometry(10, 50, geometry.width() * 0.2, geometry.height() * 0.2)
+        # self.setGeometry(10, 50, geometry.width() * 0.2, geometry.height() * 0.2)
+        self.setGeometry(10, 50, self.width, self.height)
         self.catscore = QWidget()
         self.main_layout = QVBoxLayout()
         self.setCentralWidget(self.catscore)
@@ -70,7 +77,7 @@ class MainWindow(QMainWindow):
         self.open_cat_evaluate_btn = QPushButton('CAT &Evaluate', self)
         self.open_cat_evaluate_btn.clicked.connect(lambda: self.cat_evaluate.show())
         self.button_grid.addWidget(self.open_cat_evaluate_btn, 1, 0)
-
+        self.main_layout.addStretch()
         self.main_layout.addLayout(self.button_grid)
 
 
