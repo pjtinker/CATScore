@@ -25,10 +25,12 @@ class SpellCheck():
         self.load_embedding_vocab()
         self.generate_misspell_dict()
 
-    def words(text): return re.findall(r'\w+', text.lower())
+    def words(self, text): return re.findall(r'\w+', text.lower())
 
     def load_embedding_vocab(self):
         # TODO: Configure to use with embeddings after final dir structure known
+        # TODO: Save misspelt dict and make it availalbe to be saved/loaded by this class
+        #  we can do one spellcheck, generate the dict, then reuse for future spellchecking
         words = []
         try:
             print("Loading embeddding vocabulary...")
@@ -47,7 +49,7 @@ class SpellCheck():
             sys.exit(1)
 
     def P(self, word): 
-        "Probability of `word`."
+        # "Probability of `word`."
         # use inverse of rank as proxy
         # returns 0 if the word isn't in the dictionary
         return - self.w_rank.get(word, 0)
@@ -65,7 +67,7 @@ class SpellCheck():
         return set(w for w in words if w in self.w_rank)
 
     def edits1(self, word):
-        "All edits that are one edit away from `word`."
+        # "All edits that are one edit away from `word`."
         letters    = 'abcdefghijklmnopqrstuvwxyz'
         splits     = [(word[:i], word[i:])    for i in range(len(word) + 1)]
         deletes    = [L + R[1:]               for L, R in splits if R]
@@ -75,7 +77,7 @@ class SpellCheck():
         return set(deletes + transposes + replaces + inserts)
 
     def edits2(self, word): 
-        "All edits that are two edits away from `word`."
+        # "All edits that are two edits away from `word`."
         return (e2 for e1 in self.edits1(word) for e2 in self.edits1(e1))
 
     def build_vocab(self, texts):

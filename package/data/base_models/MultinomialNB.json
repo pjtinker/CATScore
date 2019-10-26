@@ -13,7 +13,7 @@
                 "step_size" : 1,
                 "decimal_len" : 4,
                 "tunable" : true,
-                "tooltip" : ""
+                "tooltip" : "Additive (Laplace/Lidstone) smoothing parameter (0 for no smoothing)."
             },
             "fit_prior" : {
                 "type" : "dropdown",
@@ -23,7 +23,7 @@
                     "True" : true
                 },
                 "tunable" : true,
-                "tooltip" : ""
+                "tooltip" : "Whether to learn class prior probabilities or not. If false, a uniform prior will be used."
             }
         }
     }

@@ -116,14 +116,15 @@ class Predictor(QRunnable):
         result_dir = stacker_meta['version_directory']
         current_time = time.localtime()
         path_prefix = time.strftime('%Y-%m-%d_%H-%M', current_time)
-        result_path = os.path.join(result_dir, path_prefix + "__results.csv")
-
+        # result_path = os.path.join(result_dir, path_prefix + "__results.csv")
+        result_path = os.path.join(result_dir, 'results.csv')
         self._update_log(f'<b>Saving results to: <font color="#ffb900">{result_path}</font></b>')
         self.predictions.to_csv(
             result_path, index_label="testnum", encoding='utf-8')
         stacker_cols = [
             x for x in self.predictions.columns if x.endswith('Stacker')]
-
+        # Delete Dataframe for space
+        del self.predictions
         self.signals.prediction_complete.emit(data_copy)
 
     def _update_log(self, msg):

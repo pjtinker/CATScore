@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (QAction, QButtonGroup, QCheckBox, QComboBox,
                              QScrollArea, QSizePolicy, QSpinBox, QTabWidget,
                              QVBoxLayout, QTextEdit, QWidget)
 
-from PyQt5.QtGui import QTextCursor
+from PyQt5.QtGui import QTextCursor, QIcon, QPixmap
 from package.train.models.SkModelDialog import SkModelDialog
 from package.train.models.TPOTModelDialog import TPOTModelDialog
 from package.train.ModelTrainer import ModelTrainer
@@ -29,12 +29,11 @@ class Communicate(QObject):
     version_change = pyqtSignal(str)
     enable_training_btn = pyqtSignal(Qt.CheckState)
     stop_training = pyqtSignal()
-
+    update_statusbar = pyqtSignal(str)
 
 class SelectModelWidget(QWidget):
     """QTabWidget that holds all of the selectable models and the accompanying ModelDialog for each.
     """
-    update_statusbar = pyqtSignal(str)
     update_progressbar = pyqtSignal(int, bool)
 
     def __init__(self, parent=None):
@@ -48,7 +47,7 @@ class SelectModelWidget(QWidget):
         print("Multithreading with maximum %d threads" %
               self.threadpool.maxThreadCount())
         self.training_data = pd.DataFrame()
-
+        self.training_predictions = pd.DataFrame()
         self.selected_version = CONFIG.get('PATHS', 'DefaultModelDirectory')
         self.comms = Communicate()
 
@@ -171,17 +170,27 @@ class SelectModelWidget(QWidget):
 
         self.main_layout.addStretch()
         self.run_btn = QPushButton("&Train Models")
+        self.run_btn.setMinimumWidth(200)
         self.run_btn.clicked.connect(lambda: self.train_models())
         self.run_btn.setEnabled(False)
 
-        self.stop_btn = QPushButton('&Stop')
+        self.stop_btn = QPushButton('Sto&p')
         self.stop_btn.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.comms.enable_training_btn.connect(self.set_training_btn_state)
         self.button_hbox = QHBoxLayout()
 
+        icon = QIcon()
+        icon.addPixmap(QPixmap('icons/Programming-Save-icon.png'))
+        self.save_results_btn = QPushButton()
+        self.save_results_btn.setIcon(icon)
+        self.save_results_btn.setEnabled(False)
+        self.save_results_btn.clicked.connect(lambda: self.save_predictions())
+
         self.button_hbox.addWidget(self.run_btn)
         self.button_hbox.addWidget(self.stop_btn)
+        self.button_hbox.addStretch()
+        self.button_hbox.addWidget(self.save_results_btn)
         self.main_layout.addLayout(self.button_hbox)
         self.setLayout(self.main_layout)
 
@@ -508,13 +517,14 @@ class SelectModelWidget(QWidget):
     def train_models(self):
         try:
             tune_models = self.tune_models_chkbox.isChecked()
-            self.model_trainer = ModelTrainer(self.selected_models,
-                                              self.selected_version,
-                                              self.training_params,
-                                              self.training_data,
-                                              tune_models,
-                                              self.tuning_params,
-                                              self.tuning_n_iter_input.value())
+            self.model_trainer = ModelTrainer(selected_models=self.selected_models,
+                                              version_directory=self.selected_version,
+                                              training_eval_params=self.training_params,
+                                              training_data=self.training_data,
+                                              tune_models=tune_models,
+                                              tuning_params=self.tuning_params,
+                                              n_iter=self.tuning_n_iter_input.value(),
+                                              n_jobs=self.tuning_n_jobs_input.value())
             self.model_trainer.signals.update_training_logger.connect(
                 self.update_training_logger)
             self.update_progressbar.emit(1, True)
@@ -546,8 +556,8 @@ class SelectModelWidget(QWidget):
         else:
             self.training_logger.insertPlainText(msg)
 
-    @pyqtSlot(int, bool)
-    def training_complete(self, val, pulse):
+    @pyqtSlot(pd.DataFrame)
+    def training_complete(self, prediction_df=None):
         """
         Resets progressbar, unchecks 'Train models', and emits signal to refresh the parameter
         values in each ModelDialog
@@ -556,13 +566,41 @@ class SelectModelWidget(QWidget):
                 val: int or float, value used to set progressbar
                 pulse: bool, used to toggle progressbar pulse
         """
-        self.update_progressbar.emit(val, pulse)
+        self.update_progressbar.emit(0, False)
         self.run_btn.setEnabled(True)
         self.run_btn.setText("Train models")
         self.tune_models_chkbox.setChecked(False)
+        self.save_results_btn.setEnabled(True)
+        #TODO: save the returned ratio_series for possible saving
+        if(prediction_df is not None and not prediction_df.empty):
+            print(prediction_df.head())
+        # self.training_predictions = prediction_df
         # Emitting a version change here reloads all parameters.  i.e. we update the
         # parameters displayed in the dialog.
         self.comms.version_change.emit(self.selected_version)
+
+
+    def save_predictions(self):
+        try:
+            if self.training_predictions.empty:
+                exceptionWarning('No predictions to save')
+                return
+            file_name, filter = QFileDialog.getSaveFileName(
+                self, 'Save to CSV', os.getenv('HOME'), 'CSV(*.csv)')
+            if file_name:
+                self.training_predictions.to_csv(
+                    file_name, index_label='testnum', quoting=1, encoding='utf-8')
+                self.comms.update_statusbar.emit("Predictions saved successfully.")
+        except PermissionError as pe:
+            self.logger.warning("SelectModelWidget.save_predictions", exc_info=True)
+            exceptionWarning(f'Permission denied while attempting to save {file_name}')
+        except Exception as e:
+            self.logger.error("SelectModelWidget.save_predictions", exc_info=True)
+            exceptionWarning(
+                "Exception occured.  SelectModelWidget.save_predictions.", exception=e)
+            tb = traceback.format_exc()
+            print(tb)
+
 
     def _abort_training(self):
         self.comms.stop_training.emit()

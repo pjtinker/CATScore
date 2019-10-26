@@ -188,7 +188,7 @@ class DataLoader(QWidget):
         self.column_checkboxes = []
         self.selected_column_targets = []
         file_name, filter = QFileDialog.getOpenFileName(
-            self, 'Open CSV', os.getenv('HOME'), 'CSV(*.csv)')
+            self, 'Open CSV', os.getenv('HOME'), 'CSV/TSV (*.csv *.tsv)')
         if file_name:
             self.load_file(file_name)
 
@@ -202,10 +202,11 @@ class DataLoader(QWidget):
         """
         # FIXME: Reset status bar when new data is loaded.
         try:
+            self.update_progressbar.emit(0, True)
             self.available_column_model.loadData([])
             self.select_all_btn.setEnabled(False)
             self.deselect_all_btn.setEnabled(False)
-            self.full_data = pd.read_csv(f_path, encoding='utf-8', index_col=0)
+            self.full_data = pd.read_csv(f_path, encoding='utf-8', index_col=0, sep=None)
         except UnicodeDecodeError as ude:
             self.logger.warning(
                 "UnicodeDecode error opening file", exc_info=True)
@@ -236,7 +237,7 @@ class DataLoader(QWidget):
         except Exception as e:
             self.logger.error("Error detecting encoding", exc_info=True)
             exceptionWarning("Error occured opening file.", exception=e)
-
+        #TODO: clean up dataset by removing NA for values or index
         try:
             columns = self.full_data.columns
             self.available_columns = []
@@ -269,6 +270,8 @@ class DataLoader(QWidget):
                 "Exception occured.  DataLoader.load_file.", exception=e)
             tb = traceback.format_exc()
             print(tb)
+        finally:
+            self.update_progressbar.emit(0, False)
 
     def display_selected_rows(self, selection=None):
         """
@@ -439,7 +442,7 @@ class PreprocessingThread(QThread):
             sentences = self.data[apply_cols].applymap(
                 lambda x: str(x).split()
             ).values
-            sc = SpellCheck(sentences, CONFIG.get('VARIABLES', 'TopKSpellCheck'))
+            sc = SpellCheck(sentences, CONFIG.getint('VARIABLES', 'TopKSpellCheck'))
 
             self.data[apply_cols] = self.data[apply_cols].applymap(
                 lambda x: sc.correct_spelling(x)
