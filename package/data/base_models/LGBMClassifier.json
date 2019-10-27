@@ -1,0 +1,42 @@
+{                  
+    "model_base": "sklearn",
+    "model_module": "lightgbm",
+    "model_class" : "LGBMClassifier",
+    "priority" : 100,
+    "model_url" : "https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMClassifier.html#lightgbm.LGBMClassifier",
+    "LGBMClassifier" : {
+        "Parameters" : {
+            "boosting_type" : {
+                "type" : "dropdown",
+                "default" : "gbdt",
+                "options" : {
+                    "Gradient Boosting Decision Tree" : "gbdt",
+                    "Dropouts meet Mulitiple Additive Regression Trees" : "dart",
+                    "Gradient-based One-Side Sampling" : "goss",
+                    "Random Forest" : "rf"
+                },
+                "tunable" : true,
+                "tooltip" : ""
+            },
+            "num_leaves" : {
+                "type" : "int",
+                "min" : 100,
+                "max" : 500,
+                "step_size" : 10,
+                "default" : 100,
+                "tunable" : true,
+                "tooltip" : ""    
+            },
+            "learning_rate" : {
+                "type" : "double",
+                "default" : 0.1,
+                "min" : 0.01,
+                "max" : 10,
+                "step_size" : 0.1,
+                "decimal_len":  2,
+                "tunable" : true,
+                "tooltip" : ""
+            }
+        }
+    }
+}

@@ -186,6 +186,7 @@ class SelectModelWidget(QWidget):
         self.save_results_btn = QPushButton()
         self.save_results_btn.setIcon(icon)
         self.save_results_btn.setEnabled(False)
+        self.save_results_btn.setToolTip('Save model evaluation predictions, agreement ratio, and bamboozled score')
         self.save_results_btn.clicked.connect(lambda: self.save_predictions())
 
         self.button_hbox.addWidget(self.run_btn)

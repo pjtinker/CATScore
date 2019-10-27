@@ -214,8 +214,15 @@ class PredictWidget(QWidget):
         self.eval_logger.setAcceptRichText(True)
         self.eval_logger.setReadOnly(True)
         self.right_column.addWidget(self.eval_logger)
-        # self.right_column.addStretch()
         
+        self.clear_btn_hbox = QHBoxLayout()
+        self.clear_text_btn = QPushButton('Clear')
+        self.clear_text_btn.setMaximumWidth(50)
+        self.clear_text_btn.clicked.connect(lambda: self.eval_logger.clear())
+        self.clear_btn_hbox.addStretch()
+        self.clear_btn_hbox.addWidget(self.clear_text_btn)
+        self.right_column.addLayout(self.clear_btn_hbox)
+
         self.btn_hbox = QHBoxLayout()
         # Run button
         self.run_btn = QPushButton("Predict")
@@ -260,10 +267,12 @@ class PredictWidget(QWidget):
         
         
     def update_version(self, current_dir):
+        if(not current_dir):
+            self.logger.info('PredictWidget.update_version called with no value for current_dir')
+            return
         row = 1
         column = 0
         self._reset_input()
-
         try:
             for root, dirs, files in os.walk(current_dir):
                 if 'Stacker.json' in files:
@@ -439,7 +448,7 @@ class PredictWidget(QWidget):
                 # self.full_data.drop(drop_cols, axis=1, inplace=True)
                 # print("full_data columns: ", self.full_data.columns)
                 self.full_text_count.setText(str(self.full_data.shape[0]))
-                self.display_selected_row(None)
+                # self.display_selected_row(None)
                 self.select_all_btn.setEnabled(True)
                 self.deselect_all_btn.setEnabled(True)
 
