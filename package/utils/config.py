@@ -9,7 +9,8 @@ try:
 except ImportError:
     import ConfigParser as configparser 
 
-DEFAULT_CONFIG_FILE = r'.\package\utils\default.ini'
+# DEFAULT_CONFIG_FILE = r'.\package\utils\default.ini'
+DEFAULT_CONFIG_FILE = os.path.join('package', 'utils', 'default.ini')
 
 def get_config_file():
     return os.environ.get('CONFIG_FILE', DEFAULT_CONFIG_FILE)
