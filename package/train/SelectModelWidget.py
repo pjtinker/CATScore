@@ -24,6 +24,7 @@ from package.train.ModelTrainer import ModelTrainer
 from package.utils.catutils import exceptionWarning
 from package.utils.config import CONFIG
 
+BASE_VERSION_DIR = os.path.join('package', 'data', 'versions')
 
 class Communicate(QObject):
     version_change = pyqtSignal(str)
@@ -211,9 +212,9 @@ class SelectModelWidget(QWidget):
         # is where default models will be saved.
         # self.version_selection.addItem(
         #     'default', '.\\package\\data\\default_models\\default')
-        available_versions = os.listdir(".\\package\\data\\versions")
+        available_versions = os.listdir(BASE_VERSION_DIR)
         for version in available_versions:
-            v_path = os.path.join('.\\package\\data\\versions', version)
+            v_path = os.path.join(BASE_VERSION_DIR, version)
             if os.path.isdir(v_path):
                 self.version_selection.addItem(version, v_path)
         self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection:

@@ -30,6 +30,8 @@ For training data, DI will consider the nth column as a training sample
 and nth+1 as ground truth.
 CSV files must be formatted accordingly.
 """
+
+BASE_VERSION_DIR = os.path.join('package', 'data', 'versions')
 class Communicate(QObject):
     version_change = pyqtSignal(str)    
     enable_eval_btn = pyqtSignal(bool)
@@ -62,9 +64,9 @@ class PredictWidget(QWidget):
         self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
 
-        available_versions = os.listdir(".\\package\\data\\versions")
+        available_versions = os.listdir(BASE_VERSION_DIR)
         for version in available_versions:
-            v_path = os.path.join('.\\package\\data\\versions', version)
+            v_path = os.path.join(BASE_VERSION_DIR, version)
             if os.path.isdir(v_path):
                 self.version_selection.addItem(version, v_path)
         self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection:

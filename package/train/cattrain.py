@@ -224,9 +224,9 @@ class CopyVersionWidget(QDialog):
         self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
 
-        available_versions = os.listdir(".\\package\\data\\versions")
+        available_versions = os.listdir(VERSION_BASE_DIR)
         for version in available_versions:
-            v_path = os.path.join('.\\package\\data\\versions', version)
+            v_path = os.path.join(VERSION_BASE_DIR, version)
             if os.path.isdir(v_path):
                 self.version_selection.addItem(version, v_path)
         # self.version_selection.currentIndexChanged.connect(lambda x, y=self.version_selection:
