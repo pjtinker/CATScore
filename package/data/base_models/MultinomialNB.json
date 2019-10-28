@@ -3,6 +3,7 @@
     "model_module": "sklearn.naive_bayes",
     "model_class" : "MultinomialNB",
     "priority" : 100,
+    "model_url" : "https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html",
     "MultinomialNB" : {
         "Hyperparameters" : {
             "alpha" : {
