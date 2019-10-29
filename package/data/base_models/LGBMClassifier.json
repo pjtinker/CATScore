@@ -12,8 +12,7 @@
                 "options" : {
                     "Gradient Boosting Decision Tree" : "gbdt",
                     "Dropouts meet Mulitiple Additive Regression Trees" : "dart",
-                    "Gradient-based One-Side Sampling" : "goss",
-                    "Random Forest" : "rf"
+                    "Gradient-based One-Side Sampling" : "goss"
                 },
                 "tunable" : true,
                 "tooltip" : ""

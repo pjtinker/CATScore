@@ -25,7 +25,9 @@ For training data, DI will consider the nth column as a training sample
 and nth+1 as ground truth.
 CSV files must be formatted accordingly.
 """
-
+TAG_DELIMITER = CONFIG.get('VARIABLES', 'TagDelimiter')
+DATA_COLUMN_SUFFIX = CONFIG.get('VARIABLES', 'TrainingDataColumnSuffix')
+TRUTH_SUFFIX = CONFIG.get('VARIABLES', 'TruthLabelSuffix')
 
 class DataLoader(QWidget):
     """
@@ -242,8 +244,10 @@ class DataLoader(QWidget):
             columns = self.full_data.columns
             self.available_columns = []
             for column in columns:
-                if column.endswith("__text"):
-                    label_col = column.split('__')[0] + "__actual" 
+                print(column)
+                if column.endswith(DATA_COLUMN_SUFFIX):
+                    label_col = column.split(TAG_DELIMITER)[0] + TRUTH_SUFFIX 
+                    print(label_col)
                     if label_col in columns:
                         self.available_columns.append(column)
                         self.available_columns.append(label_col)
@@ -289,7 +293,7 @@ class DataLoader(QWidget):
                 idx = QModelIndex(self.available_column_model.index(0, 0))
             offset = idx.row() * 2
             col_name = self.available_column_model.data(idx)
-            label_col_name = col_name.split('__')[0] + '__actual'
+            label_col_name = col_name.split(TAG_DELIMITER)[0] + TRUTH_SUFFIX
             self.text_stats_groupbox.setTitle(col_name)
             question_data = self.full_data[col_name].fillna(
                 value="unanswered")
