@@ -155,7 +155,6 @@ class DataLoader(QWidget):
         self.right_column.addWidget(self.text_table_view)
 
         self.main_layout.addLayout(self.left_column)
-        # self.main_layout.addStretch()
         self.main_layout.addLayout(self.right_column)
 
         self.setup_text_preproc_ui()
@@ -244,10 +243,8 @@ class DataLoader(QWidget):
             columns = self.full_data.columns
             self.available_columns = []
             for column in columns:
-                print(column)
                 if column.endswith(DATA_COLUMN_SUFFIX):
                     label_col = column.split(TAG_DELIMITER)[0] + TRUTH_SUFFIX 
-                    print(label_col)
                     if label_col in columns:
                         self.available_columns.append(column)
                         self.available_columns.append(label_col)

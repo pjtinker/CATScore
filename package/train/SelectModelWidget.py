@@ -26,11 +26,13 @@ from package.utils.config import CONFIG
 
 BASE_VERSION_DIR = os.path.join('package', 'data', 'versions')
 
+
 class Communicate(QObject):
     version_change = pyqtSignal(str)
     enable_training_btn = pyqtSignal(Qt.CheckState)
     stop_training = pyqtSignal()
     update_statusbar = pyqtSignal(str)
+
 
 class SelectModelWidget(QWidget):
     """QTabWidget that holds all of the selectable models and the accompanying ModelDialog for each.
@@ -46,7 +48,7 @@ class SelectModelWidget(QWidget):
             f"Multithreading enabled with a maximum of {self.threadpool.maxThreadCount()} threads.")
 
         print("Multithreading with maximum %d threads" %
-                self.threadpool.maxThreadCount())
+              self.threadpool.maxThreadCount())
         self.training_data = pd.DataFrame()
         self.training_predictions = pd.DataFrame()
         self.selected_version = CONFIG.get('PATHS', 'DefaultModelDirectory')
@@ -71,7 +73,7 @@ class SelectModelWidget(QWidget):
             'cv': 3,
             'n_jobs': -1,
             'scoring': ['accuracy'],
-            'tune_stacker' : False
+            'tune_stacker': False
         }
 
         self.sklearn_model_dialogs = []
@@ -116,7 +118,7 @@ class SelectModelWidget(QWidget):
         self.sklearn_model_form.setFormAlignment(Qt.AlignTop)
         self.skmodel_groupbox.setLayout(self.sklearn_model_form)
 
-        # Sklearn training and tuning ui components
+        # * Sklearn training and tuning ui components
         self.sklearn_training_groupbox = QGroupBox("Training")
         self.sklearn_training_form = QFormLayout()
         self.sklearn_training_groupbox.setLayout(self.sklearn_training_form)
@@ -140,7 +142,7 @@ class SelectModelWidget(QWidget):
             self.tensorflow_training_form)
         self.tensorflow_hbox.addWidget(self.tensorflow_training_groupbox)
 
-        # This is the tensorflow groupbox for models and training params.
+        # * This is the tensorflow groupbox for models and training params.
         # self.model_vbox.addWidget(self.tensorflow_groupbox)
 
         self.tuning_groupbox = QGroupBox("Tuning")
@@ -153,7 +155,7 @@ class SelectModelWidget(QWidget):
         self.setup_model_selection_ui()
         self.setup_training_ui()
         self.setup_tuning_ui()
-        # QTextEdit box for training/tuning status
+        # * QTextEdit box for training/tuning status
         self.training_logger = QTextEdit()
         self.training_logger.setReadOnly(True)
         self.training_logger.setAcceptRichText(True)
@@ -164,7 +166,8 @@ class SelectModelWidget(QWidget):
         self.clear_btn_hbox = QHBoxLayout()
         self.clear_text_btn = QPushButton('Clear')
         self.clear_text_btn.setMaximumWidth(50)
-        self.clear_text_btn.clicked.connect(lambda: self.training_logger.clear())
+        self.clear_text_btn.clicked.connect(
+            lambda: self.training_logger.clear())
         self.clear_btn_hbox.addStretch()
         self.clear_btn_hbox.addWidget(self.clear_text_btn)
 
@@ -187,7 +190,8 @@ class SelectModelWidget(QWidget):
         self.save_results_btn = QPushButton()
         self.save_results_btn.setIcon(icon)
         self.save_results_btn.setEnabled(False)
-        self.save_results_btn.setToolTip('Save model evaluation predictions, agreement ratio, and bamboozled score')
+        self.save_results_btn.setToolTip(
+            'Save model evaluation predictions, agreement ratio, and bamboozled score')
         self.save_results_btn.clicked.connect(lambda: self.save_predictions())
 
         self.button_hbox.addWidget(self.run_btn)
@@ -248,12 +252,11 @@ class SelectModelWidget(QWidget):
             for filename in os.listdir(CONFIG.get('PATHS', 'BaseModelDirectory')):
                 if filename.endswith('.json'):
                     with open(os.path.join(CONFIG.get('PATHS', 'BaseModelDirectory'), filename), 'r') as f:
-                        # print("Loading model:", filename)
                         model_data = json.load(f)
                         model = model_data['model_class']
                         model_base = model_data['model_base']
                         model_module = model_data['model_module']
-                        # The order of the arguments matters!  model_data must come first.
+                        #! The order of the arguments matters!  model_data must come first.
                         if model_base == 'tensorflow':
                             continue
                             # model_dialog = SkModelDialog(self, model_data)
@@ -349,7 +352,7 @@ class SelectModelWidget(QWidget):
         # Toggle to set params on load
         self.cv_radio_btn.toggle()
 
-        #* Select stacker
+        # * Select stacker
         # self.stacker_groupbox = QGroupBox('Stacking algorithm')
         # self.stacker_vbox = QVBoxLayout()
         # self.train_stacker
@@ -391,7 +394,7 @@ class SelectModelWidget(QWidget):
         self.scoring_metric_groupbox = QGroupBox('Scoring metrics')
 
         self.scoring_metric_vbox = QVBoxLayout()
-        #* The following code is for metric radio buttons.  Left in for posterity
+        # * The following code is for metric radio buttons.  Left in for posterity
         # self.acc_checkbox = QRadioButton('Accuracy')
         # self.acc_checkbox.setChecked(True)
         # self.acc_checkbox.toggled.connect(
@@ -417,7 +420,6 @@ class SelectModelWidget(QWidget):
         # )
         # self.scoring_metric_vbox.addWidget(self.prec_weighted_checkbox)
 
-  
         self.acc_checkbox = QCheckBox('Accuracy')
         self.acc_checkbox.setChecked(True)
         self.acc_checkbox.stateChanged.connect(
@@ -495,10 +497,10 @@ class SelectModelWidget(QWidget):
         Checks that there are models selected in sklearn or tensorflow 
         """
         if (not self.training_data.empty
-                and
-            (1 in self.selected_models['sklearn'].values()
-                     or
-                     1 in self.selected_models['tensorflow'].values())
+            and
+                (1 in self.selected_models['sklearn'].values()
+                 or
+                 1 in self.selected_models['tensorflow'].values())
             ):
             self.run_btn.setEnabled(True)
         else:
@@ -554,6 +556,14 @@ class SelectModelWidget(QWidget):
 
     @pyqtSlot(str, bool, bool)
     def update_training_logger(self, msg, include_time=True, use_html=True):
+        '''
+        Slot that receives signals updating the terminal.  
+        
+            # Arguments
+                msg: string, Message to display in terminal
+                include_time: bool, prepend time to message
+                use_html: bool, insert text as html 
+        '''
         if(include_time):
             current_time = time.localtime()
             outbound = f"{time.strftime('%Y-%m-%d %H:%M:%S', current_time)} - {msg}<br>"
@@ -587,8 +597,10 @@ class SelectModelWidget(QWidget):
         # parameters displayed in the dialog.
         self.comms.version_change.emit(self.selected_version)
 
-
     def save_predictions(self):
+        '''
+        Save predictions to user specified file.  Opens a QFileDialog to choose save directory.
+        '''
         try:
             if self.training_predictions.empty:
                 exceptionWarning('No predictions to save')
@@ -598,19 +610,26 @@ class SelectModelWidget(QWidget):
             if file_name:
                 self.training_predictions.to_csv(
                     file_name, index_label='testnum', quoting=1, encoding='utf-8')
-                self.comms.update_statusbar.emit("Predictions saved successfully.")
+                self.comms.update_statusbar.emit(
+                    "Predictions saved successfully.")
         except PermissionError as pe:
-            self.logger.warning("SelectModelWidget.save_predictions", exc_info=True)
-            exceptionWarning(f'Permission denied while attempting to save {file_name}')
+            self.logger.warning(
+                "SelectModelWidget.save_predictions", exc_info=True)
+            exceptionWarning(
+                f'Permission denied while attempting to save {file_name}')
         except Exception as e:
-            self.logger.error("SelectModelWidget.save_predictions", exc_info=True)
+            self.logger.error(
+                "SelectModelWidget.save_predictions", exc_info=True)
             exceptionWarning(
                 "Exception occured.  SelectModelWidget.save_predictions.", exception=e)
             tb = traceback.format_exc()
             print(tb)
 
-
     def _abort_training(self):
+        '''
+        Notifies the ModelTrainer to abort training.
+        ! Note: training ends only after the current training or tuning event ends.
+        '''
         self.comms.stop_training.emit()
 
     def _update_version(self, directory):
@@ -651,6 +670,15 @@ class SelectModelWidget(QWidget):
         self.tuning_groupbox.setEnabled(state)
 
     def update_tuning_params(self, model_base, param, value, scorer=False):
+        '''
+        Updates the tuning parameters passed to ModelTrainer.
+
+            # Arguments
+                model_base: string, Signifies which type of tuning parameter to update.  Currently, only
+                    used by RandomizedSearchCV (sklearn)
+                param: string, parameter name
+                value: [int, float, string], parameter value
+        '''
         if model_base is None or param is None:
             return
         try:
@@ -662,7 +690,6 @@ class SelectModelWidget(QWidget):
                         self.tuning_params[model_base]['scoring'].remove(param)
             else:
                 self.tuning_params[model_base][param] = value
-            # self.tuning_params[model_base][param] = value
         except KeyError as ke:
             self.tuning_params[model_base][param] = {}
             self.tuning_params[model_base][param] = value
@@ -686,7 +713,6 @@ class SelectModelWidget(QWidget):
         """
         if model_base is None or param is None:
             return
-        # print(model_base, param, value)
         try:
             # FIXME: This is super hackish and brittle.  Can it be done more eloquently?
             if model_base == 'sklearn':
