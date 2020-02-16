@@ -487,7 +487,7 @@ class PredictWidget(QWidget):
             question_data = self.full_data[col_name].fillna(
                 value="unanswered")
 
-            avg_num_words = get_avg_words_per_sample(str(question_data.values))
+            avg_num_words = get_avg_words_per_sample(question_data, question_data.shape[0])
             self.current_question_count.setText(str(question_data.shape[0]))
             self.current_question_avg_word.setText("%.2f" % avg_num_words)
             

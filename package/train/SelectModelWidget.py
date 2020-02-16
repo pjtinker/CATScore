@@ -212,6 +212,7 @@ class SelectModelWidget(QWidget):
         """
         self.version_selection_label = QLabel("Select version: ")
         self.version_selection = QComboBox(objectName='version_select')
+        self.version_selection.setMinimumWidth(100)
         # Changed default models to a unique directory.  This
         # is where default models will be saved.
         # self.version_selection.addItem(

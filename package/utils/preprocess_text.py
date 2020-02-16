@@ -159,15 +159,17 @@ def expand_cont(text, c_re=c_re):
     return c_re.sub(replace, text)
 
 
-def get_avg_words_per_sample(sample_texts):
+def get_avg_words_per_sample(sample_texts, num_samples):
     """Returns the median number of words per sample in given a corpus.
     # Arguments
     """
     total_words = 0
+    # print(sample_texts)
+    # print(type(sample_texts))
     for text in sample_texts:
         total_words += len(text.split())
-
-    return float(total_words / len(sample_texts))
+    # print(f'total_words: {total_words}, len of sample_texts: {len(sample_texts)}')
+    return float(total_words / num_samples )
 
 
 def get_num_words_per_sample(sample_texts):

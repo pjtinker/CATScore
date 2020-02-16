@@ -80,6 +80,7 @@ class SkModelDialog(BaseModelDialog):
         self.main_layout = QVBoxLayout()
         self.form_grid = QGridLayout()
         self.version_item_combobox = QComboBox()
+        self.version_item_combobox.insertPolicy = QComboBox.InsertAtBottom
         self.version_item_combobox.currentIndexChanged.connect(
             lambda state, y=self.version_item_combobox: self.load_version_params(
                 y.currentData())
