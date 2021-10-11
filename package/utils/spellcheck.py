@@ -5,7 +5,7 @@ import numpy as np
 import operator 
 import re
 from collections import Counter
-import gensim
+# import gensim
 import heapq
 from multiprocessing import Pool
 from tqdm import tqdm

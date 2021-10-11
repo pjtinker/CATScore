@@ -18,13 +18,13 @@
                 "type" : "dropdown",
                 "default" : {
                     "type" : "__function__",
-                    "module" : "sklearn.feature_selection.univariate_selection",
+                    "module" : "sklearn.feature_selection",
                     "name" : "f_classif"
                 },
                 "options" : {
                     "f_classif" : {
                         "type" : "__function__",
-                        "module" : "sklearn.feature_selection.univariate_selection",
+                        "module" : "sklearn.feature_selection",
                         "name" : "f_classif"
                     },
                     "chi2" :{
