@@ -21,6 +21,7 @@ from queue import PriorityQueue
 import pandas as pd
 import numpy as np
 
+from scipy.stats import uniform
 
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.model_selection import cross_val_score, StratifiedKFold, train_test_split, RandomizedSearchCV
@@ -178,7 +179,8 @@ class ModelTrainer(QRunnable):
                                 try:
                                     if sk_eval_type == 'cv':
                                         skf = StratifiedKFold(n_splits=sk_eval_value,
-                                                              random_state=RANDOM_SEED)
+                                                              random_state=RANDOM_SEED,
+                                                              shuffle=True)
                                         for train, test in skf.split(x, y):
                                             with joblib.parallel_backend('dask'):
                                                 preds[test] = pipeline.fit(
@@ -513,7 +515,7 @@ class ModelTrainer(QRunnable):
             #     updated_key_dict = {f'{model}__{k}':
             #         [v] for k, v in keras_params.items()}
             #     grid_params.update(updated_key_dict)
-
+            
             self._update_log(f'Beginning RandomizedSearchCV on {model}...')
             rscv = RandomizedSearchCV(pipeline,
                                       grid_params,
@@ -526,7 +528,7 @@ class ModelTrainer(QRunnable):
                                       verbose=CONFIG.getint(
                                           'VARIABLES', 'RandomizedSearchVerbosity'),
                                       scoring=tuning_params['gridsearch']['scoring'] if len(
-                                          tuning_params['gridsearch']['scoring']) > 0 else None,
+                                          tuning_params['gridsearch']['scoring']) > 0 else 'accuracy',
                                       refit='accuracy')
             #   refit='accuracy' if len(tuning_params['gridsearch']['scoring']) > 0 else None)  # ! FIXME: Should we allow other, non accuracy metrics here?
             with joblib.parallel_backend('dask'):
@@ -741,7 +743,9 @@ class ModelTrainer(QRunnable):
         if self.tuning_params['gridsearch']['tune_stacker']:
             self._update_log(
                 f'Beginning tuning run on Stacker <b>{".".join(stacker_full_class)}</b>...')
+            distributions = dict(C=uniform(loc=0, scale=4), penalty=['l2', 'l1'])
             rscv = RandomizedSearchCV(estimator=stacker,
+                                      param_distributions=distributions,
                                       n_jobs=self.tuning_params['gridsearch']['n_jobs'] if self.tuning_params[
                                           'gridsearch']['n_jobs'] != 0 else None,
                                       cv=self.tuning_params['gridsearch']['cv'],
@@ -751,7 +755,7 @@ class ModelTrainer(QRunnable):
                                       verbose=CONFIG.getint(
                                           'VARIABLES', 'RandomizedSearchVerbosity'),
                                       scoring=self.tuning_params['gridsearch']['scoring'] if len(
-                                          self.tuning_params['gridsearch']['scoring']) > 0 else None,
+                                          self.tuning_params['gridsearch']['scoring']) > 0 else 'accuracy',
                                       refit='accuracy')
             rscv.fit(x, y)
             best_params = rscv.best_params_
@@ -761,7 +765,8 @@ class ModelTrainer(QRunnable):
         self._update_log(
             f'Training Stacking algorithm <b>{".".join(stacker_full_class)}</b>')
         skf = StratifiedKFold(n_splits=5,
-                              random_state=RANDOM_SEED)
+                              random_state=RANDOM_SEED,
+                              shuffle=True)
 
         for train, test in skf.split(x, y):
             with joblib.parallel_backend('dask'):

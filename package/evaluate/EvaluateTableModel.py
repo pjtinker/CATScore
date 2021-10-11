@@ -29,7 +29,7 @@ class EvaluateTableModel(DataframeTableModel):
         column = index.column()
         row = index.row()
         if role == Qt.DisplayRole:
-            return str(self._df.ix[row, column])
+            return str(self._df.iloc[row, column])
         # elif role == Qt.CheckStateRole and column == 0:
         #     if self.checklist[row]:
         #         return Qt.Checked

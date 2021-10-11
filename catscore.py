@@ -107,7 +107,7 @@ if __name__ == "__main__":
     progressBar.setGeometry(0, splash_pix.height()-20, splash_pix.width(), 20)
     percent_loaded = 0
     splash.show()
-    splash.showMessage("<h1>CATScore</h1>", Qt.AlignTop | Qt.AlignCenter, Qt.black)
+    splash.showMessage("<h1>CATScore</h1>", int(Qt.AlignTop | Qt.AlignCenter), Qt.black)
     app.processEvents()
 
     # init_loop = QEventLoop()
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     # handler = logging.handlers.RotatingFileHandler('cat.log', mode='a', maxBytes=1000)
     logFormatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(logFormatter)
-    logging.basicConfig( handlers=[handler], format=logFormatter, level=logging.DEBUG)
+    logging.basicConfig( handlers=[handler], format='%(asctime)s - %(levelname)s - %(message)s', level=logging.DEBUG)
     logging.captureWarnings(True)
     progressBar.setValue(3)
     from multiprocessing import Pool
