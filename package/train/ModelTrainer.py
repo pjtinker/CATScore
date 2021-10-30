@@ -816,16 +816,16 @@ class ModelTrainer(QRunnable):
             json.dump(stacker_info, outfile, indent=2)
         x[col_name + TRUTH_LABEL_SUFFIX] = y
         agreement_ratios = x.apply(get_ratio, axis=1)
-        bamboozled = x.apply(get_bamboozled_score, axis=1)
+        # bamboozled = x.apply(get_bamboozled_score, axis=1)
 
         x[col_name + TAG_DELIMITER + 'agreement_ratio'] = agreement_ratios
-        x[col_name + TAG_DELIMITER + 'bamboozled_score'] = bamboozled
+        # x[col_name + TAG_DELIMITER + 'bamboozled_score'] = bamboozled
         pc_len = len(x[x[col_name + TAG_DELIMITER + 'agreement_ratio'] <= DISAGREEMENT_THRESHOLD])
-        bamboozled_len = len(x[x[col_name + TAG_DELIMITER + 'bamboozled_score'] <= BAMBOOZLED_THRESHOLD])
+        # bamboozled_len = len(x[x[col_name + TAG_DELIMITER + 'bamboozled_score'] <= BAMBOOZLED_THRESHOLD])
         self._update_log(
             f"Found {pc_len} samples for {col_name} that fall at or below the {DISAGREEMENT_THRESHOLD} predictor agreement.")
-        self._update_log(
-            f"Found {bamboozled_len} samples for {col_name} that have a bamboozled score of {BAMBOOZLED_THRESHOLD} or below.")
+        # self._update_log(
+            # f"Found {bamboozled_len} samples for {col_name} that have a bamboozled score of {BAMBOOZLED_THRESHOLD} or below.")
         # print('HEAD OF X IN TRAIN_STACKER')
         # print(x.head())
         # print(x.columns)

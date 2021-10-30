@@ -129,20 +129,20 @@ class Predictor(QRunnable):
 
             last_trained.append(column_prefix + STACKER_LABEL_SUFFIX)
             agreement_ratios =  self.predictions[last_trained].apply(get_agreement_ratio, axis=1)
-            bamboozled_score = self.predictions[last_trained].apply(get_bamboozled_score, axis=1)
+            # bamboozled_score = self.predictions[last_trained].apply(get_bamboozled_score, axis=1)
             self.predictions[column_prefix + '__agreement_ratio'] = agreement_ratios
             data_copy[column_prefix + '__agreement_ratio'] = agreement_ratios
 
-            self.predictions[column_prefix + '__bamboozled_score'] = bamboozled_score
-            data_copy[column_prefix + '__bamboozled_score'] = bamboozled_score
+            # self.predictions[column_prefix + '__bamboozled_score'] = bamboozled_score
+            # data_copy[column_prefix + '__bamboozled_score'] = bamboozled_score
 
-            bamboozled_len = len(self.predictions[self.predictions[column_prefix + '__bamboozled_score'] <= BAMBOOZLED_THRESHOLD])
+            # bamboozled_len = len(self.predictions[self.predictions[column_prefix + '__bamboozled_score'] <= BAMBOOZLED_THRESHOLD])
             pc_len = len(self.predictions[self.predictions[column_prefix + '__agreement_ratio'] <= DISAGREEMENT_THRESHOLD])
             
             self._update_log(
                 f"Found {pc_len} samples for {column} that fall below {DISAGREEMENT_THRESHOLD} predictor agreement.")
-            self._update_log(
-                f"Found {bamboozled_len} samples for {column} that have a bamboozled score of {BAMBOOZLED_THRESHOLD} or below.")
+            # self._update_log(
+                # f"Found {bamboozled_len} samples for {column} that have a bamboozled score of {BAMBOOZLED_THRESHOLD} or below.")
             self._update_log(f"Evaluation for {column} complete.\n")
 
         self._update_log("Evaluation run complete.")

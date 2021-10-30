@@ -244,8 +244,10 @@ class DataLoader(QWidget):
             self.available_columns = []
             for column in columns:
                 if column.endswith(DATA_COLUMN_SUFFIX):
-                    label_col = column.split(TAG_DELIMITER)[0] + TRUTH_SUFFIX 
+                    label_col = column.split(TAG_DELIMITER)[0] + TRUTH_SUFFIX
                     if label_col in columns:
+                        # convert label values to int
+                        self.full_data[label_col] = self.full_data[label_col].astype(int)
                         self.available_columns.append(column)
                         self.available_columns.append(label_col)
             # If no data found, the model will be reset.
