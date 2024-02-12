@@ -17,6 +17,8 @@ import errno
 
 import pandas as pd
 
+import configparser
+
 from PyQt5.QtCore import (Qt, pyqtSlot, pyqtSignal)
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QDialog, QHeaderView, QAction,
                                QMainWindow, QSizePolicy, QProgressBar, QWidget,
@@ -27,8 +29,9 @@ from package.train.TrainWidget import TrainWidget
 from package.utils.catutils import exceptionWarning
 from package.utils.config import CONFIG
 
+VERSION_BASE_DIR = os.path.normpath(CONFIG.get('PATHS', 'BaseVersionDirectory'))
+print(VERSION_BASE_DIR)
 
-VERSION_BASE_DIR = CONFIG.get('PATHS', 'BaseVersionDirectory')
 # DEFAULT_QUESTION_LABELS = ['Q1', 'Q2', 'Q3', 'Q4', 'Q6',
 #                     'Q7', 'Q9', 'Q11', 'Q14', 'Q15'] 
 DEFAULT_QUESTION_LABELS = CONFIG.get('VARIABLES', 'DefaultQuestionLabels').split(',')

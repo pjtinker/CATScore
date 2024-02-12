@@ -5,7 +5,6 @@ Critical-thinking Assessment Test
 """
 
 import argparse
-import pandas as pd
 import logging
 import logging.handlers
 

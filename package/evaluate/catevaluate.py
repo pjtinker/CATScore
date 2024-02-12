@@ -12,6 +12,8 @@ import argparse
 import logging
 import json
 import os
+from pathlib import Path
+
 
 import pandas as pd
 
@@ -24,7 +26,8 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QDialog, QHeaderView, QA
 from package.utils.catutils import exceptionWarning
 from package.evaluate.ScoreWidget import ScoreWidget
 
-VERSION_BASE_DIR = "./package/data/versions"
+# VERSION_BASE_DIR = os.path.join("package", "data", "versions") 
+VERSION_BASE_DIR = Path("package") / "data" / "versions"
 DEFAULT_QUESTION_LABELS = ['Q1', 'Q2', 'Q3', 'Q4', 'Q6',
                     'Q7', 'Q9', 'Q11', 'Q14', 'Q15']
 class CatEvaluate(QMainWindow):

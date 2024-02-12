@@ -27,7 +27,6 @@ cytoolz==0.10.0
 dask==2.1.0
 dask-glm==0.1.0
 dask-ml==1.0.0
-deap==1.3.0
 decorator==4.4.0
 defusedxml==0.5.0
 distributed==2.1.0
@@ -79,7 +78,6 @@ oauthlib==3.0.1
 olefile==0.46
 openTSNE==0.3.2
 packaging==19.0
-pandas==0.24.2
 pandocfilters==1.4.2
 parso==0.4.0
 partd==1.0.0
